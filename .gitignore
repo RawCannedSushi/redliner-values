@@ -1,0 +1,12 @@
+node_modules/
+.wrangler/
+.dev.vars
+.dev.vars.*
+dist/
+playwright-report/
+test-results/
+backups/
+public/build-info.json
+.env
+.env.*
+*.log

@@ -1,0 +1,623 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Leave SITE_MESSAGE empty to hide the announcement. Redeploy after editing. -->
+
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#101113" />
+    <meta
+      name="description"
+      content="Browse Redliner skin values and compare trades using the archives® redliner value sheet."
+    />
+    <title>archives® Redliner Values</title>
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23101113'/%3E%3Cpath d='M10 43h15l9-22 8 22h12' fill='none' stroke='%23f4f4f1' stroke-width='7' stroke-linecap='square'/%3E%3C/svg%3E"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Archivo+Narrow:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div id="site-intro" class="site-intro" aria-label="Opening animation">
+      <div class="intro-half top" aria-hidden="true">
+        <div class="intro-scene">
+          <div class="intro-brand">
+            <div class="intro-kicker">THE ARCHIVES / REDLINER</div>
+            <div class="intro-word">archives<sup>®</sup></div>
+            <div class="intro-subtitle">
+              <em class="redliner-word">Redliner</em> Values
+            </div>
+            <div class="intro-track"></div>
+            <div class="intro-code">SKINS / VALUES / HISTORY</div>
+          </div>
+        </div>
+      </div>
+      <div class="intro-half bottom" aria-hidden="true"></div>
+      <div class="intro-slash" aria-hidden="true"></div>
+      <button id="intro-skip" class="intro-skip" type="button">
+        Skip intro
+      </button>
+    </div>
+
+    <dialog
+      id="rarity-welcome"
+      class="rarity-welcome"
+      aria-labelledby="welcome-title"
+      aria-describedby="welcome-description"
+    >
+      <h2 id="welcome-title">Which rarities do you want to see?</h2>
+      <p id="welcome-description">
+        Choose a starting view for the value list and chart.
+      </p>
+      <div class="welcome-choices">
+        <button type="button" data-rarity-preset="all">
+          All rarities<small>Show every skin in the sheet.</small></button
+        ><button type="button" data-rarity-preset="exotic">
+          Exotic and higher<small
+            >Show Classified and Exotic skins.</small
+          ></button
+        ><button type="button" data-rarity-preset="elite">
+          Elite and higher<small
+            >Show Elite, Classified, and Exotic skins.</small
+          >
+        </button>
+      </div>
+      <p class="welcome-note">
+        You can change this anytime in the Rarity filter dropdown.
+      </p>
+    </dialog>
+    <main id="top" class="shell">
+      <section class="intro">
+        <div>
+          <h1>
+            archives<sup>®</sup>
+            <span><em class="redliner-word">Redliner</em> Values</span>
+          </h1>
+          <p>
+            Compare skin values and check demand before you trade. Data comes
+            from the archives® redliner value sheet.
+          </p>
+        </div>
+        <div class="intro-side">
+          <div id="feed-status" class="status" role="status" aria-live="polite">
+            <span class="status-dot"></span><span>Loading values…</span>
+          </div>
+          <a
+            class="discord-link"
+            href="https://discord.gg/9fnfZqKach"
+            target="_blank"
+            rel="noopener noreferrer"
+            >Join archives Discord ↗</a
+          ><button id="refresh" class="refresh" type="button">↻ Refresh</button>
+        </div>
+      </section>
+      <div class="view-tabs" role="tablist" aria-label="Value pages">
+        <button
+          type="button"
+          class="active"
+          data-view="list"
+          role="tab"
+          aria-selected="true"
+        >
+          Value list</button
+        ><button
+          type="button"
+          data-view="history"
+          role="tab"
+          aria-selected="false"
+        >
+          Value Chart</button
+        ><button
+          type="button"
+          data-view="inventory"
+          role="tab"
+          aria-selected="false"
+        >
+          My Inventory</button
+        ><button
+          type="button"
+          data-view="trade"
+          role="tab"
+          aria-selected="false"
+        >
+          Trade calculator</button
+        ><button
+          type="button"
+          data-view="info"
+          role="tab"
+          aria-selected="false"
+        >
+          Info</button
+        ><button
+          type="button"
+          data-view="sheet"
+          role="tab"
+          aria-selected="false"
+        >
+          Original Sheet
+        </button>
+      </div>
+      <aside
+        id="site-message"
+        class="site-message"
+        aria-label="Site announcement"
+        hidden
+      >
+        <strong>Announcement</strong>
+        <p id="site-message-text"></p>
+      </aside>
+      <div id="shared-filters">
+        <div class="controls">
+          <details class="multi-filter" id="rarity-filter">
+            <summary id="rarity-label">All rarities</summary>
+            <div class="filter-options" id="rarity-options"></div>
+          </details>
+          <details class="multi-filter" id="collection-filter">
+            <summary id="collection-label">All collections</summary>
+            <div class="filter-options" id="collection-options"></div>
+          </details>
+          <select id="sort" aria-label="Sort skins">
+            <option value="default">Sheet order</option>
+            <option value="high">Value: high to low</option>
+            <option value="low">Value: low to high</option>
+            <option value="demand">Highest demand</option>
+            <option value="name">Name: A to Z</option>
+          </select>
+        </div>
+        <div class="result-line">
+          <span id="result-count" class="count" role="status"
+            >Loading skins…</span
+          ><button id="clear" class="clear" type="button" hidden>
+            Clear filters
+          </button>
+        </div>
+      </div>
+      <div id="list-view">
+        <section id="catalog" aria-labelledby="catalog-title">
+          <div class="section-head">
+            <h2 id="catalog-title">Value list</h2>
+            <p>Values are a guide. Demand also matters.</p>
+          </div>
+          <table class="catalog" aria-labelledby="catalog-title">
+            <thead>
+              <tr class="table-head">
+                <th scope="col">Skin</th>
+                <th scope="col">Rarity</th>
+                <th scope="col">Collection</th>
+                <th scope="col">Weapon</th>
+                <th scope="col">Value</th>
+                <th scope="col">Demand</th>
+                <th scope="col">Trend</th>
+              </tr>
+            </thead>
+            <tbody id="rows">
+              <tr>
+                <td colspan="7" class="empty">Loading the value list…</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+      </div>
+      <section
+        id="inventory-view"
+        class="inventory-view"
+        aria-labelledby="inventory-title"
+        hidden
+      >
+        <div class="section-head">
+          <h2 id="inventory-title">My Inventory</h2>
+          <p>Use + to add a skin. Highest value first.</p>
+        </div>
+        <div id="inventory-grid" class="inventory-grid"></div>
+        <div class="inventory-footer">
+          <span
+            ><strong id="inventory-count">0</strong> items ·
+            <strong id="inventory-unique">0</strong> skins · Listed value
+            <strong id="inventory-total">0</strong></span
+          >
+          <details class="inventory-backup">
+            <summary>Inventory backup</summary>
+            <button type="button" id="inventory-export">Export backup</button
+            ><button type="button" id="inventory-import">Import backup</button
+            ><span class="inventory-sync-controls"
+              ><button type="button" id="inventory-google-sync">
+                Sync inventory with Google</button
+              ><button
+                type="button"
+                id="inventory-sync-info"
+                class="inventory-info-button"
+                aria-label="How Google inventory sync works"
+                title="How Google inventory sync works"
+              >
+                i
+              </button></span
+            ><input
+              type="file"
+              id="inventory-file"
+              accept="application/json,.json"
+              hidden
+            />
+          </details>
+        </div>
+        <p class="inventory-note">
+          Saved on this browser and device. Export a backup before clearing site
+          data, or optionally connect Google Drive to use it on other devices.
+        </p>
+        <p id="inventory-status" class="footnote" role="status"></p>
+      </section>
+      <dialog
+        id="inventory-dialog"
+        class="inventory-dialog"
+        aria-labelledby="inventory-dialog-title"
+      >
+        <form id="inventory-add-form">
+          <h2 id="inventory-dialog-title">Add skins</h2>
+          <input
+            id="inventory-pick-search"
+            type="search"
+            placeholder="Search skins or weapons…"
+            aria-label="Search skins or weapons"
+            autocomplete="off"
+          />
+          <div
+            id="inventory-pick-results"
+            class="inventory-pick-results"
+            aria-label="Available skins"
+          ></div>
+          <p class="inventory-picker-note">
+            Adds one of each. Adjust quantities on your inventory cards.
+          </p>
+          <div class="inventory-dialog-actions">
+            <span id="inventory-selection-count" role="status">0 selected</span
+            ><button id="inventory-cancel" type="button">Cancel</button
+            ><button id="inventory-confirm" type="submit" disabled>Add</button>
+          </div>
+        </form>
+      </dialog>
+      <dialog
+        id="inventory-sync-dialog"
+        class="inventory-dialog sync-dialog"
+        aria-labelledby="inventory-sync-title"
+      >
+        <h2 id="inventory-sync-title">Google Drive inventory sync</h2>
+        <p>
+          This optional feature asks Google for permission to view and manage
+          this app's private data folder in Google Drive. Redliner uses it for
+          an inventory file. It cannot browse, read, or change your regular
+          Drive files.
+        </p>
+        <ul>
+          <li>Your inventory still works locally without connecting Google.</li>
+          <li>
+            Your inventory file is stored by Google, not in the Redliner history
+            database.
+          </li>
+          <li>
+            Google's temporary access token stays in this page's memory and is
+            not saved by this site or sent to its server.
+          </li>
+          <li>
+            Reconnect after closing the page or when access expires. After a
+            successful sync, inventory changes upload automatically. Other
+            devices' changes are loaded when you click Sync; this is not live
+            collaboration.
+          </li>
+          <li>
+            If two devices have different copies, you choose which copy to keep.
+            Cancel leaves both copies unchanged and pauses uploads. A
+            conflicting cloud update also pauses uploads. Export a backup before
+            your first sync.
+          </li>
+          <li>
+            Deleting the Google copy also disconnects sync on this page.
+            Reconnecting can create a new copy. Disconnecting alone keeps both
+            copies.
+          </li>
+        </ul>
+        <p>
+          You can revoke access later in your Google Account's third-party
+          connections. If sign-in is blocked inside Google Sites, open the
+          <a href="/#inventory" target="_blank" rel="noopener"
+            >website in a new tab</a
+          >
+          to sync. That tab may have separate browser storage; export/import a
+          backup to move inventory between the tab and this embed if necessary.
+        </p>
+        <div class="inventory-dialog-actions sync-dialog-actions">
+          <button type="button" id="inventory-google-delete" hidden>
+            Delete Google copy
+          </button>
+          <button type="button" id="inventory-google-disconnect" hidden>
+            Disconnect Google
+          </button>
+          <button type="button" id="inventory-sync-close">Close</button>
+        </div>
+      </dialog>
+      <dialog
+        id="inventory-conflict-dialog"
+        class="inventory-dialog sync-dialog"
+        aria-labelledby="inventory-conflict-title"
+      >
+        <form method="dialog">
+          <h2 id="inventory-conflict-title">Choose an inventory copy</h2>
+          <p>
+            Your inventories differ. These choices replace a whole inventory;
+            they do not merge items. Cancel and export a backup if you are
+            unsure.
+          </p>
+          <p>
+            <strong>This device:</strong>
+            <span id="inventory-conflict-local"></span>
+          </p>
+          <p>
+            <strong>Google Drive:</strong>
+            <span id="inventory-conflict-remote"></span>
+          </p>
+          <p>
+            Use Google copy replaces this device's inventory. Use this device's
+            copy replaces the Google inventory. Cancel changes neither copy and
+            pauses automatic uploads.
+          </p>
+          <div class="inventory-dialog-actions sync-dialog-actions">
+            <button value="remote" id="inventory-use-google">
+              Use Google copy
+            </button>
+            <button value="local" id="inventory-use-local">
+              Use this device's copy
+            </button>
+            <button value="cancel" id="inventory-sync-cancel" autofocus>
+              Cancel
+            </button>
+          </div>
+        </form>
+      </dialog>
+      <section id="trade" class="trade" hidden aria-labelledby="trade-title">
+        <div class="section-head">
+          <h2 id="trade-title">Trade calculator</h2>
+          <p>Add skins to each side to compare their listed values.</p>
+        </div>
+        <div class="trade-grid">
+          <div class="trade-side">
+            <h3>You give</h3>
+            <div class="trade-picker">
+              <select
+                id="give-select"
+                aria-label="Select a skin you give"
+              ></select
+              ><button data-side="give" type="button">Add skin</button>
+            </div>
+            <div class="trade-items" id="give-items"></div>
+            <div class="trade-total">
+              <span>Your total</span><strong id="give-total">0</strong>
+            </div>
+          </div>
+          <div class="trade-side receive">
+            <h3>You receive</h3>
+            <div class="trade-picker">
+              <select
+                id="receive-select"
+                aria-label="Select a skin you receive"
+              ></select
+              ><button data-side="receive" type="button">Add skin</button>
+            </div>
+            <div class="trade-items" id="receive-items"></div>
+            <div class="trade-total">
+              <span>Their total</span><strong id="receive-total">0</strong>
+            </div>
+          </div>
+        </div>
+        <div class="trade-summary">
+          <div>
+            <strong id="trade-verdict">Add skins to compare</strong>
+            <p id="trade-note">The difference is based on listed values.</p>
+          </div>
+          <span id="difference" class="difference">—</span>
+        </div>
+        <p class="footnote">
+          This compares base values only. Demand, trends, and actual offers can
+          change what a fair trade looks like.
+        </p>
+      </section>
+      <section
+        id="history-view"
+        class="history"
+        aria-labelledby="history-title"
+        hidden
+      >
+        <div class="section-head">
+          <h2 id="history-title">Value history</h2>
+          <p>Compare saved values for the skins matching your filters.</p>
+        </div>
+        <div class="history-tools">
+          <span id="history-status" role="status">Loading snapshots…</span
+          ><select id="history-range" aria-label="History date range">
+            <option value="1">Past 24 Hours</option>
+            <option value="3">Last 3 Days</option>
+            <option value="7" selected>Last 7 Days</option>
+            <option value="30">Last 30 days</option>
+            <option value="90">Last 90 days</option>
+            <option value="all">All saved history</option></select
+          ><select id="history-mode" aria-label="Chart scale">
+            <option value="value">Listed value</option>
+            <option value="change">Change from first saved point (%)</option>
+          </select>
+        </div>
+        <div class="chart-panel">
+          <svg
+            id="history-chart"
+            viewBox="0 0 1000 450"
+            role="group"
+            aria-label="Skin value comparison over time"
+          ></svg>
+          <div id="chart-empty" class="chart-empty" hidden></div>
+        </div>
+        <div id="history-legend" class="legend" hidden></div>
+        <div id="skin-tooltip" class="skin-tooltip" role="tooltip" hidden>
+          <strong id="tip-name"></strong>
+          <div id="tip-details" class="tip-details"></div>
+          <div class="tip-value">
+            <span id="tip-value-label">Current value</span
+            ><b id="tip-current"></b>
+          </div>
+          <div id="tip-history" class="tip-history" hidden></div>
+        </div>
+        <p class="footnote">
+          History checks for changed values about every 15 minutes and saves a
+          daily baseline. Refreshing the value list does not save a snapshot.
+          The latest value list may be cached for up to two minutes. History
+          keeps about two years of observations. Changes between checks may not
+          be captured. Long chart ranges show evenly spaced recorded points. The
+          archives® redliner value sheet does not provide earlier history.
+        </p>
+      </section>
+      <section
+        id="info-view"
+        class="info-view"
+        aria-labelledby="info-title"
+        hidden
+      >
+        <div class="section-head">
+          <h2 id="info-title">Info</h2>
+          <p>How to read and use the archives® redliner value sheet.</p>
+        </div>
+        <div class="info-grid">
+          <article class="info-card">
+            <h3>Reading values</h3>
+            <p>
+              Values are relative. For example, a skin listed at 200 has the
+              same total listed value as two skins listed at 100 each.
+            </p>
+            <span class="info-example">200 = 100 + 100</span>
+            <p>
+              Equal totals and similar demand generally make a fair trade.
+              Consider demand alongside value before deciding. These figures are
+              a general guide; actual trades can vary.
+            </p>
+          </article>
+          <article class="info-card">
+            <h3>Trend labels</h3>
+            <dl class="info-terms">
+              <div class="info-term">
+                <dt>St.</dt>
+                <dd>Stable — usually stays near its current value.</dd>
+              </div>
+              <div class="info-term">
+                <dt>Unst.</dt>
+                <dd>Unstable — changes value often.</dd>
+              </div>
+              <div class="info-term">
+                <dt>Fluct.</dt>
+                <dd>Fluctuating — often moves up and down.</dd>
+              </div>
+              <div class="info-term">
+                <dt>Rsng.</dt>
+                <dd>Rising — value is increasing.</dd>
+              </div>
+              <div class="info-term">
+                <dt>Lwr.</dt>
+                <dd>Lowering — value is decreasing.</dd>
+              </div>
+              <div class="info-term">
+                <dt>Hypd.</dt>
+                <dd>Hyped — drawing strong demand or attention.</dd>
+              </div>
+              <div class="info-term">
+                <dt>N/A</dt>
+                <dd>Not available — too new for reliable market data.</dd>
+              </div>
+            </dl>
+          </article>
+        </div>
+        <p class="footnote">
+          Based on the archives® redliner value sheet's INFO page. See the
+          <a
+            href="https://docs.google.com/spreadsheets/d/1d6vnaRBKEao_okQ5uiodBj5cLpIj1cHfsfr8E-JB0ZQ/edit?usp=sharing"
+            target="_blank"
+            rel="noopener noreferrer"
+            >archives® redliner value sheet ↗</a
+          >
+          for the full guide and other pages. Community Discord:
+          <a
+            href="https://discord.gg/9fnfZqKach"
+            target="_blank"
+            rel="noopener noreferrer"
+            >discord.gg/9fnfZqKach ↗</a
+          >.
+        </p>
+      </section>
+      <section
+        id="sheet-view"
+        class="sheet-view"
+        aria-labelledby="sheet-title"
+        hidden
+      >
+        <div class="section-head">
+          <h2 id="sheet-title">
+            archives® <em class="redliner-word">redliner</em> value sheet
+          </h2>
+          <p>View the archives® redliner value sheet directly.</p>
+        </div>
+        <div class="sheet-frame">
+          <iframe
+            title="archives® redliner value sheet"
+            src="https://docs.google.com/spreadsheets/d/1d6vnaRBKEao_okQ5uiodBj5cLpIj1cHfsfr8E-JB0ZQ/preview"
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+          ></iframe>
+        </div>
+        <p class="footnote">
+          If the sheet doesn't appear here,
+          <a
+            href="https://docs.google.com/spreadsheets/d/1d6vnaRBKEao_okQ5uiodBj5cLpIj1cHfsfr8E-JB0ZQ/edit?usp=sharing"
+            target="_blank"
+            rel="noopener noreferrer"
+            >open the archives® redliner value sheet in Google Sheets ↗</a
+          >.
+        </p>
+      </section>
+    </main>
+    <footer>
+      <div class="shell" id="source-details" hidden>
+        <span
+          ><a id="source-link" target="_blank" rel="noopener noreferrer"
+            >View source on GitHub ↗</a
+          ></span
+        >
+        <span id="build-version"></span>
+      </div>
+      <div class="shell">
+        <span
+          >Independent community tool. Not affiliated with Redliner or
+          Roblox.</span
+        ><span
+          >Values and terminology:
+          <a
+            href="https://docs.google.com/spreadsheets/d/1d6vnaRBKEao_okQ5uiodBj5cLpIj1cHfsfr8E-JB0ZQ/edit?usp=sharing"
+            target="_blank"
+            rel="noopener noreferrer"
+            >the archives® redliner value sheet</a
+          >.</span
+        ><span
+          ><a href="/privacy.html">Privacy &amp; storage</a> ·
+          <a href="/terms.html">Terms &amp; disclaimer</a></span
+        ><span
+          ><a
+            class="footer-discord"
+            href="https://discord.gg/9fnfZqKach"
+            target="_blank"
+            rel="noopener noreferrer"
+            >Join archives Discord ↗</a
+          ></span
+        >
+      </div>
+    </footer>
+    <script type="module" src="/app.js"></script>
+  </body>
+</html>

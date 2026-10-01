@@ -1,0 +1,30 @@
+{
+  "name": "archives-redliner-values",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev --test-scheduled",
+    "build": "node scripts/build.mjs",
+    "configure": "node scripts/configure.mjs",
+    "configure:google": "node scripts/configure-google.mjs",
+    "deploy": "npm run build && wrangler deploy",
+    "check:deploy": "npm run build && wrangler deploy --dry-run",
+    "db:create": "wrangler d1 create archives-redliner-history",
+    "db:migrate:local": "wrangler d1 migrations apply archives-redliner-history --local",
+    "db:migrate:remote": "wrangler d1 migrations apply archives-redliner-history --remote",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "devDependencies": {
+    "prettier": "3.9.9",
+    "wrangler": "4.145.0"
+  },
+  "allowScripts": {
+    "esbuild@0.28.1": true,
+    "workerd@1.20260930.2": true
+  }
+}

@@ -1,0 +1,7 @@
+node_modules/
+.wrangler/
+backups/
+test-results/
+playwright-report/
+public/build-info.json
+package-lock.json
