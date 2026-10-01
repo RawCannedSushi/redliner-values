@@ -20,4 +20,4 @@ Cloudflare and Google still receive normal connection details, like your IP addr
 
 ## Found a security problem?
 
-Please contact the site maintainer privately through the [archives Discord](https://discord.gg/9fnfZqKach). Don't post passwords, access tokens, private backups, or details someone could use to exploit the site in a public channel or GitHub issue.
+Please contact the site maintainer privately on [Discord](https://discord.com/users/764316143770402887) Don't post passwords, access tokens, private backups, or details someone could use to exploit the site in a public channel or GitHub issue.
