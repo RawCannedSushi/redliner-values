@@ -1342,7 +1342,16 @@ footer a:hover {
 .inventory-card {
   background: var(--panel);
   border: 1px solid var(--line);
-  border-top: 3px solid var(--rarity);
+  border-top: 0;
+}
+.inventory-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 3px;
+  background: var(--rarity, #7e858d);
+  pointer-events: none;
+  z-index: 1;
 }
 .inventory-art {
   position: absolute;

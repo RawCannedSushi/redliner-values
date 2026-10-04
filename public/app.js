@@ -333,17 +333,44 @@ $("site-message").hidden = !announcement;
 const numberFormat = new Intl.NumberFormat("en-US");
 const fmt = (n) => numberFormat.format(n);
 const REFRESH_INTERVAL = 15 * 60 * 1000;
+const rarityOrder = [
+  "Classified",
+  "Direct Classified",
+  "Exotic",
+  "Elite",
+  "Rare",
+  "Uncommon",
+];
+function compareRarity(a, b) {
+  const aRank = rarityOrder.indexOf(a);
+  const bRank = rarityOrder.indexOf(b);
+  return (
+    (aRank === -1 ? rarityOrder.length : aRank) -
+      (bRank === -1 ? rarityOrder.length : bRank) || a.localeCompare(b)
+  );
+}
 const rarityColors = {
   Classified: "#f46762",
+  "Direct Classified": "#ee2e32",
   Exotic: "#db9c57",
   Elite: "#bd8be2",
   Rare: "#65a5e4",
   Uncommon: "#94ae90",
 };
+const rarityGradients = {
+  Classified: ["#ee2e32", "#5c1023"],
+  "Direct Classified": ["#ee2e32", "#000000"],
+};
+function rarityAccent(rarity, direction) {
+  const stops = rarityGradients[rarity];
+  return stops
+    ? `linear-gradient(${direction}, ${stops[0]}, ${stops[1]})`
+    : rarityColors[rarity] || "#7e858d";
+}
 let skins = [];
 const trade = { give: [], receive: [] };
 const selectedFilters = {
-  rarity: new Set(["Classified", "Exotic", "Elite"]),
+  rarity: new Set(["Classified", "Direct Classified", "Exotic", "Elite"]),
   collection: new Set(),
 };
 const RARITY_PREF_KEY = "archives-redliner-rarities-v1";
@@ -358,6 +385,13 @@ function loadRarityPreference() {
     )
       return false;
     selectedFilters.rarity = new Set(values);
+    const selected = selectedFilters.rarity;
+    if (
+      selected.has("Classified") &&
+      selected.has("Exotic") &&
+      (selected.size === 2 || (selected.size === 3 && selected.has("Elite")))
+    )
+      selected.add("Direct Classified");
     return true;
   } catch (error) {
     return false;
@@ -379,8 +413,8 @@ document.querySelectorAll("[data-rarity-preset]").forEach((button) =>
       button.dataset.rarityPreset === "all"
         ? new Set()
         : button.dataset.rarityPreset === "elite"
-          ? new Set(["Classified", "Exotic", "Elite"])
-          : new Set(["Classified", "Exotic"]);
+          ? new Set(["Classified", "Direct Classified", "Exotic", "Elite"])
+          : new Set(["Classified", "Direct Classified", "Exotic"]);
     saveRarityPreference();
     $("rarity-welcome").close();
     if (skins.length) {
@@ -492,6 +526,7 @@ function updateFilters() {
     ["collection", "collection"],
   ]) {
     const available = [...new Set(skins.map((s) => s[field]).filter(Boolean))];
+    if (id === "rarity") available.sort(compareRarity);
     const selected = selectedFilters[id];
     [...selected].forEach((value) => {
       if (!available.includes(value)) selected.delete(value);
@@ -530,6 +565,7 @@ function updateFilters() {
 }
 function updateFilterLabel(id) {
   const values = [...selectedFilters[id]];
+  if (id === "rarity") values.sort(compareRarity);
   const allSelected =
     id === "rarity" &&
     skins.length &&
@@ -764,7 +800,7 @@ function renderInventory() {
   rows.forEach((s) => {
     const key = skinKey(s),
       card = element("article", "inventory-card");
-    card.style.setProperty("--rarity", rarityColors[s.rarity] || "#7e858d");
+    card.style.setProperty("--rarity", rarityAccent(s.rarity, "to right"));
     const art = element("div", "inventory-art");
     art.append(element("span", "art-placeholder", s.weapon));
     const remove = element("button", "inventory-delete");
@@ -964,7 +1000,7 @@ function render() {
     );
     const rarityCell = element("td", "cell");
     const badge = element("span", "rarity", s.rarity);
-    badge.style.setProperty("--rarity", rarityColors[s.rarity] || "#7e858d");
+    badge.style.setProperty("--rarity", rarityAccent(s.rarity, "to bottom"));
     rarityCell.append(badge);
     row.append(
       name,
@@ -1553,7 +1589,7 @@ function renderHistory() {
       swatch = element("span", "legend-swatch"),
       name = element("span", "legend-name"),
       value = element("span", "legend-value");
-    swatch.style.background = s.color;
+    swatch.style.background = rarityAccent(s.skin.rarity, "to right");
     name.textContent = s.skin.name + " / " + s.skin.weapon;
     value.append(
       document.createTextNode(last === undefined ? "—" : fmt(last)),
