@@ -14,17 +14,34 @@ import {
 if (/^https:\/\/github\.com\/[\w.-]+\/[\w.-]+\/?$/.test(SOURCE_REPOSITORY)) {
   document.getElementById("source-link").href = SOURCE_REPOSITORY;
   document.getElementById("source-details").hidden = false;
-  fetch("/build-info.json")
-    .then((response) => response.json())
-    .then((build) => {
-      if (!/^[0-9a-f]{40}$/.test(build.commit)) return;
-      const link = document.createElement("a");
-      link.href = `${SOURCE_REPOSITORY.replace(/\/$/, "")}/commit/${build.commit}`;
-      link.textContent = `Source revision ${build.commit.slice(0, 7)}`;
-      document.getElementById("build-version").append(link);
-    })
-    .catch(() => {});
 }
+
+document.querySelectorAll(".context-help").forEach((help) => {
+  const summary = help.querySelector("summary");
+  let pinned = false;
+  help.addEventListener("mouseenter", () => {
+    help.open = true;
+  });
+  help.addEventListener("mouseleave", () => {
+    if (!pinned) help.open = false;
+  });
+  summary.addEventListener("click", (event) => {
+    event.preventDefault();
+    pinned = !pinned;
+    help.open = pinned || help.matches(":hover");
+  });
+  help.addEventListener("keydown", (event) => {
+    if (event.key !== "Escape") return;
+    pinned = false;
+    help.open = false;
+    summary.focus();
+  });
+  document.addEventListener("pointerdown", (event) => {
+    if (help.contains(event.target)) return;
+    pinned = false;
+    help.open = false;
+  });
+});
 
 const SNAPSHOT_ROWS = [
   {
@@ -1698,12 +1715,13 @@ function renderHistory() {
       if (x(index) < left || x(index) > right || value < yMin || value > yMax)
         return;
       const marker = svgNode("g", {});
+      const isCurrent = index === lastIndex;
       const dot = svgNode("circle", {
         cx: x(index),
         cy: y(value),
-        r: index === lastIndex ? 6 : 3.5,
+        r: isCurrent ? 6 : 3.25,
         fill: s.color,
-        class: "chart-dot",
+        class: isCurrent ? "chart-dot" : "chart-dot historical",
       });
       const hit = svgNode("circle", {
         cx: x(index),

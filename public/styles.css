@@ -280,9 +280,59 @@ main.shell {
   border-left: 3px solid var(--accent);
   padding-left: 11px;
 }
-.section-head p {
-  font-size: 13px;
+.context-help {
+  position: relative;
+  flex: none;
+  z-index: 5;
+}
+.context-help > summary {
+  display: grid;
+  place-items: center;
+  list-style: none;
+  width: 29px;
+  height: 29px;
+  border: 1px solid var(--line-strong);
+  border-radius: 50%;
+  background: var(--panel);
   color: var(--muted);
+  font:
+    20px/1 Arial,
+    sans-serif;
+  cursor: help;
+  user-select: none;
+}
+.context-help > summary::-webkit-details-marker {
+  display: none;
+}
+.context-help > summary:hover,
+.context-help[open] > summary {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+.context-help > .context-help-panel {
+  display: none;
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: min(360px, calc(100vw - 36px));
+  padding: 13px 15px;
+  border: 1px solid var(--line-strong);
+  background: var(--menu-bg);
+  box-shadow: 0 12px 28px var(--shadow);
+  color: var(--text);
+  font-size: 13px;
+  line-height: 1.55;
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: normal;
+  z-index: 30;
+}
+.context-help[open] > .context-help-panel {
+  display: block;
+}
+.context-help-panel a {
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }
 .controls {
   display: grid;
@@ -907,7 +957,6 @@ footer a:hover {
 .count,
 .trade-result-label,
 .trade-item-title small,
-.chart-zoom-help,
 .site-message strong,
 .legal-date {
   font-family: ui-monospace, Consolas, monospace;
@@ -953,6 +1002,7 @@ footer a:hover {
   flex-wrap: wrap;
   align-items: center;
   gap: 8px;
+  margin-bottom: 14px;
 }
 .chart-zoom-tools button,
 .chart-zoom-tools select {
@@ -973,13 +1023,9 @@ footer a:hover {
 .chart-zoom-tools button:not(:disabled):hover {
   border-color: var(--text);
 }
-.chart-zoom-help,
 #chart-zoom-status {
   color: var(--muted);
   font-size: 13px;
-}
-.chart-zoom-help {
-  margin: 10px 0 14px;
 }
 #chart-zoom-status {
   margin-left: auto;
@@ -1045,6 +1091,9 @@ footer a:hover {
 .chart-dot {
   stroke: var(--chart-dot);
   stroke-width: 2;
+}
+.chart-dot.historical {
+  stroke: none;
 }
 .chart-empty {
   padding: 50px 20px;
@@ -1385,12 +1434,12 @@ footer a:hover {
     min-width: 0;
   }
   .section-head {
-    flex-direction: column;
-    align-items: flex-start;
+    align-items: center;
     gap: 8px;
   }
   .section-head h2 {
     font-size: 28px;
+    min-width: 0;
   }
   .table-head {
     position: absolute;
@@ -1887,11 +1936,6 @@ footer a:hover {
 .sync-dialog-actions {
   justify-content: flex-end;
   margin-top: 16px;
-}
-.inventory-note {
-  color: var(--muted);
-  font-size: 12px;
-  margin-top: 9px;
 }
 .inventory-dialog {
   width: min(400px, calc(100vw - 28px));

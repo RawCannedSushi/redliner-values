@@ -111,6 +111,13 @@
             Value list</button
           ><button
             type="button"
+            data-view="trade"
+            role="tab"
+            aria-selected="false"
+          >
+            Trade calculator</button
+          ><button
+            type="button"
             data-view="history"
             role="tab"
             aria-selected="false"
@@ -123,13 +130,6 @@
             aria-selected="false"
           >
             My Inventory</button
-          ><button
-            type="button"
-            data-view="trade"
-            role="tab"
-            aria-selected="false"
-          >
-            Trade calculator</button
           ><button
             type="button"
             data-view="info"
@@ -195,7 +195,17 @@
         <section id="catalog" aria-labelledby="catalog-title">
           <div class="section-head">
             <h2 id="catalog-title">Value list</h2>
-            <p>Values are a guide. Demand also matters.</p>
+            <details class="context-help">
+              <summary
+                aria-label="About listed values"
+                title="About listed values"
+              >
+                ⓘ
+              </summary>
+              <div class="context-help-panel">
+                Values are a guide. Demand also matters.
+              </div>
+            </details>
           </div>
           <table class="catalog" aria-labelledby="catalog-title">
             <thead>
@@ -225,7 +235,19 @@
       >
         <div class="section-head">
           <h2 id="inventory-title">My Inventory</h2>
-          <p>Use + to add a skin. Highest value first.</p>
+          <details class="context-help">
+            <summary
+              aria-label="How inventory works"
+              title="How inventory works"
+            >
+              ⓘ
+            </summary>
+            <div class="context-help-panel">
+              Use + to add a skin. Highest value first. Inventory saves on this
+              browser and device. Export a backup before clearing site data, or
+              connect Google Drive to use it on other devices.
+            </div>
+          </details>
         </div>
         <div id="inventory-grid" class="inventory-grid"></div>
         <div class="inventory-footer">
@@ -258,10 +280,6 @@
             />
           </details>
         </div>
-        <p class="inventory-note">
-          Saved on this browser and device. Export a backup before clearing site
-          data, or optionally connect Google Drive to use it on other devices.
-        </p>
         <p id="inventory-status" class="footnote" role="status"></p>
       </section>
       <dialog
@@ -393,7 +411,19 @@
       <section id="trade" class="trade" hidden aria-labelledby="trade-title">
         <div class="section-head">
           <h2 id="trade-title">Trade calculator</h2>
-          <p>Add skins to each side to compare their listed values.</p>
+          <details class="context-help">
+            <summary
+              aria-label="About the trade calculator"
+              title="About the trade calculator"
+            >
+              ⓘ
+            </summary>
+            <div class="context-help-panel">
+              Add skins to each side to compare their listed values. This uses
+              base values only; demand, trends, and actual offers can change
+              what a fair trade looks like.
+            </div>
+          </details>
         </div>
         <div class="trade-grid">
           <div class="trade-side">
@@ -453,10 +483,6 @@
             <div class="trade-items" id="receive-items"></div>
           </div>
         </div>
-        <p class="footnote">
-          This compares base values only. Demand, trends, and actual offers can
-          change what a fair trade looks like.
-        </p>
       </section>
       <section
         id="history-view"
@@ -466,7 +492,23 @@
       >
         <div class="section-head">
           <h2 id="history-title">Value history</h2>
-          <p>Compare saved values for the skins matching your filters.</p>
+          <details class="context-help">
+            <summary
+              aria-label="About value history"
+              title="About value history"
+            >
+              ⓘ
+            </summary>
+            <div class="context-help-panel">
+              Compare saved values for skins matching your filters. History
+              checks for changed values about every 15 minutes and saves a daily
+              baseline. Refreshing the value list does not save a snapshot. The
+              latest list may be cached for up to two minutes. History keeps
+              about two years of observations; changes between checks may not be
+              captured. Long chart ranges show evenly spaced recorded points.
+              The sheet does not provide earlier history.
+            </div>
+          </details>
         </div>
         <div class="history-tools">
           <span id="history-status" role="status">Loading snapshots…</span
@@ -498,12 +540,20 @@
             <option value="zoom">Drag to zoom</option>
           </select>
           <span id="chart-zoom-status" role="status"></span>
+          <details class="context-help chart-help">
+            <summary
+              aria-label="How to zoom and pan the chart"
+              title="How to zoom and pan the chart"
+            >
+              ⓘ
+            </summary>
+            <div id="chart-zoom-help" class="context-help-panel">
+              Zoom in with the buttons, then drag to pan. Choose “Drag to zoom”
+              to draw a box around values. Keyboard: + / − to zoom, arrows to
+              pan, 0 to reset.
+            </div>
+          </details>
         </div>
-        <p id="chart-zoom-help" class="chart-zoom-help">
-          Zoom in with the buttons, then drag to pan. Choose “Drag to zoom” to
-          draw a box around values. Keyboard: + / − to zoom, arrows to pan, 0 to
-          reset.
-        </p>
         <div class="chart-panel">
           <svg
             id="history-chart"
@@ -525,14 +575,6 @@
           </div>
           <div id="tip-history" class="tip-history" hidden></div>
         </div>
-        <p class="footnote">
-          History checks for changed values about every 15 minutes and saves a
-          daily baseline. Refreshing the value list does not save a snapshot.
-          The latest value list may be cached for up to two minutes. History
-          keeps about two years of observations. Changes between checks may not
-          be captured. Long chart ranges show evenly spaced recorded points. The
-          archives® redliner value sheet does not provide earlier history.
-        </p>
       </section>
       <section
         id="info-view"
@@ -542,7 +584,21 @@
       >
         <div class="section-head">
           <h2 id="info-title">Info</h2>
-          <p>How to read and use the archives® redliner value sheet.</p>
+          <details class="context-help">
+            <summary aria-label="About this guide" title="About this guide">
+              ⓘ
+            </summary>
+            <div class="context-help-panel">
+              Based on the archives® redliner value sheet's INFO page. See the
+              <a
+                href="https://docs.google.com/spreadsheets/d/1d6vnaRBKEao_okQ5uiodBj5cLpIj1cHfsfr8E-JB0ZQ/edit?usp=sharing"
+                target="_blank"
+                rel="noopener noreferrer"
+                >value sheet ↗</a
+              >
+              for the full guide and other pages.
+            </div>
+          </details>
         </div>
         <div class="info-grid">
           <article class="info-card">
@@ -592,22 +648,6 @@
             </dl>
           </article>
         </div>
-        <p class="footnote">
-          Based on the archives® redliner value sheet's INFO page. See the
-          <a
-            href="https://docs.google.com/spreadsheets/d/1d6vnaRBKEao_okQ5uiodBj5cLpIj1cHfsfr8E-JB0ZQ/edit?usp=sharing"
-            target="_blank"
-            rel="noopener noreferrer"
-            >archives® redliner value sheet ↗</a
-          >
-          for the full guide and other pages. Community Discord:
-          <a
-            href="https://discord.gg/9fnfZqKach"
-            target="_blank"
-            rel="noopener noreferrer"
-            >discord.gg/9fnfZqKach ↗</a
-          >.
-        </p>
       </section>
       <section
         id="sheet-view"
@@ -619,7 +659,6 @@
           <h2 id="sheet-title">
             archives® <em class="redliner-word">redliner</em> value sheet
           </h2>
-          <p>View the archives® redliner value sheet directly.</p>
         </div>
         <div class="sheet-frame">
           <iframe
@@ -647,7 +686,6 @@
             >View source on GitHub ↗</a
           ></span
         >
-        <span id="build-version"></span>
       </div>
       <div class="shell">
         <span
