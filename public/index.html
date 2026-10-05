@@ -5,7 +5,8 @@
 
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#101113" />
+    <meta name="theme-color" content="#eeede8" />
+    <script src="/theme-init.js"></script>
     <meta
       name="description"
       content="Browse Redliner skin values and compare trades using the archives® redliner value sheet."
@@ -98,52 +99,63 @@
           ><button id="refresh" class="refresh" type="button">↻ Refresh</button>
         </div>
       </section>
-      <div class="view-tabs" role="tablist" aria-label="Value pages">
+      <nav class="site-navigation" aria-label="Site navigation">
+        <div class="view-tabs" role="tablist" aria-label="Value pages">
+          <button
+            type="button"
+            class="active"
+            data-view="list"
+            role="tab"
+            aria-selected="true"
+          >
+            Value list</button
+          ><button
+            type="button"
+            data-view="history"
+            role="tab"
+            aria-selected="false"
+          >
+            Value Chart</button
+          ><button
+            type="button"
+            data-view="inventory"
+            role="tab"
+            aria-selected="false"
+          >
+            My Inventory</button
+          ><button
+            type="button"
+            data-view="trade"
+            role="tab"
+            aria-selected="false"
+          >
+            Trade calculator</button
+          ><button
+            type="button"
+            data-view="info"
+            role="tab"
+            aria-selected="false"
+          >
+            Info</button
+          ><button
+            type="button"
+            data-view="sheet"
+            role="tab"
+            aria-selected="false"
+          >
+            Original Sheet
+          </button>
+        </div>
         <button
+          id="theme-toggle"
+          class="theme-toggle"
           type="button"
-          class="active"
-          data-view="list"
-          role="tab"
-          aria-selected="true"
+          aria-label="Dark mode off"
+          aria-pressed="false"
         >
-          Value list</button
-        ><button
-          type="button"
-          data-view="history"
-          role="tab"
-          aria-selected="false"
-        >
-          Value Chart</button
-        ><button
-          type="button"
-          data-view="inventory"
-          role="tab"
-          aria-selected="false"
-        >
-          My Inventory</button
-        ><button
-          type="button"
-          data-view="trade"
-          role="tab"
-          aria-selected="false"
-        >
-          Trade calculator</button
-        ><button
-          type="button"
-          data-view="info"
-          role="tab"
-          aria-selected="false"
-        >
-          Info</button
-        ><button
-          type="button"
-          data-view="sheet"
-          role="tab"
-          aria-selected="false"
-        >
-          Original Sheet
+          <span>Light</span><span>Dark</span>
         </button>
-      </div>
+      </nav>
       <aside
         id="site-message"
         class="site-message"
@@ -385,40 +397,61 @@
         </div>
         <div class="trade-grid">
           <div class="trade-side">
-            <h3>You give</h3>
+            <div class="trade-side-heading">
+              <h3>You give</h3>
+              <strong id="give-total">0</strong>
+            </div>
             <div class="trade-picker">
               <select
                 id="give-select"
                 aria-label="Select a skin you give"
               ></select
-              ><button data-side="give" type="button">Add skin</button>
+              ><button
+                data-side="give"
+                type="button"
+                aria-label="Add skin you give"
+              >
+                Add
+              </button>
             </div>
             <div class="trade-items" id="give-items"></div>
-            <div class="trade-total">
-              <span>Your total</span><strong id="give-total">0</strong>
-            </div>
+          </div>
+          <div
+            id="trade-summary"
+            class="trade-summary"
+            data-state="empty"
+            role="status"
+            aria-live="polite"
+            aria-atomic="true"
+          >
+            <span class="trade-result-label">Trade result</span>
+            <strong id="trade-verdict" aria-label="Add skins to compare"
+              >—</strong
+            >
+            <span id="difference" class="difference">—</span>
+            <span id="trade-percent" class="trade-percent" hidden></span>
+            <p id="trade-note">Add skins to both sides to compare.</p>
           </div>
           <div class="trade-side receive">
-            <h3>You receive</h3>
+            <div class="trade-side-heading">
+              <h3>You receive</h3>
+              <strong id="receive-total">0</strong>
+            </div>
             <div class="trade-picker">
               <select
                 id="receive-select"
                 aria-label="Select a skin you receive"
               ></select
-              ><button data-side="receive" type="button">Add skin</button>
+              ><button
+                data-side="receive"
+                type="button"
+                aria-label="Add skin you receive"
+              >
+                Add
+              </button>
             </div>
             <div class="trade-items" id="receive-items"></div>
-            <div class="trade-total">
-              <span>Their total</span><strong id="receive-total">0</strong>
-            </div>
           </div>
-        </div>
-        <div class="trade-summary">
-          <div>
-            <strong id="trade-verdict">Add skins to compare</strong>
-            <p id="trade-note">The difference is based on listed values.</p>
-          </div>
-          <span id="difference" class="difference">—</span>
         </div>
         <p class="footnote">
           This compares base values only. Demand, trends, and actual offers can
@@ -449,12 +482,36 @@
             <option value="change">Change from first saved point (%)</option>
           </select>
         </div>
+        <div
+          id="chart-zoom-tools"
+          class="chart-zoom-tools"
+          role="group"
+          aria-label="Chart zoom controls"
+        >
+          <button id="chart-zoom-in" type="button" disabled>+ Zoom in</button>
+          <button id="chart-zoom-out" type="button" disabled>− Zoom out</button>
+          <button id="chart-zoom-reset" type="button" disabled>
+            Reset view
+          </button>
+          <select id="chart-drag-mode" aria-label="Chart drag action" disabled>
+            <option value="pan" selected>Drag to pan</option>
+            <option value="zoom">Drag to zoom</option>
+          </select>
+          <span id="chart-zoom-status" role="status"></span>
+        </div>
+        <p id="chart-zoom-help" class="chart-zoom-help">
+          Zoom in with the buttons, then drag to pan. Choose “Drag to zoom” to
+          draw a box around values. Keyboard: + / − to zoom, arrows to pan, 0 to
+          reset.
+        </p>
         <div class="chart-panel">
           <svg
             id="history-chart"
             viewBox="0 0 1000 450"
             role="group"
             aria-label="Skin value comparison over time"
+            aria-describedby="chart-zoom-help"
+            tabindex="0"
           ></svg>
           <div id="chart-empty" class="chart-empty" hidden></div>
         </div>

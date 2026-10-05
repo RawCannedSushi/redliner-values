@@ -4,6 +4,8 @@ import {
   GOOGLE_DRIVE_CLIENT_ID,
 } from "./settings.js";
 import { chartHistory } from "./history-client.js";
+import "./theme.js";
+import { CHART_PLOT, createChartZoom } from "./chart-zoom.js";
 import {
   createGoogleDriveSync,
   checkedInventory,
@@ -357,6 +359,18 @@ const rarityColors = {
   Rare: "#65a5e4",
   Uncommon: "#94ae90",
 };
+const chartColors = {
+  ...rarityColors,
+  "Direct Classified": "#000000",
+};
+const lightChartColors = {
+  Classified: "#a62630",
+  "Direct Classified": "#111315",
+  Exotic: "#835826",
+  Elite: "#704685",
+  Rare: "#235a78",
+  Uncommon: "#456346",
+};
 const rarityGradients = {
   Classified: ["#ee2e32", "#5c1023"],
   "Direct Classified": ["#ee2e32", "#000000"],
@@ -425,6 +439,11 @@ document.querySelectorAll("[data-rarity-preset]").forEach((button) =>
   }),
 );
 let historyData = null;
+const chartZoom = createChartZoom(
+  $("history-chart"),
+  $("chart-zoom-tools"),
+  renderHistory,
+);
 let activeView = "list";
 const viewPanels = {
   list: "list-view",
@@ -800,6 +819,7 @@ function renderInventory() {
   rows.forEach((s) => {
     const key = skinKey(s),
       card = element("article", "inventory-card");
+    card.classList.toggle("classified-gradient", s.rarity === "Classified");
     card.style.setProperty("--rarity", rarityAccent(s.rarity, "to right"));
     const art = element("div", "inventory-art");
     art.append(element("span", "art-placeholder", s.weapon));
@@ -1000,6 +1020,7 @@ function render() {
     );
     const rarityCell = element("td", "cell");
     const badge = element("span", "rarity", s.rarity);
+    badge.classList.toggle("classified-gradient", s.rarity === "Classified");
     badge.style.setProperty("--rarity", rarityAccent(s.rarity, "to bottom"));
     rarityCell.append(badge);
     row.append(
@@ -1030,13 +1051,30 @@ function updatePickers() {
       selected = select.value;
     select.replaceChildren(element("option", "", "Select a skin…"));
     select.firstElementChild.value = "";
+    const groups = new Map();
     skins
       .filter((s) => s.value !== null)
-      .sort((a, b) => b.value - a.value)
+      .sort(
+        (a, b) =>
+          compareRarity(a.rarity, b.rarity) ||
+          a.name.localeCompare(b.name) ||
+          a.weapon.localeCompare(b.weapon),
+      )
       .forEach((s) => {
-        const option = element("option", "", s.name + " · " + fmt(s.value));
+        const rarity = s.rarity || "Other";
+        if (!groups.has(rarity)) {
+          const group = element("optgroup");
+          group.label = rarity;
+          groups.set(rarity, group);
+          select.append(group);
+        }
+        const option = element(
+          "option",
+          "",
+          s.name + " (" + s.weapon + ") · " + fmt(s.value),
+        );
         option.value = skinKey(s);
-        select.append(option);
+        groups.get(rarity).append(option);
       });
     select.value = selected;
   }
@@ -1060,39 +1098,84 @@ function renderTrade() {
       totals[side] += (skin.value ?? 0) * item.quantity;
       const row = element("div", "trade-item"),
         title = element("div", "trade-item-title");
+      const description = skin.name + " (" + skin.weapon + ") you " + side;
       title.append(
         element("strong", "", skin.name),
-        element("small", "", skin.weapon),
+        element(
+          "small",
+          "",
+          skin.weapon + " · " + (skin.rarity || "Unknown rarity"),
+        ),
+        element(
+          "small",
+          "trade-unit-value",
+          skin.value === null ? "Unpriced" : fmt(skin.value) + " each",
+        ),
       );
+      const quantityControl = element("div", "trade-quantity");
       const quantity = element("input", "quantity");
       quantity.type = "number";
       quantity.min = "1";
       quantity.max = "999";
       quantity.value = item.quantity;
-      quantity.setAttribute("aria-label", "Quantity of " + skin.name);
-      quantity.addEventListener("change", () => {
+      quantity.setAttribute("aria-label", "Quantity of " + description);
+      function changeQuantity(value) {
+        const buttonHadFocus =
+          quantityControl.contains(document.activeElement) &&
+          document.activeElement.tagName === "BUTTON";
         item.quantity = Math.min(
           999,
-          Math.max(1, Number.parseInt(quantity.value, 10) || 1),
+          Math.max(1, Number.parseInt(value, 10) || 1),
         );
         renderTrade();
+        if (buttonHadFocus && (item.quantity === 1 || item.quantity === 999))
+          [...list.querySelectorAll("input")]
+            .find(
+              (input) =>
+                input.getAttribute("aria-label") ===
+                "Quantity of " + description,
+            )
+            ?.focus({ preventScroll: true });
+      }
+      quantity.addEventListener("change", () => {
+        changeQuantity(quantity.value);
       });
+      const decrease = element("button", "", "−"),
+        increase = element("button", "", "+");
+      decrease.type = increase.type = "button";
+      decrease.setAttribute(
+        "aria-label",
+        "Decrease quantity of " + description,
+      );
+      increase.setAttribute(
+        "aria-label",
+        "Increase quantity of " + description,
+      );
+      decrease.disabled = item.quantity <= 1;
+      increase.disabled = item.quantity >= 999;
+      decrease.addEventListener("click", () =>
+        changeQuantity(item.quantity - 1),
+      );
+      increase.addEventListener("click", () =>
+        changeQuantity(item.quantity + 1),
+      );
+      quantityControl.append(decrease, quantity, increase);
       const remove = element("button", "remove", "×");
       remove.type = "button";
-      remove.setAttribute("aria-label", "Remove " + skin.name);
+      remove.setAttribute("aria-label", "Remove " + description);
       remove.addEventListener("click", () => {
         trade[side].splice(index, 1);
         renderTrade();
       });
       row.append(
         title,
-        quantity,
+        remove,
+        quantityControl,
         element(
           "span",
           "value",
           skin.value === null ? "Unpriced" : fmt(skin.value * item.quantity),
         ),
-        remove,
       );
       list.append(row);
     });
@@ -1100,28 +1183,47 @@ function renderTrade() {
   }
   const delta = totals.receive - totals.give,
     hasBoth = !incomplete && trade.give.length && trade.receive.length;
+  const outcome = !hasBoth
+    ? "empty"
+    : Math.abs(delta) <= 100
+      ? "fair"
+      : delta > 100
+        ? "win"
+        : "loss";
+  $("trade-summary").dataset.state = outcome;
   $("difference").textContent = hasBoth
     ? (delta > 0 ? "+" : "") + fmt(delta)
     : "—";
-  $("difference").className =
-    "difference " +
-    (hasBoth ? (delta > 0 ? "positive" : delta < 0 ? "negative" : "") : "");
-  $("trade-verdict").textContent = !hasBoth
-    ? "Add skins to both sides"
-    : delta === 0
-      ? "Equal listed values"
-      : delta > 0
-        ? "You receive more listed value"
-        : "You give more listed value";
-  if (incomplete)
-    $("trade-verdict").textContent = "Some skins are no longer priced";
+  $("trade-verdict").textContent = {
+    empty: "—",
+    fair: "Fair",
+    win: "W",
+    loss: "L",
+  }[outcome];
+  $("trade-verdict").setAttribute(
+    "aria-label",
+    { empty: "Incomplete trade", fair: "Fair trade", win: "Win", loss: "Loss" }[
+      outcome
+    ],
+  );
+  const percent = $("trade-percent");
+  percent.hidden = !hasBoth || totals.give === 0;
+  percent.textContent = percent.hidden
+    ? ""
+    : (delta > 0 ? "+" : "") +
+      ((delta / totals.give) * 100).toFixed(1) +
+      "% of what you give";
   $("trade-note").textContent = incomplete
     ? "Remove unpriced skins to compare complete totals."
     : !hasBoth
-      ? "The difference is based on listed values."
+      ? "Add skins to both sides to compare."
       : delta === 0
         ? "Both sides total " + fmt(totals.give) + "."
-        : fmt(Math.abs(delta)) + " value difference based on the sheet.";
+        : outcome === "fair"
+          ? "Within 100 value of an even trade."
+          : outcome === "win"
+            ? "You receive more value than you give."
+            : "You give more value than you receive.";
   restoreFocus();
 }
 $("sort").addEventListener("change", () => {
@@ -1225,6 +1327,7 @@ async function loadHistory(replace = false) {
   historyRequest = controller;
   historyLoading = true;
   historyData = null;
+  chartZoom.disable();
   $("history-chart").hidden = true;
   $("history-legend").hidden = true;
   $("chart-empty").hidden = true;
@@ -1278,8 +1381,13 @@ function svgNode(tag, attrs) {
   return node;
 }
 function colorFor(rarity) {
-  return rarityColors[rarity] || "#7e858d";
+  const dark = document.documentElement.dataset.theme === "dark";
+  return (
+    (dark ? chartColors : lightChartColors)[rarity] ||
+    (dark ? "#bcc3ca" : "#343a40")
+  );
 }
+window.addEventListener("themechange", renderHistory);
 function hideSkinTooltip() {
   $("skin-tooltip").hidden = true;
 }
@@ -1362,6 +1470,7 @@ function renderHistory() {
       ` · Showing ${dates.length} evenly spaced points of ${historyData.totalPoints}; use a shorter range for detail`;
   }
   if (!dates.length || !selected.length) {
+    chartZoom.disable();
     empty.hidden = false;
     svg.hidden = true;
     legend.hidden = true;
@@ -1411,6 +1520,7 @@ function renderHistory() {
     s.plotted.filter((v) => v !== null && Number.isFinite(v)),
   );
   if (!allPoints.length) {
+    chartZoom.disable();
     empty.hidden = false;
     svg.hidden = true;
     legend.hidden = true;
@@ -1418,35 +1528,62 @@ function renderHistory() {
       "None of these skins has recorded values in the selected range.";
     return;
   }
-  const w = 1000,
-    h = 450,
-    left = 74,
-    right = 22,
-    top = 24,
-    bottom = 58;
+  const w = Math.max(320, Math.min(1000, svg.clientWidth || 1000)),
+    h = 450;
+  const plot = { ...CHART_PLOT, right: w - 22 };
+  const { left, right, top, bottom } = plot;
+  svg.setAttribute("viewBox", `0 0 ${w} ${h}`);
   const minValue =
     mode === "value"
       ? 0
       : allPoints.reduce((min, value) => Math.min(min, value), 0);
   const maxValue = allPoints.reduce((max, value) => Math.max(max, value), 0);
   const span = Math.max(1, maxValue - minValue);
-  const yMin = mode === "value" ? 0 : minValue - span * 0.08;
-  const yMax = maxValue + span * 0.08;
+  const fullYMin = mode === "value" ? 0 : minValue - span * 0.08;
+  const fullYMax = maxValue + span * 0.08;
   const firstTime = snapshotTime(dates[0][0]),
-    timeSpan = snapshotTime(dates[dates.length - 1][0]) - firstTime;
+    lastTime = snapshotTime(dates[dates.length - 1][0]);
+  const { xMin, xMax, yMin, yMax } = chartZoom.setBounds(
+    {
+      xMin: firstTime === lastTime ? firstTime - 3600000 : firstTime,
+      xMax: firstTime === lastTime ? lastTime + 3600000 : lastTime,
+      yMin: fullYMin,
+      yMax: fullYMax,
+    },
+    JSON.stringify([mode, dates.map((day) => day[0]), selected.map(skinKey)]),
+    plot,
+  );
   const x = (i) =>
     left +
-    (timeSpan > 0 ? (snapshotTime(dates[i][0]) - firstTime) / timeSpan : 0) *
-      (w - left - right);
-  const y = (v) => top + ((yMax - v) / (yMax - yMin)) * (h - top - bottom);
+    ((snapshotTime(dates[i][0]) - xMin) / (xMax - xMin)) * (right - left);
+  const y = (v) => top + ((yMax - v) / (yMax - yMin)) * (bottom - top);
+  const defs = svgNode("defs", {});
+  const clip = svgNode("clipPath", { id: "history-plot-clip" });
+  clip.append(
+    svgNode("rect", {
+      x: left,
+      y: top,
+      width: right - left,
+      height: bottom - top,
+    }),
+  );
+  defs.append(clip);
+  svg.append(defs);
+  const lines = svgNode("g", { "clip-path": "url(#history-plot-clip)" });
+  const axisFormat = new Intl.NumberFormat("en-US", {
+    maximumFractionDigits: Math.max(
+      0,
+      Math.min(6, Math.ceil(-Math.log10((yMax - yMin) / 4)) + 1),
+    ),
+  });
   for (let i = 0; i <= 4; i++) {
     const value = yMin + ((yMax - yMin) * (4 - i)) / 4,
-      pos = top + ((h - top - bottom) * i) / 4;
+      pos = top + ((bottom - top) * i) / 4;
     svg.append(
       svgNode("line", {
         x1: left,
         y1: pos,
-        x2: w - right,
+        x2: right,
         y2: pos,
         class: "chart-grid",
       }),
@@ -1458,51 +1595,75 @@ function renderHistory() {
       class: "chart-label",
     });
     label.textContent =
-      mode === "change" ? Math.round(value) + "%" : fmt(Math.round(value));
+      axisFormat.format(value) + (mode === "change" ? "%" : "");
     svg.append(label);
   }
-  const indices = [
-    ...new Set([
-      0,
-      Math.floor((dates.length - 1) / 4),
-      Math.floor((dates.length - 1) / 2),
-      Math.floor(((dates.length - 1) * 3) / 4),
-      dates.length - 1,
-    ]),
-  ];
-  indices.forEach((index) => {
+  const timeTicks = w < 600 ? 2 : 4;
+  for (let tick = 0; tick <= timeTicks; tick++) {
+    const stamp = new Date(xMin + ((xMax - xMin) * tick) / timeTicks);
+    const tickX = left + ((right - left) * tick) / timeTicks;
     const label = svgNode("text", {
-      x: x(index),
-      y: h - 18,
+      x: tickX,
+      y: h - 32,
       "text-anchor":
-        index === 0 ? "start" : index === dates.length - 1 ? "end" : "middle",
+        tick === 0 ? "start" : tick === timeTicks ? "end" : "middle",
       class: "chart-label",
     });
-    label.textContent = snapshotLabel(dates[index][0]).replace(/, 20\d{2}/, "");
+    label.textContent = stamp.toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      timeZone: "America/Detroit",
+    });
+    if (xMax - xMin < 2 * 86400000) {
+      const time = svgNode("tspan", { x: tickX, dy: 17 });
+      time.textContent = stamp.toLocaleTimeString("en-US", {
+        hour: "numeric",
+        minute: "2-digit",
+        timeZone: "America/Detroit",
+      });
+      label.append(time);
+    }
     svg.append(label);
-  });
+  }
+  svg.append(lines);
   const markerLayer = svgNode("g", {
     "aria-label": "Recorded value points",
+    "clip-path": "url(#history-plot-clip)",
   });
   series.forEach((s) => {
     let segment = [],
       segmentIndexes = [];
     function flush() {
       if (segment.length > 1) {
+        if (s.skin.rarity === "Direct Classified")
+          lines.append(
+            svgNode("polyline", {
+              points: segment.join(" "),
+              class: "chart-line-outline",
+            }),
+          );
         const path = svgNode("polyline", {
           points: segment.join(" "),
           stroke: s.color,
           class: "chart-line",
         });
-        svg.append(path);
+        lines.append(path);
         const hit = svgNode("polyline", {
           points: segment.join(" "),
           class: "chart-hit",
         });
-        const indexes = segmentIndexes.slice();
+        const indexes = segmentIndexes.filter(
+          (index) => x(index) >= left && x(index) <= right,
+        );
         const hover = (event) => {
-          const bounds = svg.getBoundingClientRect();
-          const pointerX = ((event.clientX - bounds.left) * w) / bounds.width;
+          if (!indexes.length || svg.classList.contains("chart-dragging"))
+            return;
+          const matrix = svg.getScreenCTM();
+          if (!matrix) return;
+          const pointerX = new DOMPoint(
+            event.clientX,
+            event.clientY,
+          ).matrixTransform(matrix.inverse()).x;
           const nearest = indexes.reduce(
             (best, index) =>
               Math.abs(x(index) - pointerX) < Math.abs(x(best) - pointerX)
@@ -1515,7 +1676,7 @@ function renderHistory() {
         hit.addEventListener("pointerenter", hover);
         hit.addEventListener("pointermove", hover);
         hit.addEventListener("pointerleave", hideSkinTooltip);
-        svg.append(hit);
+        lines.append(hit);
       }
       segment = [];
       segmentIndexes = [];
@@ -1534,6 +1695,8 @@ function renderHistory() {
     );
     s.plotted.forEach((value, index) => {
       if (value === null || !Number.isFinite(value)) return;
+      if (x(index) < left || x(index) > right || value < yMin || value > yMax)
+        return;
       const marker = svgNode("g", {});
       const dot = svgNode("circle", {
         cx: x(index),
@@ -1548,6 +1711,7 @@ function renderHistory() {
         r: 9,
         fill: "transparent",
         stroke: "none",
+        class: "chart-point-hit",
         tabindex: 0,
         role: "img",
         "aria-label":
@@ -1559,7 +1723,6 @@ function renderHistory() {
           " · recorded value " +
           fmt(s.values[index]),
       });
-      hit.style.cursor = "crosshair";
       hit.addEventListener("pointerenter", (event) =>
         showSkinTooltip(event, s, index, dates),
       );
@@ -1589,7 +1752,18 @@ function renderHistory() {
       swatch = element("span", "legend-swatch"),
       name = element("span", "legend-name"),
       value = element("span", "legend-value");
-    swatch.style.background = rarityAccent(s.skin.rarity, "to right");
+    const classified = s.skin.rarity === "Classified";
+    swatch.classList.toggle("classified-gradient", classified);
+    swatch.classList.toggle(
+      "direct-classified-swatch",
+      s.skin.rarity === "Direct Classified",
+    );
+    if (classified)
+      swatch.style.setProperty(
+        "--rarity",
+        rarityAccent(s.skin.rarity, "to right"),
+      );
+    else swatch.style.background = s.color;
     name.textContent = s.skin.name + " / " + s.skin.weapon;
     value.append(
       document.createTextNode(last === undefined ? "—" : fmt(last)),

@@ -3,12 +3,22 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="color-scheme" content="dark" />
+    <meta name="theme-color" content="#eeede8" />
+    <script src="/theme-init.js"></script>
     <title>Privacy & Storage · Archives' Redliner Values</title>
     <link rel="stylesheet" href="/styles.css" />
   </head>
   <body class="legal-page">
     <main class="shell legal-copy">
+      <button
+        id="theme-toggle"
+        class="theme-toggle legal-theme-toggle"
+        type="button"
+        aria-label="Dark mode off"
+        aria-pressed="false"
+      >
+        <span>Light</span><span>Dark</span>
+      </button>
       <a class="legal-back" href="/">← Return to Redliner Values</a>
       <h1>Privacy &amp; storage</h1>
       <p class="legal-date">Effective October 1, 2026</p>
@@ -88,5 +98,6 @@
         added.
       </p>
     </main>
+    <script type="module" src="/theme.js"></script>
   </body>
 </html>
