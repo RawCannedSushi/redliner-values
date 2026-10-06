@@ -62,10 +62,9 @@ export function createSkinGallery({ photoUrl, skinKey, fmt }) {
       "--parallax-rotate-y",
       "--parallax-x",
       "--parallax-y",
-      "--parallax-photo-x",
-      "--parallax-photo-y",
     ])
       parallaxCover.style.removeProperty(name);
+    parallaxCover.classList.remove("is-parallax");
     parallaxCover = null;
   }
 
@@ -79,6 +78,7 @@ export function createSkinGallery({ photoUrl, skinKey, fmt }) {
       return;
     if (parallaxCover && parallaxCover !== button) resetParallax();
     parallaxCover = button;
+    button.classList.add("is-parallax");
     const rect = button.getBoundingClientRect();
     pointerX = Math.max(
       -1,
@@ -95,8 +95,6 @@ export function createSkinGallery({ photoUrl, skinKey, fmt }) {
       button.style.setProperty("--parallax-rotate-y", `${pointerX * 7}deg`);
       button.style.setProperty("--parallax-x", `${pointerX * 5}px`);
       button.style.setProperty("--parallax-y", `${pointerY * 5}px`);
-      button.style.setProperty("--parallax-photo-x", `${pointerX * 10}px`);
-      button.style.setProperty("--parallax-photo-y", `${pointerY * 10}px`);
     });
   }
 
