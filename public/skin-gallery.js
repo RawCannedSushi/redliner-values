@@ -55,6 +55,55 @@ export function createSkinGallery({ photoUrl, skinKey, fmt }) {
   let parallaxCover = null;
   let pointerX = 0;
   let pointerY = 0;
+  let expanded = false;
+  let zoomAnimating = false;
+  let zoomTimer = 0;
+  let baseStageHeight = 0;
+
+  function zoomGeometry() {
+    const stage = $("gallery-stage");
+    const cover = coverButtons[index];
+    if (!cover) return;
+    const scale = Math.max(
+      1,
+      Math.min(
+        2,
+        (document.documentElement.clientWidth - 24) / cover.offsetWidth,
+        (window.innerHeight - 100) / cover.offsetHeight,
+      ),
+    );
+    stage.style.setProperty(
+      "--gallery-zoom-depth",
+      `${1000 * (1 - 1 / scale)}px`,
+    );
+    stage.style.setProperty(
+      "--gallery-expanded-height",
+      `${Math.max(baseStageHeight, cover.offsetHeight * scale + 44)}px`,
+    );
+  }
+
+  function setExpanded(next, immediate = false) {
+    const stage = $("gallery-stage");
+    if (expanded === next && !immediate) return;
+    const wasZooming = stage.classList.contains("is-zooming");
+    resetParallax();
+    clearTimeout(zoomTimer);
+    zoomAnimating = !immediate && !reducedMotion.matches;
+    if (next) {
+      if (!wasZooming) baseStageHeight = stage.offsetHeight;
+      zoomGeometry();
+    }
+    expanded = next;
+    stage.classList.toggle("is-expanded", expanded);
+    stage.classList.toggle("is-zooming", zoomAnimating);
+    if (!next) stage.style.setProperty("--gallery-zoom-depth", "0px");
+    if (zoomAnimating) {
+      zoomTimer = setTimeout(() => {
+        zoomAnimating = false;
+        stage.classList.remove("is-zooming");
+      }, 600);
+    }
+  }
 
   function resetParallax() {
     cancelAnimationFrame(parallaxFrame);
@@ -76,7 +125,8 @@ export function createSkinGallery({ photoUrl, skinKey, fmt }) {
       buttonIndex !== index ||
       event.pointerType !== "mouse" ||
       !finePointer.matches ||
-      reducedMotion.matches
+      reducedMotion.matches ||
+      zoomAnimating
     )
       return;
     if (parallaxCover && parallaxCover !== button) resetParallax();
@@ -103,24 +153,6 @@ export function createSkinGallery({ photoUrl, skinKey, fmt }) {
 
   reducedMotion.addEventListener("change", resetParallax);
   finePointer.addEventListener("change", resetParallax);
-
-  const imageDialog = $("gallery-image-dialog");
-  const fullImage = $("gallery-image-full");
-  fullImage.addEventListener("error", () => {
-    if (fullImage.getAttribute("src") !== PHOTO_FALLBACK)
-      fullImage.src = PHOTO_FALLBACK;
-  });
-  $("gallery-image-close").addEventListener("click", () => imageDialog.close());
-
-  function showFullImage(skin) {
-    if (imageDialog.open) return;
-    resetParallax();
-    applyRarityAccent(imageDialog, skin.rarity);
-    fullImage.alt = `${skin.name}, ${skin.weapon}`;
-    fullImage.src = photoUrl(skin);
-    imageDialog.setAttribute("aria-label", `${skin.name} full-screen image`);
-    imageDialog.showModal();
-  }
 
   function renderWeapons() {
     const container = $("gallery-weapons");
@@ -182,7 +214,7 @@ export function createSkinGallery({ photoUrl, skinKey, fmt }) {
   }
 
   function buildCovers(preferredKey) {
-    resetParallax();
+    setExpanded(false, true);
     weaponSkins = skins
       .filter((skin) => skin.weapon === weapon)
       .sort(
@@ -236,18 +268,10 @@ export function createSkinGallery({ photoUrl, skinKey, fmt }) {
       });
       button.addEventListener("click", () => {
         if (suppressClick) return;
-        setIndex(skinIndex);
-      });
-      button.addEventListener("dblclick", (event) => {
-        if (suppressClick || skinIndex !== index) return;
-        event.preventDefault();
-        showFullImage(skin);
-      });
-      button.addEventListener("keydown", (event) => {
-        if (skinIndex !== index || (event.key !== "Enter" && event.key !== " "))
-          return;
-        event.preventDefault();
-        showFullImage(skin);
+        if (skinIndex === index) {
+          setExpanded(!expanded);
+          renderCoverState();
+        } else setIndex(skinIndex);
       });
       stage.append(button);
       return button;
@@ -258,8 +282,23 @@ export function createSkinGallery({ photoUrl, skinKey, fmt }) {
   function setIndex(next) {
     const bounded = Math.min(Math.max(next, 0), weaponSkins.length - 1);
     if (bounded === index) return;
+    setExpanded(false);
     index = bounded;
     renderCurrent();
+  }
+
+  function renderCoverState() {
+    coverButtons.forEach((button, buttonIndex) => {
+      if (buttonIndex === index) {
+        button.setAttribute("aria-pressed", String(expanded));
+        button.title = expanded
+          ? "Click to return card to normal size"
+          : "Click to enlarge card";
+      } else {
+        button.removeAttribute("aria-pressed");
+        button.removeAttribute("title");
+      }
+    });
   }
 
   function renderCurrent() {
@@ -274,9 +313,8 @@ export function createSkinGallery({ photoUrl, skinKey, fmt }) {
       button.tabIndex = offset === 0 ? 0 : -1;
       if (offset === 0) button.setAttribute("aria-current", "true");
       else button.removeAttribute("aria-current");
-      button.title =
-        offset === 0 ? "Double-click or press Enter to view image" : "";
     });
+    renderCoverState();
     $("gallery-position").textContent = `${index + 1} / ${weaponSkins.length}`;
     $("gallery-prev").disabled = index === 0;
     $("gallery-next").disabled = index === weaponSkins.length - 1;
@@ -461,6 +499,7 @@ export function createSkinGallery({ photoUrl, skinKey, fmt }) {
   }
 
   $("gallery-back").addEventListener("click", () => {
+    setExpanded(false, true);
     weapon = null;
     $("gallery-explore").hidden = true;
     $("gallery-chooser").hidden = false;
@@ -489,6 +528,9 @@ export function createSkinGallery({ photoUrl, skinKey, fmt }) {
     },
     { passive: true },
   );
+  window.addEventListener("resize", () => {
+    if (expanded) zoomGeometry();
+  });
   $("gallery-stage").addEventListener(
     "touchend",
     (event) => {
@@ -511,8 +553,7 @@ export function createSkinGallery({ photoUrl, skinKey, fmt }) {
     },
     leave() {
       active = false;
-      resetParallax();
-      if (imageDialog.open) imageDialog.close();
+      setExpanded(false, true);
       historyRequest?.abort();
       historyRequest = null;
       historyPromise = null;

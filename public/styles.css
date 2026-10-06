@@ -2148,6 +2148,8 @@ footer a:hover {
   gap: 10px;
 }
 .gallery-arrow {
+  position: relative;
+  z-index: 3;
   width: 52px;
   height: 52px;
   font-size: 28px;
@@ -2171,6 +2173,24 @@ footer a:hover {
     linear-gradient(180deg, var(--panel2), var(--bg));
   perspective: 1000px;
   touch-action: pan-y;
+  transition: height 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.gallery-stage.is-expanded {
+  height: var(--gallery-expanded-height);
+}
+.gallery-stage.is-expanded,
+.gallery-stage.is-zooming {
+  overflow: visible;
+  z-index: 2;
+}
+.gallery-stage.is-zooming .gallery-cover {
+  transition:
+    transform 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.55s,
+    filter 0.55s;
+}
+.gallery-stage.is-expanded .gallery-cover:not([data-offset="0"]) {
+  opacity: 0.3;
 }
 .gallery-stage::after {
   content: "";
@@ -2248,7 +2268,7 @@ footer a:hover {
 }
 .gallery-cover[data-offset="0"] {
   z-index: 5;
-  transform: translate(-50%, -50%)
+  transform: translate(-50%, -50%) translateZ(var(--gallery-zoom-depth, 0px))
     translate3d(var(--parallax-x, 0px), var(--parallax-y, 0px), 0)
     rotateX(var(--parallax-rotate-x, 0deg))
     rotateY(var(--parallax-rotate-y, 0deg));
@@ -2274,65 +2294,6 @@ footer a:hover {
   z-index: 3;
   opacity: 0.65;
   transform: translate(calc(-50% + 340px), -50%) rotateY(-58deg) scale(0.62);
-}
-.gallery-image-dialog {
-  position: fixed;
-  inset: 0;
-  width: 100vw;
-  max-width: none;
-  height: 100dvh;
-  max-height: none;
-  margin: 0;
-  padding: 58px 20px 20px;
-  border: 0;
-  background: var(--bg);
-  color: var(--text);
-  overflow: hidden;
-}
-.gallery-image-dialog[open] {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.gallery-image-dialog::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  right: 0;
-  left: 0;
-  height: 3px;
-  background: var(--skin-paint, var(--accent));
-}
-.gallery-image-dialog::backdrop {
-  background: var(--overlay);
-}
-.gallery-image-dialog img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  min-width: 0;
-  min-height: 0;
-  object-fit: contain;
-}
-.gallery-image-close {
-  position: absolute;
-  top: 12px;
-  right: 20px;
-  z-index: 1;
-  width: 38px;
-  height: 38px;
-  border: 1px solid var(--line-strong);
-  background: var(--panel);
-  color: var(--text);
-  font-size: 28px;
-  line-height: 1;
-  cursor: pointer;
-}
-.gallery-image-close:hover,
-.gallery-image-close:focus-visible {
-  border-color: var(--skin-ink, var(--accent));
-  outline: 2px solid var(--skin-ink, var(--accent));
-  outline-offset: 2px;
 }
 .gallery-detail-grid {
   display: grid;
@@ -2515,7 +2476,9 @@ footer a:hover {
 }
 @media (prefers-reduced-motion: reduce) {
   .gallery-cover,
-  .gallery-weapon {
+  .gallery-weapon,
+  .gallery-stage,
+  .gallery-stage.is-zooming .gallery-cover {
     transition: none;
   }
 }
@@ -3010,8 +2973,7 @@ footer a:hover {
 /* Keep translucent skin pixels from washing out against light panels. */
 :root[data-theme="light"] .trade-item-photo,
 :root[data-theme="light"] .inventory-art,
-:root[data-theme="light"] .gallery-cover-art,
-:root[data-theme="light"] .gallery-image-dialog {
+:root[data-theme="light"] .gallery-cover-art {
   background: #202327;
 }
 :root[data-theme="light"] .gallery-weapon::after {
@@ -3031,7 +2993,6 @@ footer a:hover {
 
 .gallery-weapon.classified-gradient .gallery-weapon-accent,
 .gallery-cover.classified-gradient::before,
-.gallery-image-dialog.classified-gradient::before,
 #gallery-explore.classified-gradient .gallery-skin-details::before,
 .skin-tooltip.classified-gradient::before,
 .trade-picker-option.classified-gradient[aria-pressed="true"]::before,
@@ -3042,7 +3003,6 @@ footer a:hover {
 @media (prefers-reduced-motion: reduce) {
   .gallery-weapon.classified-gradient .gallery-weapon-accent,
   .gallery-cover.classified-gradient::before,
-  .gallery-image-dialog.classified-gradient::before,
   #gallery-explore.classified-gradient .gallery-skin-details::before,
   .skin-tooltip.classified-gradient::before,
   .trade-picker-option.classified-gradient[aria-pressed="true"]::before,
