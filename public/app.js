@@ -1062,35 +1062,79 @@ function render() {
   });
   container.append(fragment);
 }
-function updatePickers(onlySide) {
-  for (const side of onlySide ? [onlySide] : ["give", "receive"]) {
-    const select = $(side + "-select"),
-      selected = select.value,
-      terms = $(side + "-search")
-        .value.trim()
-        .toLocaleLowerCase()
-        .split(/\s+/);
+function tradeSkinChoices() {
+  return skins
+    .filter((s) => s.value !== null)
+    .sort(
+      (a, b) =>
+        compareRarity(a.rarity, b.rarity) ||
+        a.name.localeCompare(b.name) ||
+        a.weapon.localeCompare(b.weapon),
+    );
+}
+function updatePickerLabel(side) {
+  const select = $(side + "-select");
+  const option = select.options[select.selectedIndex];
+  $(side + "-selection").textContent = option?.value
+    ? option.textContent
+    : "Select a skin…";
+}
+function renderPickerOptions(side) {
+  const select = $(side + "-select");
+  const options = $(side + "-options");
+  const terms = $(side + "-search")
+    .value.trim()
+    .toLocaleLowerCase()
+    .split(/\s+/);
+  options.replaceChildren();
+  let group;
+  let lastRarity;
+  let count = 0;
+  for (const skin of tradeSkinChoices()) {
+    const searchable = [skin.name, skin.weapon, skin.rarity, skin.collection]
+      .join(" ")
+      .toLocaleLowerCase();
+    if (!terms.every((term) => searchable.includes(term))) continue;
+    const rarity = skin.rarity || "Other";
+    if (rarity !== lastRarity) {
+      group = element("div", "trade-picker-group");
+      group.setAttribute("role", "group");
+      group.setAttribute("aria-label", rarity);
+      const heading = element("div", "trade-picker-group-label", rarity);
+      heading.setAttribute("aria-hidden", "true");
+      group.append(heading);
+      options.append(group);
+      lastRarity = rarity;
+    }
+    const key = skinKey(skin);
+    const choice = element(
+      "button",
+      "trade-picker-option",
+      skin.name + " (" + skin.weapon + ") · " + fmt(skin.value),
+    );
+    choice.type = "button";
+    if (select.value === key) choice.setAttribute("aria-current", "true");
+    choice.addEventListener("click", () => {
+      select.value = key;
+      updatePickerLabel(side);
+      closeTradePicker(side);
+      $(side + "-trigger").focus();
+    });
+    group.append(choice);
+    count++;
+  }
+  if (!count)
+    options.append(element("div", "trade-picker-empty", "No matching skins"));
+}
+function updatePickers() {
+  const choices = tradeSkinChoices();
+  for (const side of ["give", "receive"]) {
+    const select = $(side + "-select");
+    const selected = select.value;
     select.replaceChildren(element("option", "", "Select a skin…"));
     select.firstElementChild.value = "";
     const groups = new Map();
-    const matches = skins
-      .filter(
-        (s) =>
-          s.value !== null &&
-          terms.every((term) =>
-            [s.name, s.weapon, s.rarity, s.collection]
-              .join(" ")
-              .toLocaleLowerCase()
-              .includes(term),
-          ),
-      )
-      .sort(
-        (a, b) =>
-          compareRarity(a.rarity, b.rarity) ||
-          a.name.localeCompare(b.name) ||
-          a.weapon.localeCompare(b.weapon),
-      );
-    matches.forEach((s) => {
+    choices.forEach((s) => {
       const rarity = s.rarity || "Other";
       if (!groups.has(rarity)) {
         const group = element("optgroup");
@@ -1106,15 +1150,16 @@ function updatePickers(onlySide) {
       option.value = skinKey(s);
       groups.get(rarity).append(option);
     });
-    if (!matches.length) {
-      const empty = element("option", "", "No matching skins");
-      empty.value = "";
-      empty.disabled = true;
-      select.append(empty);
-    }
     select.value = selected;
     if (select.selectedIndex < 0) select.selectedIndex = 0;
+    updatePickerLabel(side);
+    renderPickerOptions(side);
   }
+}
+function closeTradePicker(side) {
+  $(side + "-panel").hidden = true;
+  $(side + "-trigger").setAttribute("aria-expanded", "false");
+  $(side + "-search").value = "";
 }
 function renderTrade() {
   const restoreFocus = rememberControlFocus($("trade"));
@@ -1277,12 +1322,58 @@ $("clear").addEventListener("click", () => {
   renderHistory();
 });
 $("refresh").addEventListener("click", () => load(true));
-for (const side of ["give", "receive"])
-  $(side + "-search").addEventListener("input", () => updatePickers(side));
-document.querySelectorAll(".trade-picker button").forEach((button) =>
+for (const side of ["give", "receive"]) {
+  const trigger = $(side + "-trigger");
+  const panel = $(side + "-panel");
+  const search = $(side + "-search");
+  trigger.addEventListener("click", () => {
+    if (!panel.hidden) {
+      closeTradePicker(side);
+      return;
+    }
+    closeTradePicker(side === "give" ? "receive" : "give");
+    renderPickerOptions(side);
+    panel.hidden = false;
+    trigger.setAttribute("aria-expanded", "true");
+    search.focus();
+  });
+  search.addEventListener("input", () => renderPickerOptions(side));
+  panel.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      event.preventDefault();
+      event.stopPropagation();
+      closeTradePicker(side);
+      trigger.focus();
+      return;
+    }
+    const choices = [...panel.querySelectorAll(".trade-picker-option")];
+    if (event.key === "Enter" && document.activeElement === search) {
+      if (choices.length === 1) {
+        event.preventDefault();
+        choices[0].click();
+      }
+      return;
+    }
+    if (event.key !== "ArrowDown" && event.key !== "ArrowUp") return;
+    event.preventDefault();
+    const focusable = [search, ...choices];
+    const direction = event.key === "ArrowDown" ? 1 : -1;
+    const index = focusable.indexOf(document.activeElement);
+    focusable[
+      (index + direction + focusable.length) % focusable.length
+    ].focus();
+  });
+}
+document.addEventListener("pointerdown", (event) => {
+  for (const side of ["give", "receive"])
+    if (!$(side + "-trigger").parentElement.contains(event.target))
+      closeTradePicker(side);
+});
+document.querySelectorAll(".trade-add").forEach((button) =>
   button.addEventListener("click", () => {
     const side = button.dataset.side,
       key = $(side + "-select").value;
+    closeTradePicker(side);
     if (!$(side + "-select").value) return;
     const existing = trade[side].find((item) => item.key === key);
     if (existing) existing.quantity = Math.min(999, existing.quantity + 1);
@@ -1293,6 +1384,10 @@ document.querySelectorAll(".trade-picker button").forEach((button) =>
 let historyLoading = false;
 function switchView(view) {
   hideSkinTooltip();
+  if (view !== "trade") {
+    closeTradePicker("give");
+    closeTradePicker("receive");
+  }
   activeView = view;
   Object.entries(viewPanels).forEach(([name, id]) => {
     $(id).hidden = name !== view;

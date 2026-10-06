@@ -428,23 +428,43 @@
         <div class="trade-grid">
           <div class="trade-side">
             <div class="trade-side-heading">
-              <h3>You give</h3>
+              <h3 id="give-heading">You give</h3>
               <strong id="give-total">0</strong>
             </div>
             <div class="trade-picker">
-              <input
-                id="give-search"
-                type="search"
-                aria-label="Search skins you give"
-                placeholder="Search skins…"
-                autocomplete="off"
-              />
               <div class="trade-picker-row">
-                <select
-                  id="give-select"
-                  aria-label="Select a skin you give"
-                ></select
-                ><button
+                <div class="trade-picker-menu">
+                  <select id="give-select" hidden></select>
+                  <button
+                    id="give-trigger"
+                    class="trade-select-trigger"
+                    type="button"
+                    aria-expanded="false"
+                    aria-controls="give-panel"
+                    aria-labelledby="give-heading give-selection"
+                  >
+                    <span id="give-selection">Select a skin…</span>
+                    <span class="trade-chevron" aria-hidden="true"></span>
+                  </button>
+                  <div
+                    id="give-panel"
+                    class="trade-picker-panel"
+                    role="region"
+                    aria-label="Choose a skin you give"
+                    hidden
+                  >
+                    <input
+                      id="give-search"
+                      type="search"
+                      aria-label="Search skins you give"
+                      placeholder="Search skins…"
+                      autocomplete="off"
+                    />
+                    <div id="give-options" class="trade-picker-options"></div>
+                  </div>
+                </div>
+                <button
+                  class="trade-add"
                   data-side="give"
                   type="button"
                   aria-label="Add skin you give"
@@ -473,23 +493,46 @@
           </div>
           <div class="trade-side receive">
             <div class="trade-side-heading">
-              <h3>You receive</h3>
+              <h3 id="receive-heading">You receive</h3>
               <strong id="receive-total">0</strong>
             </div>
             <div class="trade-picker">
-              <input
-                id="receive-search"
-                type="search"
-                aria-label="Search skins you receive"
-                placeholder="Search skins…"
-                autocomplete="off"
-              />
               <div class="trade-picker-row">
-                <select
-                  id="receive-select"
-                  aria-label="Select a skin you receive"
-                ></select
-                ><button
+                <div class="trade-picker-menu">
+                  <select id="receive-select" hidden></select>
+                  <button
+                    id="receive-trigger"
+                    class="trade-select-trigger"
+                    type="button"
+                    aria-expanded="false"
+                    aria-controls="receive-panel"
+                    aria-labelledby="receive-heading receive-selection"
+                  >
+                    <span id="receive-selection">Select a skin…</span>
+                    <span class="trade-chevron" aria-hidden="true"></span>
+                  </button>
+                  <div
+                    id="receive-panel"
+                    class="trade-picker-panel"
+                    role="region"
+                    aria-label="Choose a skin you receive"
+                    hidden
+                  >
+                    <input
+                      id="receive-search"
+                      type="search"
+                      aria-label="Search skins you receive"
+                      placeholder="Search skins…"
+                      autocomplete="off"
+                    />
+                    <div
+                      id="receive-options"
+                      class="trade-picker-options"
+                    ></div>
+                  </div>
+                </div>
+                <button
+                  class="trade-add"
                   data-side="receive"
                   type="button"
                   aria-label="Add skin you receive"
