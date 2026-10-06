@@ -10,6 +10,7 @@ import {
   createGoogleDriveSync,
   checkedInventory,
 } from "./google-drive-sync.js";
+import { SKIN_PHOTO_FILES } from "./skin-photo-manifest.js";
 
 if (/^https:\/\/github\.com\/[\w.-]+\/[\w.-]+\/?$/.test(SOURCE_REPOSITORY)) {
   document.getElementById("source-link").href = SOURCE_REPOSITORY;
@@ -661,6 +662,40 @@ try {
 function skinKey(skin) {
   return skin.weapon + "\u001f" + skin.name;
 }
+const PHOTO_FALLBACK = "/skin-photos/unknown.png";
+function normalizePhotoPart(value) {
+  return String(value ?? "")
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]/gi, "")
+    .toLowerCase();
+}
+const skinPhotoPaths = new Map(
+  SKIN_PHOTO_FILES.map((file) => {
+    const stem = file.slice(0, -4);
+    const separator = stem.lastIndexOf("-");
+    const key =
+      normalizePhotoPart(stem.slice(0, separator)) +
+      "\u001f" +
+      normalizePhotoPart(stem.slice(separator + 1));
+    return [key, "/skin-photos/" + encodeURIComponent(file)];
+  }),
+);
+function skinPhoto(skin) {
+  const image = element("img", "skin-photo");
+  const key =
+    normalizePhotoPart(skin.name) + "\u001f" + normalizePhotoPart(skin.weapon);
+  image.src = skinPhotoPaths.get(key) || PHOTO_FALLBACK;
+  image.alt = "";
+  image.loading = "lazy";
+  image.decoding = "async";
+  image.draggable = false;
+  image.addEventListener("error", () => {
+    if (image.getAttribute("src") !== PHOTO_FALLBACK)
+      image.src = PHOTO_FALLBACK;
+  });
+  return image;
+}
 function saveInventory({
   sync = true,
   updatedAt = new Date().toISOString(),
@@ -849,7 +884,7 @@ function renderInventory() {
     card.classList.toggle("classified-gradient", s.rarity === "Classified");
     card.style.setProperty("--rarity", rarityAccent(s.rarity, "to right"));
     const art = element("div", "inventory-art");
-    art.append(element("span", "art-placeholder", s.weapon));
+    art.append(skinPhoto(s));
     const remove = element("button", "inventory-delete");
     remove.type = "button";
     remove.setAttribute("aria-label", "Delete " + s.name + " from inventory");
@@ -1200,7 +1235,10 @@ function renderTrade() {
       if (skin.value === null) incomplete = true;
       totals[side] += (skin.value ?? 0) * item.quantity;
       const row = element("div", "trade-item"),
-        title = element("div", "trade-item-title");
+        title = element("div", "trade-item-title"),
+        photo = element("div", "trade-item-photo"),
+        controls = element("div", "trade-item-controls");
+      photo.append(skinPhoto(skin));
       const description = skin.name + " (" + skin.weapon + ") you " + side;
       title.append(
         element("strong", "", skin.name),
@@ -1270,9 +1308,7 @@ function renderTrade() {
         trade[side].splice(index, 1);
         renderTrade();
       });
-      row.append(
-        title,
-        remove,
+      controls.append(
         quantityControl,
         element(
           "span",
@@ -1280,6 +1316,7 @@ function renderTrade() {
           skin.value === null ? "Unpriced" : fmt(skin.value * item.quantity),
         ),
       );
+      row.append(photo, title, remove, controls);
       list.append(row);
     });
     $(side + "-total").textContent = fmt(totals[side]);

@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "wrangler dev --test-scheduled",
+    "dev": "npm run build && wrangler dev --test-scheduled",
     "build": "node scripts/build.mjs",
     "configure": "node scripts/configure.mjs",
     "configure:google": "node scripts/configure-google.mjs",
