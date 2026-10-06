@@ -1023,6 +1023,36 @@ footer a:hover {
 .chart-zoom-tools button:not(:disabled):hover {
   border-color: var(--text);
 }
+.chart-zoom-slider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 42px;
+  width: min(240px, 100%);
+  padding: 0 12px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  color: var(--muted);
+  font:
+    600 11px ui-monospace,
+    Consolas,
+    monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.chart-zoom-slider:focus-within {
+  border-color: var(--accent);
+}
+.chart-zoom-slider input {
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  accent-color: var(--accent);
+  cursor: ew-resize;
+}
+.chart-zoom-slider input:disabled {
+  cursor: default;
+}
 #chart-zoom-status {
   color: var(--muted);
   font-size: 13px;

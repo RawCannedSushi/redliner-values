@@ -530,8 +530,19 @@
           role="group"
           aria-label="Chart zoom controls"
         >
-          <button id="chart-zoom-in" type="button" disabled>+ Zoom in</button>
-          <button id="chart-zoom-out" type="button" disabled>− Zoom out</button>
+          <label class="chart-zoom-slider">
+            <span>Zoom</span>
+            <input
+              id="chart-zoom-slider"
+              type="range"
+              min="0"
+              max="1000"
+              step="1"
+              value="0"
+              aria-label="Chart zoom level"
+              disabled
+            />
+          </label>
           <button id="chart-zoom-reset" type="button" disabled>
             Reset view
           </button>
@@ -548,9 +559,11 @@
               ⓘ
             </summary>
             <div id="chart-zoom-help" class="context-help-panel">
-              Zoom in with the buttons, then drag to pan. Choose “Drag to zoom”
-              to draw a box around values. Keyboard: + / − to zoom, arrows to
-              pan, 0 to reset.
+              Move the pointer over the chart and hold Ctrl while scrolling to
+              zoom around that point. The slider zooms around the last point you
+              hovered, or the center if you have not hovered yet. Drag to pan,
+              or choose “Drag to zoom” to draw a box. Keyboard: + / − to zoom,
+              arrows to pan, 0 to reset.
             </div>
           </details>
         </div>
