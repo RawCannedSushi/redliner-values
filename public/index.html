@@ -248,21 +248,25 @@
             </div>
           </details>
         </div>
-        <div class="inventory-sort-control">
-          <label for="inventory-sort">Sort by</label>
-          <select id="inventory-sort">
-            <option value="high">Value: high to low</option>
-            <option value="low">Value: low to high</option>
-            <option value="demand">Demand</option>
-            <option value="alphabetical">Alphabetical</option>
-          </select>
+        <div class="inventory-toolbar">
+          <p class="inventory-total-value">
+            Total Value: <strong id="inventory-total">0</strong>
+          </p>
+          <div class="inventory-sort-control">
+            <label for="inventory-sort">Sort by</label>
+            <select id="inventory-sort">
+              <option value="high">Value: high to low</option>
+              <option value="low">Value: low to high</option>
+              <option value="demand">Demand</option>
+              <option value="alphabetical">Alphabetical</option>
+            </select>
+          </div>
         </div>
         <div id="inventory-grid" class="inventory-grid"></div>
         <div class="inventory-footer">
           <span
             ><strong id="inventory-count">0</strong> items ·
-            <strong id="inventory-unique">0</strong> skins · Listed value
-            <strong id="inventory-total">0</strong></span
+            <strong id="inventory-unique">0</strong> skins</span
           >
           <details class="inventory-backup">
             <summary>Inventory backup</summary>

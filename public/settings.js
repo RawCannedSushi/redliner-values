@@ -1,5 +1,6 @@
-export const SITE_MESSAGE =
-  "The new classified and all the directs now all have values! Happy trading!";
+export const SITE_MESSAGE = "Want to influence the value list? Join the";
+export const SITE_MESSAGE_LINK_TEXT = "archives® Discord server!";
+export const SITE_MESSAGE_LINK_URL = "https://discord.gg/F6DJWXfkHD";
 
 export const SOURCE_REPOSITORY =
   "https://github.com/RawCannedSushi/redliner-values.git";

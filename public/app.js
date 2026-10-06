@@ -1,5 +1,7 @@
 import {
   SITE_MESSAGE,
+  SITE_MESSAGE_LINK_TEXT,
+  SITE_MESSAGE_LINK_URL,
   SOURCE_REPOSITORY,
   GOOGLE_DRIVE_CLIENT_ID,
 } from "./settings.js";
@@ -348,7 +350,18 @@ const SNAPSHOT_ROWS = [
 ];
 const $ = (id) => document.getElementById(id);
 const announcement = String(SITE_MESSAGE || "").trim();
-$("site-message-text").textContent = announcement;
+const announcementText = $("site-message-text");
+if (announcement) {
+  const discordLink = document.createElement("a");
+  discordLink.href = SITE_MESSAGE_LINK_URL;
+  discordLink.textContent = SITE_MESSAGE_LINK_TEXT;
+  discordLink.target = "_blank";
+  discordLink.rel = "noopener noreferrer";
+  announcementText.replaceChildren(
+    document.createTextNode(`${announcement} `),
+    discordLink,
+  );
+}
 $("site-message").hidden = !announcement;
 const numberFormat = new Intl.NumberFormat("en-US");
 const fmt = (n) => numberFormat.format(n);
@@ -835,6 +848,35 @@ $("inventory-add-form").addEventListener("submit", (event) => {
   pendingInventorySkins.clear();
   $("inventory-dialog").close();
 });
+let displayedInventoryTotal;
+let inventoryTotalTarget;
+let inventoryTotalFrame;
+function updateInventoryTotal(total) {
+  if (total === inventoryTotalTarget) return;
+  inventoryTotalTarget = total;
+  cancelAnimationFrame(inventoryTotalFrame);
+  const totalText = $("inventory-total");
+  if (
+    displayedInventoryTotal === undefined ||
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches
+  ) {
+    displayedInventoryTotal = total;
+    totalText.textContent = fmt(total);
+    return;
+  }
+  const from = displayedInventoryTotal;
+  const startedAt = performance.now();
+  const duration = 500;
+  function tick(now) {
+    const progress = Math.min((now - startedAt) / duration, 1);
+    const eased = 1 - (1 - progress) ** 3;
+    displayedInventoryTotal = from + (total - from) * eased;
+    totalText.textContent = fmt(Math.round(displayedInventoryTotal));
+    if (progress < 1) inventoryTotalFrame = requestAnimationFrame(tick);
+    else displayedInventoryTotal = total;
+  }
+  inventoryTotalFrame = requestAnimationFrame(tick);
+}
 function renderInventory() {
   const grid = $("inventory-grid");
   const restoreFocus = rememberControlFocus(grid);
@@ -845,7 +887,7 @@ function renderInventory() {
     entries.reduce((sum, [, qty]) => sum + qty, 0),
   );
   $("inventory-unique").textContent = fmt(entries.length);
-  $("inventory-total").textContent = fmt(
+  updateInventoryTotal(
     entries.reduce(
       (sum, [key, qty]) => sum + (byKey.get(key)?.value || 0) * qty,
       0,
