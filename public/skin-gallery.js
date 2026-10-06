@@ -46,6 +46,62 @@ export function createSkinGallery({ photoUrl, skinKey, fmt }) {
   let active = false;
   let swipeStart = null;
   let suppressClick = false;
+  const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)");
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  let parallaxFrame = 0;
+  let parallaxCover = null;
+  let pointerX = 0;
+  let pointerY = 0;
+
+  function resetParallax() {
+    cancelAnimationFrame(parallaxFrame);
+    parallaxFrame = 0;
+    if (!parallaxCover) return;
+    for (const name of [
+      "--parallax-rotate-x",
+      "--parallax-rotate-y",
+      "--parallax-x",
+      "--parallax-y",
+      "--parallax-photo-x",
+      "--parallax-photo-y",
+    ])
+      parallaxCover.style.removeProperty(name);
+    parallaxCover = null;
+  }
+
+  function moveParallax(event, button, buttonIndex) {
+    if (
+      buttonIndex !== index ||
+      event.pointerType !== "mouse" ||
+      !finePointer.matches ||
+      reducedMotion.matches
+    )
+      return;
+    if (parallaxCover && parallaxCover !== button) resetParallax();
+    parallaxCover = button;
+    const rect = button.getBoundingClientRect();
+    pointerX = Math.max(
+      -1,
+      Math.min(1, (2 * (event.clientX - rect.left)) / rect.width - 1),
+    );
+    pointerY = Math.max(
+      -1,
+      Math.min(1, (2 * (event.clientY - rect.top)) / rect.height - 1),
+    );
+    if (parallaxFrame) return;
+    parallaxFrame = requestAnimationFrame(() => {
+      parallaxFrame = 0;
+      button.style.setProperty("--parallax-rotate-x", `${-pointerY * 6}deg`);
+      button.style.setProperty("--parallax-rotate-y", `${pointerX * 7}deg`);
+      button.style.setProperty("--parallax-x", `${pointerX * 5}px`);
+      button.style.setProperty("--parallax-y", `${pointerY * 5}px`);
+      button.style.setProperty("--parallax-photo-x", `${pointerX * 10}px`);
+      button.style.setProperty("--parallax-photo-y", `${pointerY * 10}px`);
+    });
+  }
+
+  reducedMotion.addEventListener("change", resetParallax);
+  finePointer.addEventListener("change", resetParallax);
 
   function renderWeapons() {
     const container = $("gallery-weapons");
@@ -95,6 +151,7 @@ export function createSkinGallery({ photoUrl, skinKey, fmt }) {
   }
 
   function buildCovers(preferredKey) {
+    resetParallax();
     weaponSkins = skins
       .filter((skin) => skin.weapon === weapon)
       .sort(
@@ -129,9 +186,19 @@ export function createSkinGallery({ photoUrl, skinKey, fmt }) {
       button.type = "button";
       button.className = "gallery-cover";
       button.setAttribute("aria-label", `${skin.name}, ${skin.weapon}`);
+      const inner = document.createElement("span");
+      inner.className = "gallery-cover-inner";
       const label = document.createElement("span");
+      label.className = "gallery-cover-label";
       label.textContent = skin.name;
-      button.append(photoFor(skin, photoUrl), label);
+      inner.append(photoFor(skin, photoUrl), label);
+      button.append(inner);
+      button.addEventListener("pointermove", (event) =>
+        moveParallax(event, button, skinIndex),
+      );
+      button.addEventListener("pointerleave", () => {
+        if (parallaxCover === button) resetParallax();
+      });
       button.addEventListener("click", () => {
         if (suppressClick) return;
         setIndex(skinIndex);
@@ -150,6 +217,7 @@ export function createSkinGallery({ photoUrl, skinKey, fmt }) {
   }
 
   function renderCurrent() {
+    resetParallax();
     const skin = weaponSkins[index];
     if (!skin) return;
     coverButtons.forEach((button, buttonIndex) => {
@@ -394,6 +462,7 @@ export function createSkinGallery({ photoUrl, skinKey, fmt }) {
     },
     leave() {
       active = false;
+      resetParallax();
       historyRequest?.abort();
       historyRequest = null;
       historyPromise = null;
