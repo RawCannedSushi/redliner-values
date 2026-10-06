@@ -2090,6 +2090,8 @@ footer a:hover {
   cursor: pointer;
 }
 .gallery-toolbar button {
+  position: relative;
+  z-index: 3;
   padding: 10px 13px;
   font:
     700 15px "Archivo Narrow",
@@ -2120,6 +2122,8 @@ footer a:hover {
     monospace;
 }
 .gallery-jump {
+  position: relative;
+  z-index: 3;
   display: grid;
   gap: 4px;
   color: var(--muted);
@@ -2173,10 +2177,6 @@ footer a:hover {
     linear-gradient(180deg, var(--panel2), var(--bg));
   perspective: 1000px;
   touch-action: pan-y;
-  transition: height 0.55s cubic-bezier(0.22, 1, 0.36, 1);
-}
-.gallery-stage.is-expanded {
-  height: var(--gallery-expanded-height);
 }
 .gallery-stage.is-expanded,
 .gallery-stage.is-zooming {
@@ -2477,7 +2477,6 @@ footer a:hover {
 @media (prefers-reduced-motion: reduce) {
   .gallery-cover,
   .gallery-weapon,
-  .gallery-stage,
   .gallery-stage.is-zooming .gallery-cover {
     transition: none;
   }

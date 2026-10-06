@@ -58,7 +58,6 @@ export function createSkinGallery({ photoUrl, skinKey, fmt }) {
   let expanded = false;
   let zoomAnimating = false;
   let zoomTimer = 0;
-  let baseStageHeight = 0;
 
   function zoomGeometry() {
     const stage = $("gallery-stage");
@@ -76,23 +75,15 @@ export function createSkinGallery({ photoUrl, skinKey, fmt }) {
       "--gallery-zoom-depth",
       `${1000 * (1 - 1 / scale)}px`,
     );
-    stage.style.setProperty(
-      "--gallery-expanded-height",
-      `${Math.max(baseStageHeight, cover.offsetHeight * scale + 44)}px`,
-    );
   }
 
   function setExpanded(next, immediate = false) {
     const stage = $("gallery-stage");
     if (expanded === next && !immediate) return;
-    const wasZooming = stage.classList.contains("is-zooming");
     resetParallax();
     clearTimeout(zoomTimer);
     zoomAnimating = !immediate && !reducedMotion.matches;
-    if (next) {
-      if (!wasZooming) baseStageHeight = stage.offsetHeight;
-      zoomGeometry();
-    }
+    if (next) zoomGeometry();
     expanded = next;
     stage.classList.toggle("is-expanded", expanded);
     stage.classList.toggle("is-zooming", zoomAnimating);
