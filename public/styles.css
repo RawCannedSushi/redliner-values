@@ -2122,6 +2122,37 @@ footer a:hover {
   color: var(--muted);
   font-size: 13px;
 }
+.inventory-image-export {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+.inventory-image-export button {
+  padding: 10px 15px;
+  border: 1px solid var(--accent);
+  border-radius: 4px;
+  background: var(--panel);
+  color: var(--text);
+  font:
+    700 16px "Archivo Narrow",
+    sans-serif;
+  cursor: pointer;
+}
+.inventory-image-export button:not(:disabled):hover,
+.inventory-image-export button:not(:disabled):focus-visible {
+  background: var(--accent);
+  color: var(--accent-on);
+}
+.inventory-image-export button:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+.inventory-image-export span {
+  color: var(--muted);
+  font-size: 13px;
+}
 .inventory-backup summary {
   cursor: pointer;
 }

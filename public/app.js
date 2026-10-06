@@ -13,6 +13,7 @@ import {
   checkedInventory,
 } from "./google-drive-sync.js";
 import { SKIN_PHOTO_FILES } from "./skin-photo-manifest.js";
+import { createInventoryPng } from "./inventory-image.js";
 
 if (/^https:\/\/github\.com\/[\w.-]+\/[\w.-]+\/?$/.test(SOURCE_REPOSITORY)) {
   document.getElementById("source-link").href = SOURCE_REPOSITORY;
@@ -696,9 +697,7 @@ const skinPhotoPaths = new Map(
 );
 function skinPhoto(skin) {
   const image = element("img", "skin-photo");
-  const key =
-    normalizePhotoPart(skin.name) + "\u001f" + normalizePhotoPart(skin.weapon);
-  image.src = skinPhotoPaths.get(key) || PHOTO_FALLBACK;
+  image.src = skinPhotoUrl(skin);
   image.alt = "";
   image.loading = "lazy";
   image.decoding = "async";
@@ -708,6 +707,11 @@ function skinPhoto(skin) {
       image.src = PHOTO_FALLBACK;
   });
   return image;
+}
+function skinPhotoUrl(skin) {
+  const key =
+    normalizePhotoPart(skin.name) + "\u001f" + normalizePhotoPart(skin.weapon);
+  return skinPhotoPaths.get(key) || PHOTO_FALLBACK;
 }
 function saveInventory({
   sync = true,
@@ -877,38 +881,28 @@ function updateInventoryTotal(total) {
   }
   inventoryTotalFrame = requestAnimationFrame(tick);
 }
-function renderInventory() {
-  const grid = $("inventory-grid");
-  const restoreFocus = rememberControlFocus(grid);
-  grid.replaceChildren();
+function inventoryItems() {
   const byKey = new Map(skins.map((s) => [skinKey(s), s]));
-  const entries = Object.entries(inventory).filter(([, qty]) => qty > 0);
-  $("inventory-count").textContent = fmt(
-    entries.reduce((sum, [, qty]) => sum + qty, 0),
-  );
-  $("inventory-unique").textContent = fmt(entries.length);
-  updateInventoryTotal(
-    entries.reduce(
-      (sum, [key, qty]) => sum + (byKey.get(key)?.value || 0) * qty,
-      0,
-    ),
-  );
-  const rows = entries.map(([key]) => {
-    const [weapon, name] = key.split("\u001f");
-    return (
-      byKey.get(key) || {
-        weapon,
-        name,
-        rarity: "Unknown",
-        collection: "No longer listed",
-        value: null,
-      }
-    );
-  });
+  const items = Object.entries(inventory)
+    .filter(([, qty]) => qty > 0)
+    .map(([key, qty]) => {
+      const [weapon, name] = key.split("\u001f");
+      return {
+        key,
+        qty,
+        skin: byKey.get(key) || {
+          weapon,
+          name,
+          rarity: "Unknown",
+          collection: "No longer listed",
+          value: null,
+        },
+      };
+    });
   const byName = (a, b) =>
     a.name.localeCompare(b.name) || a.weapon.localeCompare(b.weapon);
   const sort = $("inventory-sort").value;
-  rows.sort((a, b) => {
+  items.sort(({ skin: a }, { skin: b }) => {
     if (sort === "low")
       return (a.value ?? Infinity) - (b.value ?? Infinity) || byName(a, b);
     if (sort === "demand")
@@ -920,9 +914,24 @@ function renderInventory() {
     if (sort === "alphabetical") return byName(a, b);
     return (b.value ?? -1) - (a.value ?? -1) || byName(a, b);
   });
-  rows.forEach((s) => {
-    const key = skinKey(s),
-      card = element("article", "inventory-card");
+  return items;
+}
+let inventoryImageBusy = false;
+function renderInventory() {
+  const grid = $("inventory-grid");
+  const restoreFocus = rememberControlFocus(grid);
+  grid.replaceChildren();
+  const items = inventoryItems();
+  $("inventory-count").textContent = fmt(
+    items.reduce((sum, { qty }) => sum + qty, 0),
+  );
+  $("inventory-unique").textContent = fmt(items.length);
+  updateInventoryTotal(
+    items.reduce((sum, { skin, qty }) => sum + (skin.value || 0) * qty, 0),
+  );
+  $("inventory-export-png").disabled = !items.length || inventoryImageBusy;
+  items.forEach(({ skin: s, key, qty }) => {
+    const card = element("article", "inventory-card");
     card.classList.toggle("classified-gradient", s.rarity === "Classified");
     card.style.setProperty("--rarity", rarityAccent(s.rarity, "to right"));
     const art = element("div", "inventory-art");
@@ -963,7 +972,7 @@ function renderInventory() {
     );
     card.append(
       art,
-      element("span", "inventory-quantity", "x" + inventory[key]),
+      element("span", "inventory-quantity", "x" + qty),
       remove,
       body,
     );
@@ -989,6 +998,48 @@ $("inventory-export").addEventListener("click", () => {
   link.download = "redliner-inventory.json";
   link.click();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
+});
+$("inventory-export-png").addEventListener("click", async () => {
+  const items = inventoryItems();
+  if (!items.length || inventoryImageBusy) return;
+  const button = $("inventory-export-png");
+  const status = $("inventory-image-status");
+  inventoryImageBusy = true;
+  button.disabled = true;
+  button.textContent = "Creating PNG…";
+  status.textContent = "";
+  try {
+    const total = items.reduce(
+      (sum, { skin, qty }) => sum + (skin.value || 0) * qty,
+      0,
+    );
+    const blob = await createInventoryPng({
+      items,
+      total,
+      skinPhotoUrl,
+      fallbackPhotoUrl: PHOTO_FALLBACK,
+    });
+    const url = URL.createObjectURL(blob);
+    const link = element("a");
+    const date = new Date();
+    const dateStamp = [
+      date.getFullYear(),
+      String(date.getMonth() + 1).padStart(2, "0"),
+      String(date.getDate()).padStart(2, "0"),
+    ].join("-");
+    link.href = url;
+    link.download = `archives-inventory-${dateStamp}.png`;
+    document.body.append(link);
+    link.click();
+    link.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 60_000);
+  } catch (error) {
+    status.textContent = "Couldn't create the PNG. Please try again.";
+  } finally {
+    inventoryImageBusy = false;
+    button.disabled = !inventoryItems().length;
+    button.textContent = "Export inventory as PNG";
+  }
 });
 $("inventory-import").addEventListener("click", () =>
   $("inventory-file").click(),
