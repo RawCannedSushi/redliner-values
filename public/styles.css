@@ -2156,6 +2156,11 @@ footer a:hover {
   height: 100%;
   padding: 12px;
 }
+.gallery-cover-art {
+  display: grid;
+  place-items: center;
+  min-height: 0;
+}
 .gallery-cover img {
   width: 100%;
   height: 100%;
@@ -2915,4 +2920,26 @@ footer a:hover {
   overflow-wrap: anywhere;
   font-size: 16px;
   line-height: 1.5;
+}
+
+/* Keep translucent skin pixels from washing out against light panels. */
+:root[data-theme="light"] .trade-item-photo,
+:root[data-theme="light"] .inventory-art,
+:root[data-theme="light"] .gallery-cover-art,
+:root[data-theme="light"] .gallery-image-dialog {
+  background: #202327;
+}
+:root[data-theme="light"] .gallery-weapon::after {
+  content: "";
+  position: absolute;
+  top: 10px;
+  right: 7px;
+  width: 48%;
+  height: calc(100% - 20px);
+  z-index: 0;
+  background: #202327;
+  pointer-events: none;
+}
+:root[data-theme="light"] .gallery-weapon img {
+  z-index: 1;
 }

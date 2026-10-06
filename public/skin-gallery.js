@@ -203,10 +203,13 @@ export function createSkinGallery({ photoUrl, skinKey, fmt }) {
       button.setAttribute("aria-label", `${skin.name}, ${skin.weapon}`);
       const inner = document.createElement("span");
       inner.className = "gallery-cover-inner";
+      const art = document.createElement("span");
+      art.className = "gallery-cover-art";
       const label = document.createElement("span");
       label.className = "gallery-cover-label";
       label.textContent = skin.name;
-      inner.append(photoFor(skin, photoUrl), label);
+      art.append(photoFor(skin, photoUrl));
+      inner.append(art, label);
       button.append(inner);
       button.addEventListener("pointermove", (event) =>
         moveParallax(event, button, skinIndex),
