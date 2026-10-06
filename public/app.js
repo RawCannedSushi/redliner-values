@@ -816,23 +816,33 @@ function renderInventory() {
       0,
     ),
   );
-  const rows = entries
-    .map(([key]) => {
-      const [weapon, name] = key.split("\u001f");
-      return (
-        byKey.get(key) || {
-          weapon,
-          name,
-          rarity: "Unknown",
-          collection: "No longer listed",
-          value: null,
-        }
-      );
-    })
-    .sort(
-      (a, b) =>
-        (b.value ?? -1) - (a.value ?? -1) || a.name.localeCompare(b.name),
+  const rows = entries.map(([key]) => {
+    const [weapon, name] = key.split("\u001f");
+    return (
+      byKey.get(key) || {
+        weapon,
+        name,
+        rarity: "Unknown",
+        collection: "No longer listed",
+        value: null,
+      }
     );
+  });
+  const byName = (a, b) =>
+    a.name.localeCompare(b.name) || a.weapon.localeCompare(b.weapon);
+  const sort = $("inventory-sort").value;
+  rows.sort((a, b) => {
+    if (sort === "low")
+      return (a.value ?? Infinity) - (b.value ?? Infinity) || byName(a, b);
+    if (sort === "demand")
+      return (
+        (b.demand ?? -1) - (a.demand ?? -1) ||
+        (b.value ?? -1) - (a.value ?? -1) ||
+        byName(a, b)
+      );
+    if (sort === "alphabetical") return byName(a, b);
+    return (b.value ?? -1) - (a.value ?? -1) || byName(a, b);
+  });
   rows.forEach((s) => {
     const key = skinKey(s),
       card = element("article", "inventory-card");
@@ -890,6 +900,7 @@ function renderInventory() {
   grid.append(add);
   restoreFocus();
 }
+$("inventory-sort").addEventListener("change", renderInventory);
 $("inventory-export").addEventListener("click", () => {
   const blob = new Blob(
     [JSON.stringify({ format: INVENTORY_KEY, items: inventory }, null, 2)],

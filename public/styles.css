@@ -1894,6 +1894,34 @@ footer a:hover {
 .inventory-view {
   padding-bottom: 60px;
 }
+.inventory-sort-control {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.inventory-sort-control label {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.inventory-sort-control select {
+  width: min(240px, 65vw);
+  min-width: 0;
+  height: 42px;
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: var(--panel);
+  color: var(--text);
+}
+.inventory-sort-control select:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
 .inventory-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));

@@ -242,11 +242,20 @@
               ⓘ
             </summary>
             <div class="context-help-panel">
-              Use + to add a skin. Highest value first. Inventory saves on this
-              browser and device. Export a backup before clearing site data, or
-              connect Google Drive to use it on other devices.
+              Use + to add a skin. Inventory saves on this browser and device.
+              Export a backup before clearing site data, or connect Google Drive
+              to use it on other devices.
             </div>
           </details>
+        </div>
+        <div class="inventory-sort-control">
+          <label for="inventory-sort">Sort by</label>
+          <select id="inventory-sort">
+            <option value="high">Value: high to low</option>
+            <option value="low">Value: low to high</option>
+            <option value="demand">Demand</option>
+            <option value="alphabetical">Alphabetical</option>
+          </select>
         </div>
         <div id="inventory-grid" class="inventory-grid"></div>
         <div class="inventory-footer">
