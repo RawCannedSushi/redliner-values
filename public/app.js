@@ -1015,7 +1015,7 @@ function render() {
   $("clear").hidden = !(
     selectedFilters.rarity.size ||
     selectedFilters.collection.size ||
-    $("sort").value !== "default"
+    $("sort").value !== "high"
   );
   const container = $("rows");
   container.replaceChildren();
@@ -1326,7 +1326,7 @@ $("clear").addEventListener("click", () => {
   selectedFilters.rarity.clear();
   selectedFilters.collection.clear();
   saveRarityPreference();
-  $("sort").value = "default";
+  $("sort").value = "high";
   updateFilters();
   render();
   renderHistory();
