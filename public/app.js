@@ -1430,16 +1430,20 @@ document.addEventListener("pointerdown", (event) => {
 document.querySelectorAll(".trade-add").forEach((button) =>
   button.addEventListener("click", () => {
     const side = button.dataset.side;
-    const keys = [...$(side + "-select").selectedOptions]
-      .map((option) => option.value)
-      .filter(Boolean);
+    const selected = [...$(side + "-select").selectedOptions].filter(
+      (option) => option.value,
+    );
     closeTradePicker(side);
-    if (!keys.length) return;
-    for (const key of keys) {
+    if (!selected.length) return;
+    for (const option of selected) {
+      const key = option.value;
       const existing = trade[side].find((item) => item.key === key);
       if (existing) existing.quantity = Math.min(999, existing.quantity + 1);
       else trade[side].push({ key, quantity: 1 });
+      option.selected = false;
     }
+    updatePickerLabel(side);
+    renderPickerOptions(side);
     renderTrade();
   }),
 );
