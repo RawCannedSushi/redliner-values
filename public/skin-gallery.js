@@ -48,6 +48,7 @@ export function createSkinGallery({ photoUrl, skinKey, fmt }) {
   let active = false;
   let swipeStart = null;
   let suppressClick = false;
+  const featuredSkinByWeapon = new Map();
   const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)");
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
   let parallaxFrame = 0;
@@ -139,9 +140,17 @@ export function createSkinGallery({ photoUrl, skinKey, fmt }) {
     }
     for (const name of [...groups.keys()].sort((a, b) => a.localeCompare(b))) {
       const group = groups.get(name);
-      const featured = [...group].sort(
-        (a, b) => (b.value ?? -1) - (a.value ?? -1),
-      )[0];
+      let featured = group.find(
+        (skin) => skinKey(skin) === featuredSkinByWeapon.get(name),
+      );
+      if (!featured) {
+        const pictured = group.filter(
+          (skin) => photoUrl(skin) !== PHOTO_FALLBACK,
+        );
+        const choices = pictured.length ? pictured : group;
+        featured = choices[Math.floor(Math.random() * choices.length)];
+        featuredSkinByWeapon.set(name, skinKey(featured));
+      }
       const button = document.createElement("button");
       button.type = "button";
       button.className = "gallery-weapon";
