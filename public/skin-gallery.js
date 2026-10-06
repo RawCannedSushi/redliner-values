@@ -1,3 +1,5 @@
+import { applyRarityAccent } from "./rarity-theme.js";
+
 const $ = (id) => document.getElementById(id);
 const PHOTO_FALLBACK = "/skin-photos/unknown.png";
 
@@ -112,6 +114,7 @@ export function createSkinGallery({ photoUrl, skinKey, fmt }) {
   function showFullImage(skin) {
     if (imageDialog.open) return;
     resetParallax();
+    applyRarityAccent(imageDialog, skin.rarity);
     fullImage.alt = `${skin.name}, ${skin.weapon}`;
     fullImage.src = photoUrl(skin);
     imageDialog.setAttribute("aria-label", `${skin.name} full-screen image`);
@@ -143,13 +146,17 @@ export function createSkinGallery({ photoUrl, skinKey, fmt }) {
       button.type = "button";
       button.className = "gallery-weapon";
       button.setAttribute("aria-label", `Explore ${name} skins`);
+      applyRarityAccent(button, featured.rarity);
       const text = document.createElement("span");
+      text.className = "gallery-weapon-copy";
       const title = document.createElement("strong");
       title.textContent = name;
       const count = document.createElement("small");
       count.textContent = `${group.length} ${group.length === 1 ? "SKIN" : "SKINS"} / EXPLORE ↗`;
       text.append(title, count);
-      button.append(text, photoFor(featured, photoUrl));
+      const accent = document.createElement("span");
+      accent.className = "gallery-weapon-accent";
+      button.append(text, photoFor(featured, photoUrl), accent);
       button.addEventListener("click", () => selectWeapon(name));
       container.append(button);
     }
@@ -201,6 +208,7 @@ export function createSkinGallery({ photoUrl, skinKey, fmt }) {
       button.type = "button";
       button.className = "gallery-cover";
       button.setAttribute("aria-label", `${skin.name}, ${skin.weapon}`);
+      applyRarityAccent(button, skin.rarity);
       const inner = document.createElement("span");
       inner.className = "gallery-cover-inner";
       const art = document.createElement("span");
@@ -249,6 +257,7 @@ export function createSkinGallery({ photoUrl, skinKey, fmt }) {
     resetParallax();
     const skin = weaponSkins[index];
     if (!skin) return;
+    applyRarityAccent($("gallery-explore"), skin.rarity);
     coverButtons.forEach((button, buttonIndex) => {
       const offset = buttonIndex - index;
       button.hidden = Math.abs(offset) > 2;

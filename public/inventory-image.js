@@ -1,3 +1,5 @@
+import { rarityColors, rarityStops } from "./rarity-theme.js";
+
 const format = new Intl.NumberFormat("en-US");
 const CARD_WIDTH = 420;
 const CARD_HEIGHT = 176;
@@ -64,13 +66,17 @@ function drawCard(ctx, item, image, x, y) {
   ctx.fillRect(x, y, CARD_WIDTH, CARD_HEIGHT);
   ctx.strokeStyle = "#51565b";
   ctx.strokeRect(x + 0.5, y + 0.5, CARD_WIDTH - 1, CARD_HEIGHT - 1);
-  ctx.fillStyle = skin.rarity.includes("Classified") ? "#ba303b" : "#82878a";
+  const [start, end] = rarityStops(skin.rarity);
+  const rarityBar = ctx.createLinearGradient(x, y, x + CARD_WIDTH, y);
+  rarityBar.addColorStop(0, start);
+  rarityBar.addColorStop(1, end);
+  ctx.fillStyle = rarityBar;
   ctx.fillRect(x, y, CARD_WIDTH, 4);
 
   drawPhoto(ctx, image, x + 14, y + 19, 132, 139);
-  ctx.fillStyle = "#a9232d";
+  ctx.fillStyle = rarityColors[skin.rarity] || "#82878a";
   ctx.fillRect(x + 22, y + 27, 65, 34);
-  ctx.fillStyle = "#f2f0e9";
+  ctx.fillStyle = "#101215";
   ctx.font = '700 23px "Archivo Narrow", Arial, sans-serif';
   ctx.fillText(`×${qty}`, x + 31, y + 52);
 

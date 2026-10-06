@@ -15,6 +15,12 @@ import {
 import { SKIN_PHOTO_FILES } from "./skin-photo-manifest.js";
 import { createInventoryPng } from "./inventory-image.js";
 import { createSkinGallery } from "./skin-gallery.js";
+import {
+  applyRarityAccent,
+  lightChartColors,
+  rarityAccent,
+  rarityColors,
+} from "./rarity-theme.js";
 
 if (/^https:\/\/github\.com\/[\w.-]+\/[\w.-]+\/?$/.test(SOURCE_REPOSITORY)) {
   document.getElementById("source-link").href = SOURCE_REPOSITORY;
@@ -384,36 +390,10 @@ function compareRarity(a, b) {
       (bRank === -1 ? rarityOrder.length : bRank) || a.localeCompare(b)
   );
 }
-const rarityColors = {
-  Classified: "#f46762",
-  "Direct Classified": "#ee2e32",
-  Exotic: "#db9c57",
-  Elite: "#bd8be2",
-  Rare: "#65a5e4",
-  Uncommon: "#94ae90",
-};
 const chartColors = {
   ...rarityColors,
   "Direct Classified": "#000000",
 };
-const lightChartColors = {
-  Classified: "#a62630",
-  "Direct Classified": "#111315",
-  Exotic: "#835826",
-  Elite: "#704685",
-  Rare: "#235a78",
-  Uncommon: "#456346",
-};
-const rarityGradients = {
-  Classified: ["#ee2e32", "#5c1023"],
-  "Direct Classified": ["#ee2e32", "#000000"],
-};
-function rarityAccent(rarity, direction) {
-  const stops = rarityGradients[rarity];
-  return stops
-    ? `linear-gradient(${direction}, ${stops[0]}, ${stops[1]})`
-    : rarityColors[rarity] || "#7e858d";
-}
 let skins = [];
 const trade = { give: [], receive: [] };
 const selectedFilters = {
@@ -936,8 +916,7 @@ function renderInventory() {
   $("inventory-export-png").disabled = !items.length || inventoryImageBusy;
   items.forEach(({ skin: s, key, qty }) => {
     const card = element("article", "inventory-card");
-    card.classList.toggle("classified-gradient", s.rarity === "Classified");
-    card.style.setProperty("--rarity", rarityAccent(s.rarity, "to right"));
+    applyRarityAccent(card, s.rarity);
     const art = element("div", "inventory-art");
     art.append(skinPhoto(s));
     const remove = element("button", "inventory-delete");
@@ -1173,6 +1152,7 @@ function render() {
   const fragment = document.createDocumentFragment();
   filtered.forEach((s) => {
     const row = element("tr", "skin-row");
+    applyRarityAccent(row, s.rarity);
     const name = element("td", "name-cell");
     name.append(
       element("div", "name", s.name),
@@ -1180,8 +1160,7 @@ function render() {
     );
     const rarityCell = element("td", "cell");
     const badge = element("span", "rarity", s.rarity);
-    badge.classList.toggle("classified-gradient", s.rarity === "Classified");
-    badge.style.setProperty("--rarity", rarityAccent(s.rarity, "to bottom"));
+    applyRarityAccent(badge, s.rarity, "to bottom");
     rarityCell.append(badge);
     row.append(
       name,
@@ -1261,6 +1240,7 @@ function renderPickerOptions(side) {
       "trade-picker-option",
       skin.name + " (" + skin.weapon + ") · " + fmt(skin.value),
     );
+    applyRarityAccent(choice, skin.rarity);
     choice.type = "button";
     const selectOption = selectOptions.get(key);
     choice.setAttribute(
@@ -1335,6 +1315,7 @@ function renderTrade() {
         title = element("div", "trade-item-title"),
         photo = element("div", "trade-item-photo"),
         controls = element("div", "trade-item-controls");
+      applyRarityAccent(row, skin.rarity);
       photo.append(skinPhoto(skin));
       const description = skin.name + " (" + skin.weapon + ") you " + side;
       title.append(
@@ -1714,6 +1695,11 @@ function snapshotLabel(stamp) {
 }
 function showSkinTooltip(event, series, dateIndex, dates) {
   const tip = $("skin-tooltip");
+  const rarity = series.skin.rarity || "";
+  if (tip.dataset.rarity !== rarity) {
+    applyRarityAccent(tip, rarity);
+    tip.dataset.rarity = rarity;
+  }
   $("tip-name").textContent = series.skin.name;
   $("tip-details").textContent =
     series.skin.weapon + " · " + series.skin.rarity;

@@ -76,6 +76,16 @@
   --grain: #dce0e51a;
   --intro-secondary: #b0b0ad;
 }
+.skin-rarity-accent {
+  --skin-ink: var(--skin-ink-light, var(--accent));
+  --skin-paint: var(--skin-paint-light, var(--accent));
+  --skin-paint-vertical: var(--skin-paint-vertical-light, var(--accent));
+}
+:root[data-theme="dark"] .skin-rarity-accent {
+  --skin-ink: var(--skin-ink-dark, var(--accent));
+  --skin-paint: var(--skin-paint-dark, var(--accent));
+  --skin-paint-vertical: var(--skin-paint-vertical-dark, var(--accent));
+}
 * {
   box-sizing: border-box;
 }
@@ -495,7 +505,7 @@ button:disabled {
   color: var(--text);
 }
 .catalog .value {
-  color: var(--accent);
+  color: var(--skin-ink, var(--accent));
 }
 .value.invalid {
   font-size: 12px;
@@ -640,6 +650,9 @@ button:disabled {
   outline: 2px solid var(--accent);
   outline-offset: -2px;
 }
+.trade-picker-option:focus-visible {
+  outline-color: var(--skin-ink, var(--accent));
+}
 .trade-picker-options {
   max-height: min(300px, 50vh);
   overflow-y: auto;
@@ -654,6 +667,7 @@ button:disabled {
   background: var(--panel2);
 }
 .trade-picker .trade-picker-option {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -683,16 +697,20 @@ button:disabled {
 }
 .trade-picker-option[aria-pressed="true"]::after {
   content: "✓";
-  border-color: var(--accent);
-  background: var(--accent);
-  color: var(--accent-on);
+  border-color: var(--skin-ink, var(--accent));
+  background: var(--skin-ink, var(--accent));
+  color: var(--bg);
+}
+.trade-picker-option[aria-pressed="true"]::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 3px;
+  background: var(--skin-paint-vertical, var(--accent));
 }
 .trade-picker .trade-picker-option:hover,
 .trade-picker .trade-picker-option[aria-pressed="true"] {
   background: var(--menu-hover);
-}
-.trade-picker .trade-picker-option[aria-pressed="true"] {
-  box-shadow: inset 3px 0 var(--accent);
 }
 .trade-picker-empty {
   padding: 14px 12px;
@@ -733,6 +751,7 @@ button:disabled {
   border-top: 1px solid var(--line);
 }
 .trade-item-photo {
+  position: relative;
   grid-column: 1;
   grid-row: 1 / 3;
   align-self: center;
@@ -743,6 +762,14 @@ button:disabled {
   padding: 4px;
   border: 1px solid var(--line);
   background: var(--bg);
+}
+.trade-item-photo::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 3px;
+  background: var(--skin-paint, var(--accent));
+  pointer-events: none;
 }
 .skin-photo {
   display: block;
@@ -817,6 +844,7 @@ button:disabled {
   margin: 0;
 }
 .trade-item .value {
+  color: var(--skin-ink, var(--text));
   font-size: 19px;
   overflow-wrap: anywhere;
   text-align: right;
@@ -835,7 +863,10 @@ button:disabled {
   min-height: 40px;
 }
 .trade-item .remove:hover {
-  color: var(--accent);
+  color: var(--skin-ink, var(--accent));
+}
+.trade-item-title .trade-unit-value {
+  color: var(--skin-ink, var(--muted));
 }
 .trade-summary {
   display: flex;
@@ -1353,12 +1384,21 @@ footer a:hover {
   width: 220px;
   padding: 11px 13px;
   border: 1px solid var(--line-strong);
-  border-left: 3px solid var(--accent);
+  border-left: 3px solid transparent;
   border-radius: 4px;
   background: var(--menu-bg);
   box-shadow: 0 12px 30px var(--overlay);
   font-size: 13px;
   line-height: 1.4;
+}
+.skin-tooltip::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  bottom: -1px;
+  left: -3px;
+  width: 3px;
+  background: var(--skin-paint-vertical, var(--accent));
 }
 .skin-tooltip strong {
   display: block;
@@ -1384,6 +1424,7 @@ footer a:hover {
 }
 .skin-tooltip .tip-value b {
   font-family: "Archivo Narrow", sans-serif;
+  color: var(--skin-ink, var(--text));
 }
 .skin-tooltip .tip-history {
   color: var(--muted);
@@ -1955,9 +1996,8 @@ footer a:hover {
   min-width: 0;
   min-height: 188px;
   overflow: hidden;
-  padding: 18px;
+  padding: 20px 18px 18px;
   border: 1px solid var(--line);
-  border-top: 3px solid var(--accent);
   background: var(--panel);
   color: var(--text);
   text-align: left;
@@ -1966,6 +2006,16 @@ footer a:hover {
     border-color 0.2s,
     background-color 0.2s,
     transform 0.2s;
+}
+.gallery-weapon-accent {
+  position: absolute;
+  top: -1px;
+  right: -1px;
+  left: -1px;
+  z-index: 2;
+  height: 3px;
+  background: var(--skin-paint, var(--accent));
+  pointer-events: none;
 }
 .gallery-weapon::before {
   content: "";
@@ -1982,7 +2032,7 @@ footer a:hover {
 }
 .gallery-weapon:hover,
 .gallery-weapon:focus-visible {
-  border-color: var(--accent);
+  border-color: var(--skin-ink, var(--accent));
   background: var(--panel2);
   transform: translateY(-3px);
 }
@@ -1995,7 +2045,10 @@ footer a:hover {
   outline: 2px solid var(--accent);
   outline-offset: 3px;
 }
-.gallery-weapon > span {
+.gallery-weapon:focus-visible {
+  outline-color: var(--skin-ink, var(--accent));
+}
+.gallery-weapon-copy {
   position: relative;
   z-index: 1;
   display: grid;
@@ -2135,9 +2188,8 @@ footer a:hover {
   left: 50%;
   width: 276px;
   height: 304px;
-  padding: 0;
+  padding: 2px 0 0;
   border: 1px solid var(--line-strong);
-  border-top: 3px solid var(--accent);
   background: var(--panel);
   color: var(--text);
   box-shadow: 0 16px 28px var(--shadow);
@@ -2148,6 +2200,20 @@ footer a:hover {
     filter 0.4s;
   backface-visibility: hidden;
   user-select: none;
+}
+.gallery-cover::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  right: -1px;
+  left: -1px;
+  z-index: 1;
+  height: 3px;
+  background: var(--skin-paint, var(--accent));
+  pointer-events: none;
+}
+.gallery-cover:focus-visible {
+  outline-color: var(--skin-ink, var(--accent));
 }
 .gallery-cover-inner {
   display: grid;
@@ -2228,6 +2294,15 @@ footer a:hover {
   align-items: center;
   justify-content: center;
 }
+.gallery-image-dialog::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 3px;
+  background: var(--skin-paint, var(--accent));
+}
 .gallery-image-dialog::backdrop {
   background: var(--overlay);
 }
@@ -2255,8 +2330,8 @@ footer a:hover {
 }
 .gallery-image-close:hover,
 .gallery-image-close:focus-visible {
-  border-color: var(--accent);
-  outline: 2px solid var(--accent);
+  border-color: var(--skin-ink, var(--accent));
+  outline: 2px solid var(--skin-ink, var(--accent));
   outline-offset: 2px;
 }
 .gallery-detail-grid {
@@ -2273,10 +2348,20 @@ footer a:hover {
   background: var(--panel);
 }
 .gallery-skin-details {
-  border-left: 3px solid var(--accent);
+  position: relative;
+  border-left: 3px solid transparent;
+}
+.gallery-skin-details::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  bottom: -1px;
+  left: -3px;
+  width: 3px;
+  background: var(--skin-paint-vertical, var(--accent));
 }
 .gallery-rarity {
-  color: var(--accent);
+  color: var(--skin-ink, var(--accent));
   font-size: 12px;
   text-transform: uppercase;
 }
@@ -2306,7 +2391,7 @@ footer a:hover {
   font-size: 12px;
 }
 .gallery-value-block strong {
-  color: var(--accent);
+  color: var(--skin-ink, var(--accent));
   font:
     800 49px/1 "Archivo Narrow",
     sans-serif;
@@ -2348,13 +2433,13 @@ footer a:hover {
 }
 .gallery-chart-line {
   fill: none;
-  stroke: var(--accent);
+  stroke: var(--skin-ink, var(--accent));
   stroke-linecap: round;
   stroke-linejoin: round;
   stroke-width: 3;
 }
 .gallery-chart-dot {
-  fill: var(--accent);
+  fill: var(--skin-ink, var(--accent));
   stroke: var(--panel);
   stroke-width: 2;
 }
@@ -2513,7 +2598,7 @@ footer a:hover {
   position: absolute;
   inset: 0 0 auto;
   height: 3px;
-  background: var(--rarity, #7e858d);
+  background: var(--skin-paint, var(--rarity, #7e858d));
   pointer-events: none;
   z-index: 1;
 }
@@ -2574,7 +2659,7 @@ footer a:hover {
 }
 .inventory-value {
   font-size: 13px;
-  color: var(--muted);
+  color: var(--skin-ink, var(--muted));
 }
 .inventory-stepper {
   display: flex;
@@ -2942,4 +3027,26 @@ footer a:hover {
 }
 :root[data-theme="light"] .gallery-weapon img {
   z-index: 1;
+}
+
+.gallery-weapon.classified-gradient .gallery-weapon-accent,
+.gallery-cover.classified-gradient::before,
+.gallery-image-dialog.classified-gradient::before,
+#gallery-explore.classified-gradient .gallery-skin-details::before,
+.skin-tooltip.classified-gradient::before,
+.trade-picker-option.classified-gradient[aria-pressed="true"]::before,
+.trade-item.classified-gradient .trade-item-photo::before {
+  background-size: 200% 200%;
+  animation: classified-gradient-shift 3s ease-in-out infinite alternate;
+}
+@media (prefers-reduced-motion: reduce) {
+  .gallery-weapon.classified-gradient .gallery-weapon-accent,
+  .gallery-cover.classified-gradient::before,
+  .gallery-image-dialog.classified-gradient::before,
+  #gallery-explore.classified-gradient .gallery-skin-details::before,
+  .skin-tooltip.classified-gradient::before,
+  .trade-picker-option.classified-gradient[aria-pressed="true"]::before,
+  .trade-item.classified-gradient .trade-item-photo::before {
+    animation: none;
+  }
 }
