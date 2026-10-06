@@ -101,6 +101,23 @@ export function createSkinGallery({ photoUrl, skinKey, fmt }) {
   reducedMotion.addEventListener("change", resetParallax);
   finePointer.addEventListener("change", resetParallax);
 
+  const imageDialog = $("gallery-image-dialog");
+  const fullImage = $("gallery-image-full");
+  fullImage.addEventListener("error", () => {
+    if (fullImage.getAttribute("src") !== PHOTO_FALLBACK)
+      fullImage.src = PHOTO_FALLBACK;
+  });
+  $("gallery-image-close").addEventListener("click", () => imageDialog.close());
+
+  function showFullImage(skin) {
+    if (imageDialog.open) return;
+    resetParallax();
+    fullImage.alt = `${skin.name}, ${skin.weapon}`;
+    fullImage.src = photoUrl(skin);
+    imageDialog.setAttribute("aria-label", `${skin.name} full-screen image`);
+    imageDialog.showModal();
+  }
+
   function renderWeapons() {
     const container = $("gallery-weapons");
     container.replaceChildren();
@@ -201,6 +218,17 @@ export function createSkinGallery({ photoUrl, skinKey, fmt }) {
         if (suppressClick) return;
         setIndex(skinIndex);
       });
+      button.addEventListener("dblclick", (event) => {
+        if (suppressClick || skinIndex !== index) return;
+        event.preventDefault();
+        showFullImage(skin);
+      });
+      button.addEventListener("keydown", (event) => {
+        if (skinIndex !== index || (event.key !== "Enter" && event.key !== " "))
+          return;
+        event.preventDefault();
+        showFullImage(skin);
+      });
       stage.append(button);
       return button;
     });
@@ -225,6 +253,8 @@ export function createSkinGallery({ photoUrl, skinKey, fmt }) {
       button.tabIndex = offset === 0 ? 0 : -1;
       if (offset === 0) button.setAttribute("aria-current", "true");
       else button.removeAttribute("aria-current");
+      button.title =
+        offset === 0 ? "Double-click or press Enter to view image" : "";
     });
     $("gallery-position").textContent = `${index + 1} / ${weaponSkins.length}`;
     $("gallery-prev").disabled = index === 0;
@@ -461,6 +491,7 @@ export function createSkinGallery({ photoUrl, skinKey, fmt }) {
     leave() {
       active = false;
       resetParallax();
+      if (imageDialog.open) imageDialog.close();
       historyRequest?.abort();
       historyRequest = null;
       historyPromise = null;
