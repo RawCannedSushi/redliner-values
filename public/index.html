@@ -434,7 +434,7 @@
             <div class="trade-picker">
               <div class="trade-picker-row">
                 <div class="trade-picker-menu">
-                  <select id="give-select" hidden></select>
+                  <select id="give-select" multiple hidden></select>
                   <button
                     id="give-trigger"
                     class="trade-select-trigger"
@@ -443,14 +443,14 @@
                     aria-controls="give-panel"
                     aria-labelledby="give-heading give-selection"
                   >
-                    <span id="give-selection">Select a skin…</span>
+                    <span id="give-selection">Select skins…</span>
                     <span class="trade-chevron" aria-hidden="true"></span>
                   </button>
                   <div
                     id="give-panel"
                     class="trade-picker-panel"
                     role="region"
-                    aria-label="Choose a skin you give"
+                    aria-label="Choose skins you give"
                     hidden
                   >
                     <input
@@ -467,7 +467,7 @@
                   class="trade-add"
                   data-side="give"
                   type="button"
-                  aria-label="Add skin you give"
+                  aria-label="Add selected skins you give"
                 >
                   Add
                 </button>
@@ -499,7 +499,7 @@
             <div class="trade-picker">
               <div class="trade-picker-row">
                 <div class="trade-picker-menu">
-                  <select id="receive-select" hidden></select>
+                  <select id="receive-select" multiple hidden></select>
                   <button
                     id="receive-trigger"
                     class="trade-select-trigger"
@@ -508,14 +508,14 @@
                     aria-controls="receive-panel"
                     aria-labelledby="receive-heading receive-selection"
                   >
-                    <span id="receive-selection">Select a skin…</span>
+                    <span id="receive-selection">Select skins…</span>
                     <span class="trade-chevron" aria-hidden="true"></span>
                   </button>
                   <div
                     id="receive-panel"
                     class="trade-picker-panel"
                     role="region"
-                    aria-label="Choose a skin you receive"
+                    aria-label="Choose skins you receive"
                     hidden
                   >
                     <input
@@ -535,7 +535,7 @@
                   class="trade-add"
                   data-side="receive"
                   type="button"
-                  aria-label="Add skin you receive"
+                  aria-label="Add selected skins you receive"
                 >
                   Add
                 </button>

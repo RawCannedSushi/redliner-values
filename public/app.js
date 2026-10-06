@@ -1074,14 +1074,20 @@ function tradeSkinChoices() {
 }
 function updatePickerLabel(side) {
   const select = $(side + "-select");
-  const option = select.options[select.selectedIndex];
-  $(side + "-selection").textContent = option?.value
-    ? option.textContent
-    : "Select a skin…";
+  const selected = [...select.selectedOptions].filter((option) => option.value);
+  $(side + "-selection").textContent =
+    selected.length === 1
+      ? selected[0].textContent
+      : selected.length > 1
+        ? selected.length + " skins selected"
+        : "Select skins…";
 }
 function renderPickerOptions(side) {
   const select = $(side + "-select");
   const options = $(side + "-options");
+  const selectOptions = new Map(
+    [...select.options].map((option) => [option.value, option]),
+  );
   const terms = $(side + "-search")
     .value.trim()
     .toLocaleLowerCase()
@@ -1113,12 +1119,15 @@ function renderPickerOptions(side) {
       skin.name + " (" + skin.weapon + ") · " + fmt(skin.value),
     );
     choice.type = "button";
-    if (select.value === key) choice.setAttribute("aria-current", "true");
+    const selectOption = selectOptions.get(key);
+    choice.setAttribute(
+      "aria-pressed",
+      String(selectOption?.selected || false),
+    );
     choice.addEventListener("click", () => {
-      select.value = key;
+      selectOption.selected = !selectOption.selected;
+      choice.setAttribute("aria-pressed", String(selectOption.selected));
       updatePickerLabel(side);
-      closeTradePicker(side);
-      $(side + "-trigger").focus();
     });
     group.append(choice);
     count++;
@@ -1130,8 +1139,10 @@ function updatePickers() {
   const choices = tradeSkinChoices();
   for (const side of ["give", "receive"]) {
     const select = $(side + "-select");
-    const selected = select.value;
-    select.replaceChildren(element("option", "", "Select a skin…"));
+    const selected = new Set(
+      [...select.selectedOptions].map((option) => option.value),
+    );
+    select.replaceChildren(element("option", "", "Select skins…"));
     select.firstElementChild.value = "";
     const groups = new Map();
     choices.forEach((s) => {
@@ -1148,10 +1159,9 @@ function updatePickers() {
         s.name + " (" + s.weapon + ") · " + fmt(s.value),
       );
       option.value = skinKey(s);
+      option.selected = selected.has(option.value);
       groups.get(rarity).append(option);
     });
-    select.value = selected;
-    if (select.selectedIndex < 0) select.selectedIndex = 0;
     updatePickerLabel(side);
     renderPickerOptions(side);
   }
@@ -1371,13 +1381,17 @@ document.addEventListener("pointerdown", (event) => {
 });
 document.querySelectorAll(".trade-add").forEach((button) =>
   button.addEventListener("click", () => {
-    const side = button.dataset.side,
-      key = $(side + "-select").value;
+    const side = button.dataset.side;
+    const keys = [...$(side + "-select").selectedOptions]
+      .map((option) => option.value)
+      .filter(Boolean);
     closeTradePicker(side);
-    if (!$(side + "-select").value) return;
-    const existing = trade[side].find((item) => item.key === key);
-    if (existing) existing.quantity = Math.min(999, existing.quantity + 1);
-    else trade[side].push({ key, quantity: 1 });
+    if (!keys.length) return;
+    for (const key of keys) {
+      const existing = trade[side].find((item) => item.key === key);
+      if (existing) existing.quantity = Math.min(999, existing.quantity + 1);
+      else trade[side].push({ key, quantity: 1 });
+    }
     renderTrade();
   }),
 );

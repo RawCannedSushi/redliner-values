@@ -654,7 +654,10 @@ button:disabled {
   background: var(--panel2);
 }
 .trade-picker .trade-picker-option {
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
   width: 100%;
   border: 0;
   border-top: 1px solid var(--row-border);
@@ -668,11 +671,27 @@ button:disabled {
   letter-spacing: normal;
   white-space: normal;
 }
+.trade-picker-option::after {
+  content: "";
+  flex: none;
+  width: 17px;
+  height: 17px;
+  border: 1px solid var(--line-strong);
+  font-size: 14px;
+  line-height: 15px;
+  text-align: center;
+}
+.trade-picker-option[aria-pressed="true"]::after {
+  content: "✓";
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--accent-on);
+}
 .trade-picker .trade-picker-option:hover,
-.trade-picker .trade-picker-option[aria-current="true"] {
+.trade-picker .trade-picker-option[aria-pressed="true"] {
   background: var(--menu-hover);
 }
-.trade-picker .trade-picker-option[aria-current="true"] {
+.trade-picker .trade-picker-option[aria-pressed="true"] {
   box-shadow: inset 3px 0 var(--accent);
 }
 .trade-picker-empty {
