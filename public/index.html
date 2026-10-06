@@ -432,17 +432,26 @@
               <strong id="give-total">0</strong>
             </div>
             <div class="trade-picker">
-              <select
-                id="give-select"
-                aria-label="Select a skin you give"
-              ></select
-              ><button
-                data-side="give"
-                type="button"
-                aria-label="Add skin you give"
-              >
-                Add
-              </button>
+              <input
+                id="give-search"
+                type="search"
+                aria-label="Search skins you give"
+                placeholder="Search skins…"
+                autocomplete="off"
+              />
+              <div class="trade-picker-row">
+                <select
+                  id="give-select"
+                  aria-label="Select a skin you give"
+                ></select
+                ><button
+                  data-side="give"
+                  type="button"
+                  aria-label="Add skin you give"
+                >
+                  Add
+                </button>
+              </div>
             </div>
             <div class="trade-items" id="give-items"></div>
           </div>
@@ -468,17 +477,26 @@
               <strong id="receive-total">0</strong>
             </div>
             <div class="trade-picker">
-              <select
-                id="receive-select"
-                aria-label="Select a skin you receive"
-              ></select
-              ><button
-                data-side="receive"
-                type="button"
-                aria-label="Add skin you receive"
-              >
-                Add
-              </button>
+              <input
+                id="receive-search"
+                type="search"
+                aria-label="Search skins you receive"
+                placeholder="Search skins…"
+                autocomplete="off"
+              />
+              <div class="trade-picker-row">
+                <select
+                  id="receive-select"
+                  aria-label="Select a skin you receive"
+                ></select
+                ><button
+                  data-side="receive"
+                  type="button"
+                  aria-label="Add skin you receive"
+                >
+                  Add
+                </button>
+              </div>
             </div>
             <div class="trade-items" id="receive-items"></div>
           </div>

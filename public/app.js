@@ -1062,38 +1062,58 @@ function render() {
   });
   container.append(fragment);
 }
-function updatePickers() {
-  for (const side of ["give", "receive"]) {
+function updatePickers(onlySide) {
+  for (const side of onlySide ? [onlySide] : ["give", "receive"]) {
     const select = $(side + "-select"),
-      selected = select.value;
+      selected = select.value,
+      terms = $(side + "-search")
+        .value.trim()
+        .toLocaleLowerCase()
+        .split(/\s+/);
     select.replaceChildren(element("option", "", "Select a skin…"));
     select.firstElementChild.value = "";
     const groups = new Map();
-    skins
-      .filter((s) => s.value !== null)
+    const matches = skins
+      .filter(
+        (s) =>
+          s.value !== null &&
+          terms.every((term) =>
+            [s.name, s.weapon, s.rarity, s.collection]
+              .join(" ")
+              .toLocaleLowerCase()
+              .includes(term),
+          ),
+      )
       .sort(
         (a, b) =>
           compareRarity(a.rarity, b.rarity) ||
           a.name.localeCompare(b.name) ||
           a.weapon.localeCompare(b.weapon),
-      )
-      .forEach((s) => {
-        const rarity = s.rarity || "Other";
-        if (!groups.has(rarity)) {
-          const group = element("optgroup");
-          group.label = rarity;
-          groups.set(rarity, group);
-          select.append(group);
-        }
-        const option = element(
-          "option",
-          "",
-          s.name + " (" + s.weapon + ") · " + fmt(s.value),
-        );
-        option.value = skinKey(s);
-        groups.get(rarity).append(option);
-      });
+      );
+    matches.forEach((s) => {
+      const rarity = s.rarity || "Other";
+      if (!groups.has(rarity)) {
+        const group = element("optgroup");
+        group.label = rarity;
+        groups.set(rarity, group);
+        select.append(group);
+      }
+      const option = element(
+        "option",
+        "",
+        s.name + " (" + s.weapon + ") · " + fmt(s.value),
+      );
+      option.value = skinKey(s);
+      groups.get(rarity).append(option);
+    });
+    if (!matches.length) {
+      const empty = element("option", "", "No matching skins");
+      empty.value = "";
+      empty.disabled = true;
+      select.append(empty);
+    }
     select.value = selected;
+    if (select.selectedIndex < 0) select.selectedIndex = 0;
   }
 }
 function renderTrade() {
@@ -1257,6 +1277,8 @@ $("clear").addEventListener("click", () => {
   renderHistory();
 });
 $("refresh").addEventListener("click", () => load(true));
+for (const side of ["give", "receive"])
+  $(side + "-search").addEventListener("input", () => updatePickers(side));
 document.querySelectorAll(".trade-picker button").forEach((button) =>
   button.addEventListener("click", () => {
     const side = button.dataset.side,
