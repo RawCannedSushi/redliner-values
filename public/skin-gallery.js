@@ -105,6 +105,8 @@ export function createSkinGallery({ photoUrl, skinKey, fmt }) {
       "--parallax-rotate-y",
       "--parallax-x",
       "--parallax-y",
+      "--image-parallax-x",
+      "--image-parallax-y",
     ])
       parallaxCover.style.removeProperty(name);
     parallaxCover.classList.remove("is-parallax");
@@ -139,6 +141,8 @@ export function createSkinGallery({ photoUrl, skinKey, fmt }) {
       button.style.setProperty("--parallax-rotate-y", `${pointerX * 7}deg`);
       button.style.setProperty("--parallax-x", `${pointerX * 5}px`);
       button.style.setProperty("--parallax-y", `${pointerY * 5}px`);
+      button.style.setProperty("--image-parallax-x", `${pointerX * 10}px`);
+      button.style.setProperty("--image-parallax-y", `${pointerY * 8}px`);
     });
   }
 

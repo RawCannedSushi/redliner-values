@@ -2253,6 +2253,20 @@ footer a:hover {
   min-height: 0;
   object-fit: contain;
   filter: drop-shadow(0 8px 9px var(--shadow));
+  transform: translate3d(
+      var(--image-parallax-x, 0px),
+      var(--image-parallax-y, 0px),
+      0
+    )
+    scale(var(--image-parallax-scale, 1));
+  transition: transform 0.4s ease-out;
+}
+.gallery-cover.is-parallax {
+  --image-parallax-scale: 1.035;
+}
+.gallery-cover.is-parallax img {
+  transition-duration: 0.16s;
+  will-change: transform;
 }
 .gallery-cover-label {
   display: block;
@@ -2476,6 +2490,7 @@ footer a:hover {
 }
 @media (prefers-reduced-motion: reduce) {
   .gallery-cover,
+  .gallery-cover img,
   .gallery-weapon,
   .gallery-stage.is-zooming .gallery-cover {
     transition: none;
