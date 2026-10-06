@@ -14,6 +14,7 @@ import {
 } from "./google-drive-sync.js";
 import { SKIN_PHOTO_FILES } from "./skin-photo-manifest.js";
 import { createInventoryPng } from "./inventory-image.js";
+import { createSkinGallery } from "./skin-gallery.js";
 
 if (/^https:\/\/github\.com\/[\w.-]+\/[\w.-]+\/?$/.test(SOURCE_REPOSITORY)) {
   document.getElementById("source-link").href = SOURCE_REPOSITORY;
@@ -480,6 +481,7 @@ let activeView = "list";
 const viewPanels = {
   list: "list-view",
   history: "history-view",
+  gallery: "gallery-view",
   inventory: "inventory-view",
   trade: "trade",
   info: "info-view",
@@ -567,6 +569,7 @@ function finishLoad() {
   renderTrade();
   updateInventoryFilters();
   renderInventory();
+  gallery.refresh(skins);
   if (historyData || activeView === "history") loadHistory();
   valuesLoading = false;
   $("refresh").disabled = false;
@@ -713,6 +716,7 @@ function skinPhotoUrl(skin) {
     normalizePhotoPart(skin.name) + "\u001f" + normalizePhotoPart(skin.weapon);
   return skinPhotoPaths.get(key) || PHOTO_FALLBACK;
 }
+const gallery = createSkinGallery({ photoUrl: skinPhotoUrl, skinKey, fmt });
 function saveInventory({
   sync = true,
   updatedAt = new Date().toISOString(),
@@ -1543,6 +1547,7 @@ document.querySelectorAll(".trade-add").forEach((button) =>
 let historyLoading = false;
 function switchView(view) {
   hideSkinTooltip();
+  if (view !== "gallery") gallery.leave();
   if (view !== "trade") {
     closeTradePicker("give");
     closeTradePicker("receive");
@@ -1553,6 +1558,7 @@ function switchView(view) {
   });
   $("shared-filters").hidden =
     view === "trade" ||
+    view === "gallery" ||
     view === "inventory" ||
     view === "info" ||
     view === "sheet";
@@ -1567,6 +1573,7 @@ function switchView(view) {
     if (!historyData) loadHistory();
     else renderHistory();
   }
+  if (view === "gallery") gallery.enter();
   if (view === "inventory") {
     renderInventory();
   }

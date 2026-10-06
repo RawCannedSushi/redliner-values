@@ -125,6 +125,13 @@
             Value Chart</button
           ><button
             type="button"
+            data-view="gallery"
+            role="tab"
+            aria-selected="false"
+          >
+            Skin Gallery</button
+          ><button
+            type="button"
             data-view="inventory"
             role="tab"
             aria-selected="false"
@@ -226,6 +233,91 @@
           </table>
         </section>
       </div>
+      <section
+        id="gallery-view"
+        class="skin-gallery"
+        hidden
+        aria-labelledby="gallery-title"
+      >
+        <div class="section-head">
+          <h2 id="gallery-title">Skin Gallery</h2>
+        </div>
+        <div id="gallery-chooser">
+          <p class="gallery-kicker">SELECT A WEAPON / EXPLORE ITS SKINS</p>
+          <div id="gallery-weapons" class="gallery-weapons"></div>
+        </div>
+        <div id="gallery-explore" hidden>
+          <div class="gallery-toolbar">
+            <button id="gallery-back" type="button">← All weapons</button>
+            <div class="gallery-weapon-heading">
+              <strong id="gallery-weapon-name"></strong>
+              <span id="gallery-position"></span>
+            </div>
+            <label class="gallery-jump">
+              Jump to skin
+              <select id="gallery-jump" aria-label="Jump to a skin"></select>
+            </label>
+          </div>
+          <div class="gallery-flow">
+            <button
+              id="gallery-prev"
+              class="gallery-arrow"
+              type="button"
+              aria-label="Previous skin"
+            >
+              ←
+            </button>
+            <div
+              id="gallery-stage"
+              class="gallery-stage"
+              role="region"
+              aria-label="Skin cover flow"
+              tabindex="0"
+            ></div>
+            <button
+              id="gallery-next"
+              class="gallery-arrow"
+              type="button"
+              aria-label="Next skin"
+            >
+              →
+            </button>
+          </div>
+          <div class="gallery-detail-grid">
+            <div class="gallery-skin-details" aria-live="polite">
+              <span id="gallery-rarity" class="gallery-rarity"></span>
+              <h3 id="gallery-skin-name"></h3>
+              <p id="gallery-skin-meta"></p>
+              <p id="gallery-banner" class="gallery-banner"></p>
+              <div class="gallery-value-block">
+                <span>CURRENT VALUE</span>
+                <strong id="gallery-value"></strong>
+              </div>
+              <p id="gallery-demand"></p>
+            </div>
+            <div class="gallery-history-panel">
+              <div class="gallery-history-heading">
+                <strong>VALUE HISTORY</strong>
+                <span id="gallery-history-status" role="status"></span>
+                <button id="gallery-history-retry" type="button" hidden>
+                  Retry
+                </button>
+              </div>
+              <svg
+                id="gallery-chart"
+                class="gallery-chart"
+                viewBox="0 0 560 220"
+                role="img"
+                aria-label="Value history for the selected skin"
+              ></svg>
+              <p
+                id="gallery-history-summary"
+                class="gallery-history-summary"
+              ></p>
+            </div>
+          </div>
+        </div>
+      </section>
       <section
         id="inventory-view"
         class="inventory-view"

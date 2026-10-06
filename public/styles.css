@@ -1923,6 +1923,447 @@ footer a:hover {
   color: var(--accent);
   font-style: normal;
 }
+.skin-gallery {
+  padding-bottom: 60px;
+}
+.gallery-kicker,
+.gallery-weapon small,
+.gallery-rarity,
+.gallery-value-block span,
+.gallery-history-heading,
+.gallery-banner {
+  font-family: ui-monospace, Consolas, monospace;
+  letter-spacing: 0.06em;
+}
+.gallery-kicker {
+  margin: 0 0 16px;
+  color: var(--muted);
+  font-size: 12px;
+}
+.gallery-weapons {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+.gallery-empty {
+  color: var(--muted);
+}
+.gallery-weapon {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  min-width: 0;
+  min-height: 188px;
+  overflow: hidden;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-top: 3px solid var(--accent);
+  background: var(--panel);
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color 0.2s,
+    background-color 0.2s,
+    transform 0.2s;
+}
+.gallery-weapon::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    135deg,
+    transparent 45%,
+    var(--geometry) 45% 70%,
+    transparent 70%
+  );
+  opacity: 0.55;
+}
+.gallery-weapon:hover,
+.gallery-weapon:focus-visible {
+  border-color: var(--accent);
+  background: var(--panel2);
+  transform: translateY(-3px);
+}
+.gallery-weapon:focus-visible,
+.gallery-arrow:focus-visible,
+.gallery-cover:focus-visible,
+.gallery-toolbar button:focus-visible,
+.gallery-jump select:focus-visible,
+.gallery-stage:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+.gallery-weapon > span {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: 6px;
+  max-width: 67%;
+}
+.gallery-weapon strong {
+  font:
+    800 clamp(24px, 3vw, 39px)/1 "Archivo Narrow",
+    sans-serif;
+  text-transform: uppercase;
+  overflow-wrap: anywhere;
+}
+.gallery-weapon small {
+  color: var(--muted);
+  font-size: 11px;
+}
+.gallery-weapon img {
+  position: absolute;
+  top: 10px;
+  right: 7px;
+  width: 48%;
+  height: calc(100% - 20px);
+  object-fit: contain;
+  filter: drop-shadow(0 10px 9px var(--shadow));
+}
+.gallery-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  margin-bottom: 14px;
+}
+.gallery-toolbar button,
+.gallery-arrow {
+  border: 1px solid var(--line-strong);
+  background: var(--panel);
+  color: var(--text);
+  cursor: pointer;
+}
+.gallery-toolbar button {
+  padding: 10px 13px;
+  font:
+    700 15px "Archivo Narrow",
+    sans-serif;
+}
+.gallery-toolbar button:hover,
+.gallery-arrow:hover:not(:disabled) {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.gallery-weapon-heading {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-right: auto;
+}
+.gallery-weapon-heading strong {
+  font:
+    800 27px "Archivo Narrow",
+    sans-serif;
+  text-transform: uppercase;
+}
+.gallery-weapon-heading span {
+  color: var(--muted);
+  font:
+    12px ui-monospace,
+    Consolas,
+    monospace;
+}
+.gallery-jump {
+  display: grid;
+  gap: 4px;
+  color: var(--muted);
+  font:
+    11px ui-monospace,
+    Consolas,
+    monospace;
+  text-transform: uppercase;
+}
+.gallery-jump select {
+  width: min(220px, 40vw);
+  height: 38px;
+  padding: 0 8px;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  color: var(--text);
+  font:
+    15px "Archivo Narrow",
+    sans-serif;
+  text-transform: none;
+}
+.gallery-flow {
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1fr) 52px;
+  align-items: center;
+  gap: 10px;
+}
+.gallery-arrow {
+  width: 52px;
+  height: 52px;
+  font-size: 28px;
+}
+.gallery-arrow:disabled {
+  opacity: 0.38;
+  cursor: default;
+}
+.gallery-stage {
+  position: relative;
+  min-width: 0;
+  height: 390px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  background:
+    repeating-linear-gradient(
+      120deg,
+      transparent 0 66px,
+      var(--contour) 67px 68px
+    ),
+    linear-gradient(180deg, var(--panel2), var(--bg));
+  perspective: 1000px;
+  touch-action: pan-y;
+}
+.gallery-stage::after {
+  content: "";
+  position: absolute;
+  left: 18%;
+  right: 18%;
+  bottom: 13px;
+  height: 24px;
+  background: radial-gradient(ellipse, var(--shadow), transparent 70%);
+  pointer-events: none;
+}
+.gallery-cover {
+  position: absolute;
+  top: 49%;
+  left: 50%;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  width: 276px;
+  height: 304px;
+  padding: 12px;
+  border: 1px solid var(--line-strong);
+  border-top: 3px solid var(--accent);
+  background: var(--panel);
+  color: var(--text);
+  box-shadow: 0 16px 28px var(--shadow);
+  cursor: pointer;
+  transition:
+    transform 0.4s cubic-bezier(0.2, 0.7, 0.2, 1),
+    opacity 0.4s,
+    filter 0.4s;
+  backface-visibility: hidden;
+}
+.gallery-cover img {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  object-fit: contain;
+  filter: drop-shadow(0 8px 9px var(--shadow));
+}
+.gallery-cover span {
+  display: block;
+  overflow: hidden;
+  padding-top: 8px;
+  border-top: 1px solid var(--line);
+  font:
+    700 20px "Archivo Narrow",
+    sans-serif;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.gallery-cover[data-offset="0"] {
+  z-index: 5;
+  transform: translate(-50%, -50%);
+}
+.gallery-cover[data-offset="-1"] {
+  z-index: 4;
+  transform: translate(calc(-50% - 190px), -50%) rotateY(48deg) scale(0.78);
+}
+.gallery-cover[data-offset="1"] {
+  z-index: 4;
+  transform: translate(calc(-50% + 190px), -50%) rotateY(-48deg) scale(0.78);
+}
+.gallery-cover[data-offset="-2"] {
+  z-index: 3;
+  opacity: 0.65;
+  transform: translate(calc(-50% - 340px), -50%) rotateY(58deg) scale(0.62);
+}
+.gallery-cover[data-offset="2"] {
+  z-index: 3;
+  opacity: 0.65;
+  transform: translate(calc(-50% + 340px), -50%) rotateY(-58deg) scale(0.62);
+}
+.gallery-detail-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  gap: 14px;
+  margin-top: 15px;
+}
+.gallery-skin-details,
+.gallery-history-panel {
+  min-width: 0;
+  padding: 22px;
+  border: 1px solid var(--line);
+  background: var(--panel);
+}
+.gallery-skin-details {
+  border-left: 3px solid var(--accent);
+}
+.gallery-rarity {
+  color: var(--accent);
+  font-size: 12px;
+  text-transform: uppercase;
+}
+.gallery-skin-details h3 {
+  margin: 8px 0 3px;
+  font:
+    800 clamp(36px, 5vw, 58px)/1 "Archivo Narrow",
+    sans-serif;
+  text-transform: uppercase;
+  overflow-wrap: anywhere;
+}
+.gallery-skin-details p {
+  margin: 7px 0;
+  color: var(--muted);
+}
+.gallery-banner {
+  font-size: 13px;
+  text-transform: uppercase;
+}
+.gallery-value-block {
+  display: grid;
+  gap: 2px;
+  margin-top: 23px;
+}
+.gallery-value-block span {
+  color: var(--muted);
+  font-size: 12px;
+}
+.gallery-value-block strong {
+  color: var(--accent);
+  font:
+    800 49px/1 "Archivo Narrow",
+    sans-serif;
+}
+.gallery-history-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  color: var(--muted);
+  font-size: 12px;
+}
+.gallery-history-heading strong {
+  color: var(--text);
+}
+.gallery-history-heading button {
+  padding: 2px 6px;
+  border: 1px solid var(--line-strong);
+  background: var(--panel2);
+  color: var(--text);
+  cursor: pointer;
+}
+.gallery-chart {
+  display: block;
+  width: 100%;
+  height: 220px;
+  margin-top: 8px;
+  overflow: visible;
+}
+.gallery-chart-grid {
+  stroke: var(--chart-grid);
+  stroke-width: 1;
+}
+.gallery-chart-label {
+  fill: var(--chart-label);
+  font:
+    12px ui-monospace,
+    Consolas,
+    monospace;
+}
+.gallery-chart-line {
+  fill: none;
+  stroke: var(--accent);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 3;
+}
+.gallery-chart-dot {
+  fill: var(--accent);
+  stroke: var(--panel);
+  stroke-width: 2;
+}
+.gallery-history-summary {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+@media (max-width: 850px) {
+  .gallery-weapons {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .gallery-detail-grid {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 620px) {
+  .gallery-toolbar {
+    flex-wrap: wrap;
+  }
+  .gallery-jump {
+    width: 100%;
+  }
+  .gallery-jump select {
+    width: 100%;
+  }
+  .gallery-flow {
+    grid-template-columns: 38px minmax(0, 1fr) 38px;
+    gap: 3px;
+  }
+  .gallery-arrow {
+    width: 38px;
+    height: 48px;
+    font-size: 22px;
+  }
+  .gallery-stage {
+    height: 302px;
+  }
+  .gallery-cover {
+    width: 196px;
+    height: 231px;
+    padding: 9px;
+  }
+  .gallery-cover span {
+    font-size: 16px;
+  }
+  .gallery-cover[data-offset="-1"] {
+    transform: translate(calc(-50% - 125px), -50%) rotateY(48deg) scale(0.78);
+  }
+  .gallery-cover[data-offset="1"] {
+    transform: translate(calc(-50% + 125px), -50%) rotateY(-48deg) scale(0.78);
+  }
+  .gallery-cover[data-offset="-2"] {
+    transform: translate(calc(-50% - 225px), -50%) rotateY(58deg) scale(0.62);
+  }
+  .gallery-cover[data-offset="2"] {
+    transform: translate(calc(-50% + 225px), -50%) rotateY(-58deg) scale(0.62);
+  }
+}
+@media (max-width: 450px) {
+  .gallery-weapons {
+    grid-template-columns: 1fr;
+  }
+  .gallery-weapon {
+    min-height: 152px;
+  }
+  .gallery-skin-details,
+  .gallery-history-panel {
+    padding: 16px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .gallery-cover,
+  .gallery-weapon {
+    transition: none;
+  }
+}
 .inventory-view {
   padding-bottom: 60px;
 }
