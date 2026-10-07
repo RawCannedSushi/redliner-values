@@ -21,7 +21,7 @@ function animateDots() {
   plane.style.setProperty("--dot-y", `${currentY.toFixed(1)}px`);
   plane.style.setProperty(
     "--dot-core",
-    `${(currentRadius * 0.42).toFixed(1)}px`,
+    `${(currentRadius * 0.25).toFixed(1)}px`,
   );
   plane.style.setProperty("--dot-radius", `${currentRadius.toFixed(1)}px`);
   if (
@@ -52,7 +52,7 @@ window.addEventListener(
       currentX = targetX;
       currentY = targetY;
     }
-    targetRadius = 145;
+    targetRadius = 125;
     startAnimation();
   },
   { passive: true },

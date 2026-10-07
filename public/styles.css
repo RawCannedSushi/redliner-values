@@ -174,7 +174,7 @@ body.dots-interactive::before {
   );
 }
 .background-dot-plane::after {
-  background-image: radial-gradient(var(--grain) 1.45px, transparent 1.65px);
+  background-image: radial-gradient(var(--grain) 2px, transparent 2.2px);
   mask-image: radial-gradient(
     circle at var(--dot-x, -1000px) var(--dot-y, -1000px),
     #000 0 var(--dot-core, 0px),
