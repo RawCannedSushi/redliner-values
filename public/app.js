@@ -24,6 +24,16 @@ import {
   rarityColors,
 } from "./rarity-theme.js";
 
+function copyPngToClipboard(createPng) {
+  if (!navigator.clipboard?.write || typeof ClipboardItem === "undefined") {
+    throw new Error("Image clipboard is unavailable");
+  }
+  const png = createPng();
+  png.catch(() => {});
+  // Pass the pending PNG to ClipboardItem so the write starts during the click.
+  return navigator.clipboard.write([new ClipboardItem({ "image/png": png })]);
+}
+
 if (/^https:\/\/github\.com\/[\w.-]+\/[\w.-]+\/?$/.test(SOURCE_REPOSITORY)) {
   document.getElementById("source-link").href = SOURCE_REPOSITORY;
   document.getElementById("source-details").hidden = false;
@@ -918,6 +928,7 @@ function renderInventory() {
     items.reduce((sum, { skin, qty }) => sum + (skin.value || 0) * qty, 0),
   );
   $("inventory-export-png").disabled = !items.length || inventoryImageBusy;
+  $("inventory-copy-png").disabled = !items.length || inventoryImageBusy;
   items.forEach(({ skin: s, key, qty }) => {
     const card = element("article", "inventory-card");
     applyRarityAccent(card, s.rarity);
@@ -986,26 +997,33 @@ $("inventory-export").addEventListener("click", () => {
   link.click();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 });
-$("inventory-export-png").addEventListener("click", async () => {
+async function handleInventoryPng(copy) {
   const items = inventoryItems();
   if (!items.length || inventoryImageBusy) return;
-  const button = $("inventory-export-png");
+  const button = $(copy ? "inventory-copy-png" : "inventory-export-png");
   const status = $("inventory-image-status");
   inventoryImageBusy = true;
-  button.disabled = true;
-  button.textContent = "Creating PNG…";
+  $("inventory-export-png").disabled = true;
+  $("inventory-copy-png").disabled = true;
+  button.textContent = copy ? "Copying PNG…" : "Creating PNG…";
   status.textContent = "";
   try {
     const total = items.reduce(
       (sum, { skin, qty }) => sum + (skin.value || 0) * qty,
       0,
     );
-    const blob = await createInventoryPng({
+    const options = {
       items,
       total,
       skinPhotoUrl,
       fallbackPhotoUrl: PHOTO_FALLBACK,
-    });
+    };
+    if (copy) {
+      await copyPngToClipboard(() => createInventoryPng(options));
+      status.textContent = "PNG copied to clipboard.";
+      return;
+    }
+    const blob = await createInventoryPng(options);
     const url = URL.createObjectURL(blob);
     const link = element("a");
     const date = new Date();
@@ -1021,13 +1039,23 @@ $("inventory-export-png").addEventListener("click", async () => {
     link.remove();
     setTimeout(() => URL.revokeObjectURL(url), 60_000);
   } catch (error) {
-    status.textContent = "Couldn't create the PNG. Please try again.";
+    status.textContent = copy
+      ? "Couldn't copy the PNG. Try downloading it instead."
+      : "Couldn't create the PNG. Please try again.";
   } finally {
     inventoryImageBusy = false;
-    button.disabled = !inventoryItems().length;
-    button.textContent = "Export inventory as PNG";
+    const disabled = !inventoryItems().length;
+    $("inventory-export-png").disabled = disabled;
+    $("inventory-copy-png").disabled = disabled;
+    button.textContent = copy ? "Copy PNG" : "Export inventory as PNG";
   }
-});
+}
+$("inventory-export-png").addEventListener("click", () =>
+  handleInventoryPng(false),
+);
+$("inventory-copy-png").addEventListener("click", () =>
+  handleInventoryPng(true),
+);
 $("inventory-import").addEventListener("click", () =>
   $("inventory-file").click(),
 );
@@ -1358,6 +1386,7 @@ function renderTrade() {
   const snapshot = tradeSnapshot();
   const { entries, totals, hasBoth, delta, outcome, note } = snapshot;
   $("trade-export-png").disabled = !snapshot.hasBothSides || tradeImageBusy;
+  $("trade-copy-png").disabled = !snapshot.hasBothSides || tradeImageBusy;
   for (const side of ["give", "receive"]) {
     const list = $(side + "-items");
     list.replaceChildren();
@@ -1479,21 +1508,28 @@ function renderTrade() {
   $("trade-note").textContent = note;
   restoreFocus();
 }
-$("trade-export-png").addEventListener("click", async () => {
+async function handleTradePng(copy) {
   const snapshot = tradeSnapshot();
   if (!snapshot.hasBothSides || tradeImageBusy) return;
-  const button = $("trade-export-png");
+  const button = $(copy ? "trade-copy-png" : "trade-export-png");
   const status = $("trade-image-status");
   tradeImageBusy = true;
-  button.disabled = true;
-  button.textContent = "Creating PNG…";
+  $("trade-export-png").disabled = true;
+  $("trade-copy-png").disabled = true;
+  button.textContent = copy ? "Copying PNG…" : "Creating PNG…";
   status.textContent = "";
   try {
-    const blob = await createTradePng({
+    const options = {
       snapshot,
       skinPhotoUrl,
       fallbackPhotoUrl: PHOTO_FALLBACK,
-    });
+    };
+    if (copy) {
+      await copyPngToClipboard(() => createTradePng(options));
+      status.textContent = "PNG copied to clipboard.";
+      return;
+    }
+    const blob = await createTradePng(options);
     const url = URL.createObjectURL(blob);
     const link = element("a");
     const date = new Date();
@@ -1509,13 +1545,19 @@ $("trade-export-png").addEventListener("click", async () => {
     link.remove();
     setTimeout(() => URL.revokeObjectURL(url), 60_000);
   } catch {
-    status.textContent = "Couldn't create the PNG. Please try again.";
+    status.textContent = copy
+      ? "Couldn't copy the PNG. Try downloading it instead."
+      : "Couldn't create the PNG. Please try again.";
   } finally {
     tradeImageBusy = false;
-    button.disabled = !tradeSnapshot().hasBothSides;
-    button.textContent = "Export trade as PNG";
+    const disabled = !tradeSnapshot().hasBothSides;
+    $("trade-export-png").disabled = disabled;
+    $("trade-copy-png").disabled = disabled;
+    button.textContent = copy ? "Copy PNG" : "Export trade as PNG";
   }
-});
+}
+$("trade-export-png").addEventListener("click", () => handleTradePng(false));
+$("trade-copy-png").addEventListener("click", () => handleTradePng(true));
 $("sort").addEventListener("change", () => {
   render();
   renderHistory();
