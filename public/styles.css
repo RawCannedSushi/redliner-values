@@ -2581,14 +2581,6 @@ footer a:hover {
     #85bfdb
   );
 }
-.gallery-cover.gallery-exclusive-accent {
-  border-color: #8fbecd;
-  background: linear-gradient(150deg, var(--panel) 55%, #ceeaf066);
-}
-:root[data-theme="dark"] .gallery-cover.gallery-exclusive-accent {
-  border-color: #92cddd;
-  background: linear-gradient(150deg, var(--panel) 55%, #29414d);
-}
 .gallery-skin-details .gallery-untradable-status {
   display: inline-block;
   padding: 6px 9px;
