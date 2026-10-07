@@ -1445,26 +1445,6 @@ footer a:hover {
 .multi-filter .filter-options {
   top: calc(100% + 4px);
 }
-.sheet-view {
-  padding-bottom: 60px;
-}
-.sheet-frame {
-  background: var(--panel2);
-  border: 1px solid var(--line);
-  border-radius: 4px;
-  overflow: hidden;
-}
-.sheet-frame iframe {
-  display: block;
-  width: 100%;
-  height: 75vh;
-  min-height: 620px;
-  border: 0;
-}
-.sheet-view .footnote a {
-  color: var(--text);
-  text-underline-offset: 3px;
-}
 .discord-link {
   display: inline-flex;
   align-items: center;

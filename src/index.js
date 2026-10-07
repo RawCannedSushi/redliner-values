@@ -1,11 +1,6 @@
 import { fetchSkins } from "./sheet.js";
 import { getHistoryPage, recordSnapshot } from "./history.js";
 
-const SHEET_URL =
-  "https://docs.google.com/spreadsheets/d/" +
-  "1d6vnaRBKEao_okQ5uiodBj5cLpIj1cHfsfr8E-JB0ZQ/" +
-  "gviz/tq?tqx=out:json&sheet=Main%20Skins";
-
 function json(data, status = 200, headers = {}) {
   return Response.json(data, {
     status,
@@ -28,7 +23,7 @@ export default {
     if (url.pathname === "/api/skins") {
       // Refresh rechecks this shared cache; visitors cannot bypass upstream protection.
       cacheUrl = `${url.origin}/api/skins`;
-      load = () => fetchSkins(SHEET_URL);
+      load = () => fetchSkins(env);
     } else if (url.pathname === "/api/history") {
       const range = url.searchParams.get("range") || "7";
       if (!["1", "3", "7", "30", "90", "all"].includes(range))
@@ -69,7 +64,7 @@ export default {
     }
   },
   async scheduled(controller, env) {
-    const skins = await fetchSkins(SHEET_URL);
+    const skins = await fetchSkins(env);
     await recordSnapshot(env.DB, skins, new Date(controller.scheduledTime));
   },
 };

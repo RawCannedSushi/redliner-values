@@ -465,7 +465,6 @@ const viewPanels = {
   inventory: "inventory-view",
   trade: "trade",
   info: "info-view",
-  sheet: "sheet-view",
 };
 const viewTabs = [...document.querySelectorAll("[data-view]")];
 viewTabs.forEach((tab) => {
@@ -1541,8 +1540,7 @@ function switchView(view) {
     view === "trade" ||
     view === "gallery" ||
     view === "inventory" ||
-    view === "info" ||
-    view === "sheet";
+    view === "info";
   document.querySelectorAll("[data-view]").forEach((button) => {
     const active = button.dataset.view === view;
     button.classList.toggle("active", active);
