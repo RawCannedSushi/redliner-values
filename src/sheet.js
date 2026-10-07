@@ -32,14 +32,13 @@ export function parseSheetsApiResponse(body) {
   return skinsFromRows(data.values);
 }
 
-export async function fetchSkins(env) {
+export async function fetchSheetValues(env, range, valueRenderOption) {
   const sheetId = env.SHEET_ID;
   if (!/^[\w-]+$/.test(sheetId || ""))
     throw new Error("The value sheet ID is not configured.");
   if (!env.GOOGLE_SERVICE_ACCOUNT_JSON)
     throw new Error("The Google service account is not configured.");
-  const range = encodeURIComponent("'Main Skins'!A2:G");
-  const sheetUrl = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?valueRenderOption=UNFORMATTED_VALUE`;
+  const sheetUrl = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${encodeURIComponent(range)}?valueRenderOption=${valueRenderOption}`;
   const response = await fetch(sheetUrl, {
     headers: {
       Authorization: `Bearer ${await googleAccessToken(env.GOOGLE_SERVICE_ACCOUNT_JSON)}`,
@@ -49,7 +48,13 @@ export async function fetchSkins(env) {
   if (!response.ok) {
     throw new Error(`The value sheet returned HTTP ${response.status}.`);
   }
-  return parseSheetsApiResponse(await response.text());
+  return response.text();
+}
+
+export async function fetchSkins(env) {
+  return parseSheetsApiResponse(
+    await fetchSheetValues(env, "'Main Skins'!A2:G", "UNFORMATTED_VALUE"),
+  );
 }
 
 export function pricedSkinState(skins) {

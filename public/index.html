@@ -115,7 +115,7 @@
         </div>
       </section>
       <nav class="site-navigation" aria-label="Site navigation">
-        <div class="view-tabs" role="tablist" aria-label="Value pages">
+        <div class="view-tabs" role="tablist" aria-label="Site pages">
           <button
             type="button"
             class="active"
@@ -159,6 +159,14 @@
             aria-selected="false"
           >
             Info
+          </button>
+          <button
+            type="button"
+            data-view="scams"
+            role="tab"
+            aria-selected="false"
+          >
+            Scam List
           </button>
         </div>
         <button
@@ -837,6 +845,65 @@
             </dl>
           </article>
         </div>
+      </section>
+      <section
+        id="scam-view"
+        class="scam-view"
+        aria-labelledby="scam-title"
+        hidden
+      >
+        <div class="section-head">
+          <h2 id="scam-title">Scam List</h2>
+        </div>
+        <p id="scam-intro" class="scam-intro"></p>
+        <div id="scam-report" class="scam-report" hidden>
+          <p id="scam-report-text"></p>
+          <a
+            id="scam-report-link"
+            class="discord-link"
+            target="_blank"
+            rel="noopener noreferrer"
+            hidden
+            >Open a Discord ticket ↗</a
+          >
+        </div>
+        <div id="scam-guidance" class="scam-guidance" hidden>
+          <h3 id="scam-guide-title"></h3>
+          <div id="scam-definitions" class="scam-definitions"></div>
+        </div>
+        <aside id="scam-disclaimer" class="scam-disclaimer" hidden>
+          <h3 id="scam-disclaimer-title"></h3>
+          <p id="scam-disclaimer-body"></p>
+        </aside>
+        <div class="scam-list-heading">
+          <h3>Listed entries</h3>
+          <span id="scam-count" class="count"></span>
+        </div>
+        <p class="scam-source-note">
+          These entries come from the archives® community sheet. Read each
+          entry's context and the disclaimer above.
+        </p>
+        <label class="scam-search">
+          Search the list
+          <input
+            id="scam-search"
+            type="search"
+            placeholder="Name, ID, infraction…"
+            autocomplete="off"
+          />
+        </label>
+        <div
+          id="scam-status"
+          class="scam-status"
+          role="status"
+          aria-live="polite"
+        >
+          Loading the scam list…
+        </div>
+        <button id="scam-retry" class="refresh" type="button" hidden>
+          ↻ Retry
+        </button>
+        <div id="scam-entries" class="scam-entries"></div>
       </section>
     </main>
     <footer>

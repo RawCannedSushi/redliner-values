@@ -2,7 +2,7 @@
 
 [Visit the site](https://www.archivesvalues.com/)
 
-I made this to make the archives Redliner value sheet easier to use. You can look up skins, check value history, keep track of your inventory, and compare trades in one place. No account needed.
+I made this to make the archives Redliner value sheet easier to use. You can look up skins, check value history, keep track of your inventory, compare trades, and see the community Scam List in one place. No account needed.
 
 Values come from the archives sheet. They're a guide, so keep demand and your own preferences in mind before trading. The list and history check for updates about every 15 minutes, so changes won't always show up right away.
 

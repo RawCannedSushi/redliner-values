@@ -1,4 +1,5 @@
 import { fetchSkins } from "./sheet.js";
+import { fetchScamList } from "./scam-list.js";
 import { getHistoryPage, recordSnapshot } from "./history.js";
 
 function json(data, status = 200, headers = {}) {
@@ -24,6 +25,9 @@ export default {
       // Refresh rechecks this shared cache; visitors cannot bypass upstream protection.
       cacheUrl = `${url.origin}/api/skins`;
       load = () => fetchSkins(env);
+    } else if (url.pathname === "/api/scam-list") {
+      cacheUrl = `${url.origin}/api/scam-list`;
+      load = () => fetchScamList(env);
     } else if (url.pathname === "/api/history") {
       const range = url.searchParams.get("range") || "7";
       if (!["1", "3", "7", "30", "90", "all"].includes(range))

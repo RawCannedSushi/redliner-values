@@ -15,6 +15,7 @@ import {
 import { SKIN_PHOTO_FILES } from "./skin-photo-manifest.js";
 import { createInventoryPng } from "./inventory-image.js";
 import { createSkinGallery } from "./skin-gallery.js";
+import { createScamList } from "./scam-list.js";
 import {
   applyRarityAccent,
   lightChartColors,
@@ -457,6 +458,7 @@ const chartZoom = createChartZoom(
   $("chart-zoom-tools"),
   renderHistory,
 );
+const scamList = createScamList();
 let activeView = "list";
 const viewPanels = {
   list: "list-view",
@@ -465,6 +467,7 @@ const viewPanels = {
   inventory: "inventory-view",
   trade: "trade",
   info: "info-view",
+  scams: "scam-view",
 };
 const viewTabs = [...document.querySelectorAll("[data-view]")];
 viewTabs.forEach((tab) => {
@@ -1540,7 +1543,8 @@ function switchView(view) {
     view === "trade" ||
     view === "gallery" ||
     view === "inventory" ||
-    view === "info";
+    view === "info" ||
+    view === "scams";
   document.querySelectorAll("[data-view]").forEach((button) => {
     const active = button.dataset.view === view;
     button.classList.toggle("active", active);
@@ -1553,6 +1557,7 @@ function switchView(view) {
     else renderHistory();
   }
   if (view === "gallery") gallery.enter();
+  if (view === "scams") scamList.enter();
   if (view === "inventory") {
     renderInventory();
   }
