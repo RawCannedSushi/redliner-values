@@ -35,7 +35,6 @@
   --geometry-strong: #bfc1bb;
   --contour: #24282b1e;
   --grain: #25282a20;
-  --grain-ripple: #25282a99;
   --intro-secondary: #777b7b;
 }
 :root[data-theme="dark"] {
@@ -75,7 +74,6 @@
   --geometry-strong: #292d31;
   --contour: #c8ccce1b;
   --grain: #dce0e51a;
-  --grain-ripple: #dce0e599;
   --intro-secondary: #b0b0ad;
 }
 .skin-rarity-accent {
@@ -145,21 +143,42 @@ body::before {
     5px 5px;
   mask-image: linear-gradient(to bottom, #000 0 62%, transparent 100%);
 }
-body::after {
-  content: "";
+body.dots-interactive::before {
+  background: repeating-radial-gradient(
+    ellipse at 87% 8%,
+    transparent 0 23px,
+    var(--contour) 24px 25px,
+    transparent 26px 46px
+  );
+}
+.background-dot-plane {
   position: fixed;
   inset: 0;
   z-index: -1;
   pointer-events: none;
-  background: radial-gradient(var(--grain-ripple) 1px, transparent 1.3px);
+  mask-image: linear-gradient(to bottom, #000 0 62%, transparent 100%);
+}
+.background-dot-plane::before,
+.background-dot-plane::after {
+  content: "";
+  position: absolute;
+  inset: 0;
   background-size: 5px 5px;
-  opacity: var(--ripple-opacity, 0);
+}
+.background-dot-plane::before {
+  background-image: radial-gradient(var(--grain) 0.65px, transparent 0.85px);
   mask-image: radial-gradient(
-    circle at var(--ripple-x, 50%) var(--ripple-y, 50%),
-    transparent calc(var(--ripple-radius, 0px) - 30px),
-    #000 calc(var(--ripple-radius, 0px) - 10px),
-    #000 calc(var(--ripple-radius, 0px) + 10px),
-    transparent calc(var(--ripple-radius, 0px) + 32px)
+    circle at var(--dot-x, -1000px) var(--dot-y, -1000px),
+    transparent 0 var(--dot-core, 0px),
+    #000 var(--dot-radius, 0px)
+  );
+}
+.background-dot-plane::after {
+  background-image: radial-gradient(var(--grain) 1.45px, transparent 1.65px);
+  mask-image: radial-gradient(
+    circle at var(--dot-x, -1000px) var(--dot-y, -1000px),
+    #000 0 var(--dot-core, 0px),
+    transparent var(--dot-radius, 0px)
   );
 }
 button,
