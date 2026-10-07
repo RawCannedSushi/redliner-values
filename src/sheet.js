@@ -1,12 +1,8 @@
 import { googleAccessToken } from "./google-auth.js";
 
-const RESPONSE_PATTERN =
-  /google\.visualization\.Query\.setResponse\((\{[\s\S]*\})\);?\s*$/;
-
 function skinsFromRows(rows) {
   const skins = rows
-    .map((cells, index) => ({
-      id: index,
+    .map((cells) => ({
       rarity: String(cells[0] ?? "").trim(),
       collection: String(cells[1] ?? "").trim(),
       weapon: String(cells[2] ?? "").trim(),
@@ -15,7 +11,8 @@ function skinsFromRows(rows) {
       demand: String(cells[5] ?? "").trim(),
       trend: String(cells[6] ?? "").trim(),
     }))
-    .filter((skin) => skin.name && skin.rarity);
+    .filter((skin) => skin.name && skin.rarity)
+    .map((skin, id) => ({ id, ...skin }));
 
   if (!skins.length) throw new Error("No skins were found in the sheet.");
   const identities = new Set();
@@ -26,29 +23,6 @@ function skinsFromRows(rows) {
     identities.add(identity);
   }
   return skins;
-}
-
-export function parseSheetResponse(body) {
-  const match = body.match(RESPONSE_PATTERN);
-  if (!match) throw new Error("The sheet returned an unexpected response.");
-
-  const response = JSON.parse(match[1]);
-  if (response.status !== "ok" || !Array.isArray(response.table?.rows)) {
-    throw new Error("The skin list is unavailable.");
-  }
-
-  return skinsFromRows(
-    response.table.rows.map((row) =>
-      (row.c || []).map((cell) => {
-        if (!cell || cell.v == null) return "";
-        return typeof cell.v === "number"
-          ? cell.v
-          : cell.f !== undefined
-            ? cell.f
-            : cell.v;
-      }),
-    ),
-  );
 }
 
 export function parseSheetsApiResponse(body) {
@@ -62,25 +36,20 @@ export async function fetchSkins(env) {
   const sheetId = env.SHEET_ID;
   if (!/^[\w-]+$/.test(sheetId || ""))
     throw new Error("The value sheet ID is not configured.");
-  const privateSheet = Boolean(env.GOOGLE_SERVICE_ACCOUNT_JSON);
+  if (!env.GOOGLE_SERVICE_ACCOUNT_JSON)
+    throw new Error("The Google service account is not configured.");
   const range = encodeURIComponent("'Main Skins'!A2:G");
-  const sheetUrl = privateSheet
-    ? `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?valueRenderOption=UNFORMATTED_VALUE`
-    : `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&sheet=Main%20Skins`;
-  const headers = privateSheet
-    ? {
-        Authorization: `Bearer ${await googleAccessToken(env.GOOGLE_SERVICE_ACCOUNT_JSON)}`,
-      }
-    : {};
+  const sheetUrl = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?valueRenderOption=UNFORMATTED_VALUE`;
   const response = await fetch(sheetUrl, {
-    headers,
+    headers: {
+      Authorization: `Bearer ${await googleAccessToken(env.GOOGLE_SERVICE_ACCOUNT_JSON)}`,
+    },
     signal: AbortSignal.timeout(15000),
   });
   if (!response.ok) {
     throw new Error(`The value sheet returned HTTP ${response.status}.`);
   }
-  const body = await response.text();
-  return privateSheet ? parseSheetsApiResponse(body) : parseSheetResponse(body);
+  return parseSheetsApiResponse(await response.text());
 }
 
 export function pricedSkinState(skins) {
