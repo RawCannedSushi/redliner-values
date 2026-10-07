@@ -141,6 +141,9 @@ body::before {
   background-size:
     auto,
     5px 5px;
+  background-position:
+    0 0,
+    var(--dot-drift-x, 0px) var(--dot-drift-y, 0px);
   mask-image: linear-gradient(to bottom, #000 0 62%, transparent 100%);
 }
 button,

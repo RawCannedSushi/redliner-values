@@ -1,3 +1,5 @@
+import "./background-dots.js";
+
 const key = "archives-redliner-theme";
 const root = document.documentElement;
 const media = matchMedia("(prefers-color-scheme: dark)");
