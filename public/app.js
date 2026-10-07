@@ -1371,8 +1371,13 @@ function renderTrade() {
       applyRarityAccent(row, skin.rarity);
       photo.append(skinPhoto(skin));
       const description = skin.name + " (" + skin.weapon + ") you " + side;
-      title.append(
+      const nameLine = element("div", "trade-item-name");
+      nameLine.append(
         element("strong", "", skin.name),
+        element("span", "trade-item-count", "×" + item.quantity),
+      );
+      title.append(
+        nameLine,
         element(
           "small",
           "",

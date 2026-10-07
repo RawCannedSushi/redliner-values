@@ -816,12 +816,27 @@ button:disabled {
   grid-row: 1;
   min-width: 0;
 }
+.trade-item-name {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
 .trade-item-title strong {
   display: block;
+  min-width: 0;
   font-size: 21px;
   line-height: 1.2;
   text-transform: uppercase;
   overflow-wrap: anywhere;
+}
+.trade-item-count {
+  flex: none;
+  color: var(--text);
+  font:
+    700 29px/1 "Archivo Narrow",
+    sans-serif;
+  font-variant-numeric: tabular-nums;
 }
 .trade-item-title small {
   display: block;

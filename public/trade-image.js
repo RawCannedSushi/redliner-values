@@ -81,7 +81,15 @@ function drawCard(ctx, { skin, qty }, photo, x, y) {
   drawPhoto(ctx, photo, x + 12, y + 19, 115, 107);
   const textX = x + 142;
   ctx.fillStyle = "#f2f0e9";
-  fittedText(ctx, skin.name, textX, y + 43, CARD_WIDTH - 158, 26);
+  fittedText(ctx, skin.name, textX, y + 43, CARD_WIDTH - 238, 26);
+  ctx.fillStyle = "#30363a";
+  ctx.fillRect(x + CARD_WIDTH - 88, y + 16, 72, 40);
+  ctx.strokeStyle = "#687073";
+  ctx.strokeRect(x + CARD_WIDTH - 87.5, y + 16.5, 71, 39);
+  ctx.fillStyle = "#f2f0e9";
+  ctx.textAlign = "center";
+  fittedText(ctx, `×${qty}`, x + CARD_WIDTH - 52, y + 45, 62, 30, 22);
+  ctx.textAlign = "left";
   ctx.fillStyle = "#aeb6b8";
   ctx.font = '17px "Archivo Narrow", Arial, sans-serif';
   ctx.fillText(
@@ -98,7 +106,7 @@ function drawCard(ctx, { skin, qty }, photo, x, y) {
 
   ctx.fillStyle = "#aeb6b8";
   ctx.font = "15px ui-monospace, Consolas, monospace";
-  ctx.fillText(`×${qty}  EACH`, textX, y + 105);
+  ctx.fillText("EACH", textX, y + 105);
   ctx.textAlign = "right";
   ctx.fillText("TOTAL", x + CARD_WIDTH - 15, y + 105);
   ctx.fillStyle = "#f2f0e9";
