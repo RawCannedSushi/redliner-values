@@ -5,6 +5,7 @@ export const rarityColors = {
   Elite: "#bd8be2",
   Rare: "#65a5e4",
   Uncommon: "#94ae90",
+  Common: "#9ba3a9",
 };
 
 export const lightChartColors = {
@@ -14,6 +15,7 @@ export const lightChartColors = {
   Elite: "#704685",
   Rare: "#235a78",
   Uncommon: "#456346",
+  Common: "#515c63",
 };
 
 const rarityGradients = {

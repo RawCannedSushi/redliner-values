@@ -2589,7 +2589,7 @@ footer a:hover {
   border-color: #92cddd;
   background: linear-gradient(150deg, var(--panel) 55%, #29414d);
 }
-.gallery-skin-details .gallery-exclusive-status {
+.gallery-skin-details .gallery-untradable-status {
   display: inline-block;
   padding: 6px 9px;
   border: 1px solid var(--skin-ink);
