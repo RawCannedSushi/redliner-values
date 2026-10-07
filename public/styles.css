@@ -35,6 +35,7 @@
   --geometry-strong: #bfc1bb;
   --contour: #24282b1e;
   --grain: #25282a20;
+  --grain-ripple: #25282a99;
   --intro-secondary: #777b7b;
 }
 :root[data-theme="dark"] {
@@ -74,6 +75,7 @@
   --geometry-strong: #292d31;
   --contour: #c8ccce1b;
   --grain: #dce0e51a;
+  --grain-ripple: #dce0e599;
   --intro-secondary: #b0b0ad;
 }
 .skin-rarity-accent {
@@ -141,10 +143,24 @@ body::before {
   background-size:
     auto,
     5px 5px;
-  background-position:
-    0 0,
-    var(--dot-drift-x, 0px) var(--dot-drift-y, 0px);
   mask-image: linear-gradient(to bottom, #000 0 62%, transparent 100%);
+}
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(var(--grain-ripple) 1px, transparent 1.3px);
+  background-size: 5px 5px;
+  opacity: var(--ripple-opacity, 0);
+  mask-image: radial-gradient(
+    circle at var(--ripple-x, 50%) var(--ripple-y, 50%),
+    transparent calc(var(--ripple-radius, 0px) - 30px),
+    #000 calc(var(--ripple-radius, 0px) - 10px),
+    #000 calc(var(--ripple-radius, 0px) + 10px),
+    transparent calc(var(--ripple-radius, 0px) + 32px)
+  );
 }
 button,
 input,
