@@ -245,14 +245,19 @@ export function createSkinGallery({ photoUrl, skinKey, fmt }) {
 
   function buildCovers(preferredKey) {
     setExpanded(false, true);
-    weaponSkins = skins
-      .filter((skin) => skin.weapon === weapon)
-      .sort(
-        (a, b) =>
-          Number(!!b.exclusive) - Number(!!a.exclusive) ||
-          (b.value ?? -1) - (a.value ?? -1) ||
-          a.name.localeCompare(b.name),
-      );
+    weaponSkins = skins.filter((skin) => skin.weapon === weapon);
+    const hasExclusive = weaponSkins.some((skin) => skin.exclusive);
+    const exclusiveRank = (skin) => {
+      if (skin.rarity === "Classified") return 0;
+      if (skin.rarity === "Direct Classified") return 1;
+      return skin.exclusive ? 2 : 3;
+    };
+    weaponSkins.sort(
+      (a, b) =>
+        (hasExclusive ? exclusiveRank(a) - exclusiveRank(b) : 0) ||
+        (b.value ?? -1) - (a.value ?? -1) ||
+        a.name.localeCompare(b.name),
+    );
     if (!weaponSkins.length) {
       weapon = null;
       $("gallery-chooser").hidden = false;
