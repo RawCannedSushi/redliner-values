@@ -158,28 +158,23 @@ body.dots-interactive::before {
   pointer-events: none;
   mask-image: linear-gradient(to bottom, #000 0 62%, transparent 100%);
 }
-.background-dot-plane::before,
-.background-dot-plane::after {
+.background-dot-plane::before {
   content: "";
   position: absolute;
   inset: 0;
   background-size: 5px 5px;
-}
-.background-dot-plane::before {
   background-image: radial-gradient(var(--grain) 0.65px, transparent 0.85px);
   mask-image: radial-gradient(
     circle at var(--dot-x, -1000px) var(--dot-y, -1000px),
-    transparent 0 var(--dot-core, 0px),
+    transparent 0 var(--dot-radius, 0px),
     #000 var(--dot-radius, 0px)
   );
 }
-.background-dot-plane::after {
-  background-image: radial-gradient(var(--grain) 2px, transparent 2.2px);
-  mask-image: radial-gradient(
-    circle at var(--dot-x, -1000px) var(--dot-y, -1000px),
-    #000 0 var(--dot-core, 0px),
-    transparent var(--dot-radius, 0px)
-  );
+.background-dot-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
 }
 button,
 input,
