@@ -4,6 +4,7 @@ const $ = (id) => document.getElementById(id);
 const PHOTO_FALLBACK = "/skin-photos/unknown.png";
 const DEFAULT_SKINS = [
   "Castigate",
+  "Liberator",
   "Monarch",
   "Phoenix",
   "Redliner",

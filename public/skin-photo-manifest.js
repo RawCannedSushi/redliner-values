@@ -8,6 +8,7 @@ export const SKIN_PHOTO_FILES = [
   "Cavalry-Redliner.png",
   "Cobwebs-Monarch.png",
   "Default-Castigate.png",
+  "Default-Liberator.png",
   "Default-Monarch.png",
   "Default-Phoenix.png",
   "Default-Redliner.png",
