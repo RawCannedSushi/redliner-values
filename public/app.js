@@ -14,6 +14,7 @@ import {
 } from "./google-drive-sync.js";
 import { SKIN_PHOTO_FILES } from "./skin-photo-manifest.js";
 import { createInventoryPng } from "./inventory-image.js";
+import { createTradePng } from "./trade-image.js";
 import { createSkinGallery } from "./skin-gallery.js";
 import { createScamList } from "./scam-list.js";
 import {
@@ -397,6 +398,7 @@ const chartColors = {
 };
 let skins = [];
 const trade = { give: [], receive: [] };
+let tradeImageBusy = false;
 const selectedFilters = {
   rarity: new Set(["Classified", "Direct Classified", "Exotic", "Elite"]),
   collection: new Set(),
@@ -1296,16 +1298,12 @@ function closeTradePicker(side) {
   $(side + "-trigger").setAttribute("aria-expanded", "false");
   $(side + "-search").value = "";
 }
-function renderTrade() {
-  const restoreFocus = rememberControlFocus($("trade"));
+function tradeSnapshot() {
+  const entries = { give: [], receive: [] };
   const totals = { give: 0, receive: 0 };
   let incomplete = false;
   for (const side of ["give", "receive"]) {
-    const list = $(side + "-items");
-    list.replaceChildren();
-    if (!trade[side].length)
-      list.append(element("div", "trade-empty", "No skins added yet."));
-    trade[side].forEach((item, index) => {
+    entries[side] = trade[side].map((item) => {
       const skin = skins.find((s) => skinKey(s) === item.key) || {
         name: item.key.split("\u001f")[1],
         weapon: item.key.split("\u001f")[0],
@@ -1313,6 +1311,59 @@ function renderTrade() {
       };
       if (skin.value === null) incomplete = true;
       totals[side] += (skin.value ?? 0) * item.quantity;
+      return { item, skin, qty: item.quantity };
+    });
+  }
+  const hasBothSides = !!(entries.give.length && entries.receive.length);
+  const hasBoth = hasBothSides && !incomplete;
+  const delta = totals.receive - totals.give;
+  const outcome = !hasBoth
+    ? "empty"
+    : Math.abs(delta) <= 100
+      ? "fair"
+      : delta > 100
+        ? "win"
+        : "loss";
+  const percent =
+    hasBoth && totals.give > 0
+      ? (delta > 0 ? "+" : "") +
+        ((delta / totals.give) * 100).toFixed(1) +
+        "% of what you give"
+      : "";
+  const note = incomplete
+    ? "Remove unpriced skins to compare complete totals."
+    : !hasBoth
+      ? "Add skins to both sides to compare."
+      : delta === 0
+        ? "Both sides total " + fmt(totals.give) + "."
+        : outcome === "fair"
+          ? "Within 100 value of an even trade."
+          : outcome === "win"
+            ? "You receive more value than you give."
+            : "You give more value than you receive.";
+  return {
+    entries,
+    totals,
+    incomplete,
+    hasBothSides,
+    hasBoth,
+    delta,
+    outcome,
+    percent,
+    note,
+  };
+}
+function renderTrade() {
+  const restoreFocus = rememberControlFocus($("trade"));
+  const snapshot = tradeSnapshot();
+  const { entries, totals, hasBoth, delta, outcome, note } = snapshot;
+  $("trade-export-png").disabled = !snapshot.hasBothSides || tradeImageBusy;
+  for (const side of ["give", "receive"]) {
+    const list = $(side + "-items");
+    list.replaceChildren();
+    if (!entries[side].length)
+      list.append(element("div", "trade-empty", "No skins added yet."));
+    entries[side].forEach(({ item, skin }, index) => {
       const row = element("div", "trade-item"),
         title = element("div", "trade-item-title"),
         photo = element("div", "trade-item-photo"),
@@ -1401,15 +1452,6 @@ function renderTrade() {
     });
     $(side + "-total").textContent = fmt(totals[side]);
   }
-  const delta = totals.receive - totals.give,
-    hasBoth = !incomplete && trade.give.length && trade.receive.length;
-  const outcome = !hasBoth
-    ? "empty"
-    : Math.abs(delta) <= 100
-      ? "fair"
-      : delta > 100
-        ? "win"
-        : "loss";
   $("trade-summary").dataset.state = outcome;
   $("difference").textContent = hasBoth
     ? (delta > 0 ? "+" : "") + fmt(delta)
@@ -1427,25 +1469,48 @@ function renderTrade() {
     ],
   );
   const percent = $("trade-percent");
-  percent.hidden = !hasBoth || totals.give === 0;
-  percent.textContent = percent.hidden
-    ? ""
-    : (delta > 0 ? "+" : "") +
-      ((delta / totals.give) * 100).toFixed(1) +
-      "% of what you give";
-  $("trade-note").textContent = incomplete
-    ? "Remove unpriced skins to compare complete totals."
-    : !hasBoth
-      ? "Add skins to both sides to compare."
-      : delta === 0
-        ? "Both sides total " + fmt(totals.give) + "."
-        : outcome === "fair"
-          ? "Within 100 value of an even trade."
-          : outcome === "win"
-            ? "You receive more value than you give."
-            : "You give more value than you receive.";
+  percent.hidden = !snapshot.percent;
+  percent.textContent = snapshot.percent;
+  $("trade-note").textContent = note;
   restoreFocus();
 }
+$("trade-export-png").addEventListener("click", async () => {
+  const snapshot = tradeSnapshot();
+  if (!snapshot.hasBothSides || tradeImageBusy) return;
+  const button = $("trade-export-png");
+  const status = $("trade-image-status");
+  tradeImageBusy = true;
+  button.disabled = true;
+  button.textContent = "Creating PNG…";
+  status.textContent = "";
+  try {
+    const blob = await createTradePng({
+      snapshot,
+      skinPhotoUrl,
+      fallbackPhotoUrl: PHOTO_FALLBACK,
+    });
+    const url = URL.createObjectURL(blob);
+    const link = element("a");
+    const date = new Date();
+    const dateStamp = [
+      date.getFullYear(),
+      String(date.getMonth() + 1).padStart(2, "0"),
+      String(date.getDate()).padStart(2, "0"),
+    ].join("-");
+    link.href = url;
+    link.download = `archives-trade-${dateStamp}.png`;
+    document.body.append(link);
+    link.click();
+    link.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 60_000);
+  } catch {
+    status.textContent = "Couldn't create the PNG. Please try again.";
+  } finally {
+    tradeImageBusy = false;
+    button.disabled = !tradeSnapshot().hasBothSides;
+    button.textContent = "Export trade as PNG";
+  }
+});
 $("sort").addEventListener("change", () => {
   render();
   renderHistory();

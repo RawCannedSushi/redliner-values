@@ -3003,14 +3003,16 @@ footer a:hover {
   color: var(--muted);
   font-size: 13px;
 }
-.inventory-image-export {
+.inventory-image-export,
+.trade-image-export {
   display: flex;
   align-items: center;
   gap: 12px;
   flex-wrap: wrap;
   margin-top: 20px;
 }
-.inventory-image-export button {
+.inventory-image-export button,
+.trade-image-export button {
   padding: 10px 15px;
   border: 1px solid var(--accent);
   border-radius: 4px;
@@ -3022,15 +3024,19 @@ footer a:hover {
   cursor: pointer;
 }
 .inventory-image-export button:not(:disabled):hover,
-.inventory-image-export button:not(:disabled):focus-visible {
+.inventory-image-export button:not(:disabled):focus-visible,
+.trade-image-export button:not(:disabled):hover,
+.trade-image-export button:not(:disabled):focus-visible {
   background: var(--accent);
   color: var(--accent-on);
 }
-.inventory-image-export button:disabled {
+.inventory-image-export button:disabled,
+.trade-image-export button:disabled {
   opacity: 0.55;
   cursor: default;
 }
-.inventory-image-export span {
+.inventory-image-export span,
+.trade-image-export span {
   color: var(--muted);
   font-size: 13px;
 }
