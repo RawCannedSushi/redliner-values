@@ -2,6 +2,36 @@ import { applyRarityAccent } from "./rarity-theme.js";
 
 const $ = (id) => document.getElementById(id);
 const PHOTO_FALLBACK = "/skin-photos/unknown.png";
+const GOLDEN_EAGLE = Object.freeze({
+  name: "Golden Eagle",
+  weapon: "Castigate",
+  rarity: "Exclusive",
+  value: null,
+  exclusive: true,
+  achievement: "Castigate Max",
+  requirement: "Get 5,000 kills with the Castigate.",
+});
+const ACCENT_PROPERTIES = [
+  "--rarity",
+  "--skin-paint-light",
+  "--skin-paint-vertical-light",
+  "--skin-paint-dark",
+  "--skin-paint-vertical-dark",
+  "--skin-ink-light",
+  "--skin-ink-dark",
+];
+
+function applyGalleryAccent(element, skin) {
+  element.classList.toggle("gallery-exclusive-accent", !!skin.exclusive);
+  if (skin.exclusive) {
+    element.classList.add("skin-rarity-accent");
+    element.classList.remove("classified-gradient");
+    for (const property of ACCENT_PROPERTIES)
+      element.style.removeProperty(property);
+  } else {
+    applyRarityAccent(element, skin.rarity);
+  }
+}
 
 export function skinHistorySeries(events, identity) {
   const points = [];
@@ -168,21 +198,26 @@ export function createSkinGallery({ photoUrl, skinKey, fmt }) {
     for (const name of [...groups.keys()].sort((a, b) => a.localeCompare(b))) {
       const group = groups.get(name);
       let featured = group.find(
-        (skin) => skinKey(skin) === featuredSkinByWeapon.get(name),
+        (skin) =>
+          !skin.exclusive && skinKey(skin) === featuredSkinByWeapon.get(name),
       );
       if (!featured) {
         const pictured = group.filter(
-          (skin) => photoUrl(skin) !== PHOTO_FALLBACK,
+          (skin) => !skin.exclusive && photoUrl(skin) !== PHOTO_FALLBACK,
         );
-        const choices = pictured.length ? pictured : group;
-        featured = choices[Math.floor(Math.random() * choices.length)];
+        const choices = pictured.length
+          ? pictured
+          : group.filter((skin) => !skin.exclusive);
+        const featuredChoices = choices.length ? choices : group;
+        featured =
+          featuredChoices[Math.floor(Math.random() * featuredChoices.length)];
         featuredSkinByWeapon.set(name, skinKey(featured));
       }
       const button = document.createElement("button");
       button.type = "button";
       button.className = "gallery-weapon";
       button.setAttribute("aria-label", `Explore ${name} skins`);
-      applyRarityAccent(button, featured.rarity);
+      applyGalleryAccent(button, featured);
       const text = document.createElement("span");
       text.className = "gallery-weapon-copy";
       const title = document.createElement("strong");
@@ -205,7 +240,7 @@ export function createSkinGallery({ photoUrl, skinKey, fmt }) {
     $("gallery-chooser").hidden = true;
     $("gallery-explore").hidden = false;
     $("gallery-stage").focus({ preventScroll: true });
-    ensureHistory();
+    if (!weaponSkins[index].exclusive) ensureHistory();
   }
 
   function buildCovers(preferredKey) {
@@ -214,7 +249,9 @@ export function createSkinGallery({ photoUrl, skinKey, fmt }) {
       .filter((skin) => skin.weapon === weapon)
       .sort(
         (a, b) =>
-          (b.value ?? -1) - (a.value ?? -1) || a.name.localeCompare(b.name),
+          Number(!!b.exclusive) - Number(!!a.exclusive) ||
+          (b.value ?? -1) - (a.value ?? -1) ||
+          a.name.localeCompare(b.name),
       );
     if (!weaponSkins.length) {
       weapon = null;
@@ -243,8 +280,13 @@ export function createSkinGallery({ photoUrl, skinKey, fmt }) {
       const button = document.createElement("button");
       button.type = "button";
       button.className = "gallery-cover";
-      button.setAttribute("aria-label", `${skin.name}, ${skin.weapon}`);
-      applyRarityAccent(button, skin.rarity);
+      button.setAttribute(
+        "aria-label",
+        skin.exclusive
+          ? `${skin.name}, ${skin.weapon}, Exclusive, untradable`
+          : `${skin.name}, ${skin.weapon}`,
+      );
+      applyGalleryAccent(button, skin);
       const inner = document.createElement("span");
       inner.className = "gallery-cover-inner";
       const art = document.createElement("span");
@@ -280,6 +322,7 @@ export function createSkinGallery({ photoUrl, skinKey, fmt }) {
     setExpanded(false);
     index = bounded;
     renderCurrent();
+    if (!weaponSkins[index].exclusive) ensureHistory();
   }
 
   function renderCoverState() {
@@ -300,7 +343,7 @@ export function createSkinGallery({ photoUrl, skinKey, fmt }) {
     resetParallax();
     const skin = weaponSkins[index];
     if (!skin) return;
-    applyRarityAccent($("gallery-explore"), skin.rarity);
+    applyGalleryAccent($("gallery-explore"), skin);
     coverButtons.forEach((button, buttonIndex) => {
       const offset = buttonIndex - index;
       button.hidden = Math.abs(offset) > 2;
@@ -321,6 +364,17 @@ export function createSkinGallery({ photoUrl, skinKey, fmt }) {
     $("gallery-rarity").textContent = skin.rarity || "Unknown rarity";
     $("gallery-skin-name").textContent = skin.name;
     $("gallery-skin-meta").textContent = skin.weapon;
+    $("gallery-banner").hidden = !!skin.exclusive;
+    $("gallery-value-block").hidden = !!skin.exclusive;
+    $("gallery-demand").hidden = !!skin.exclusive;
+    $("gallery-history-panel").hidden = !!skin.exclusive;
+    $("gallery-exclusive-status").hidden = !skin.exclusive;
+    $("gallery-exclusive-panel").hidden = !skin.exclusive;
+    if (skin.exclusive) {
+      $("gallery-exclusive-achievement").textContent = skin.achievement;
+      $("gallery-exclusive-requirement").textContent = skin.requirement;
+      return;
+    }
     $("gallery-banner").textContent =
       `BANNER / ${skin.collection || "Unknown"}`;
     $("gallery-value").textContent =
@@ -344,7 +398,7 @@ export function createSkinGallery({ photoUrl, skinKey, fmt }) {
 
   function renderChart() {
     const skin = weaponSkins[index];
-    if (!skin) return;
+    if (!skin || skin.exclusive) return;
     if (!history) {
       clearChart(
         historyError
@@ -544,7 +598,7 @@ export function createSkinGallery({ photoUrl, skinKey, fmt }) {
   return {
     enter() {
       active = true;
-      if (weapon && !history) ensureHistory();
+      if (weapon && !history && !weaponSkins[index]?.exclusive) ensureHistory();
     },
     leave() {
       active = false;
@@ -555,7 +609,7 @@ export function createSkinGallery({ photoUrl, skinKey, fmt }) {
     },
     refresh(nextSkins) {
       const selectedKey = weaponSkins[index] && skinKey(weaponSkins[index]);
-      skins = nextSkins;
+      skins = [...nextSkins, GOLDEN_EAGLE];
       renderWeapons();
       historyRequest?.abort();
       historyRequest = null;
@@ -564,7 +618,7 @@ export function createSkinGallery({ photoUrl, skinKey, fmt }) {
       historyError = false;
       if (weapon) {
         buildCovers(selectedKey);
-        if (weapon && active) ensureHistory();
+        if (weapon && active && !weaponSkins[index]?.exclusive) ensureHistory();
       }
     },
   };

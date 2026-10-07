@@ -11,7 +11,16 @@ function skinsFromRows(rows) {
       demand: String(cells[5] ?? "").trim(),
       trend: String(cells[6] ?? "").trim(),
     }))
-    .filter((skin) => skin.name && skin.rarity)
+    .filter(
+      (skin) =>
+        skin.name &&
+        skin.rarity &&
+        skin.rarity.toLowerCase() !== "exclusive" &&
+        !(
+          skin.weapon.toLowerCase() === "castigate" &&
+          skin.name.toLowerCase() === "golden eagle"
+        ),
+    )
     .map((skin, id) => ({ id, ...skin }));
 
   if (!skins.length) throw new Error("No skins were found in the sheet.");

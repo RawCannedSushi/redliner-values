@@ -18,6 +18,7 @@ export const SKIN_PHOTO_FILES = [
   "Funeralist-Castigate.png",
   "Geometric-Castigate.png",
   "Glass-Redliner.png",
+  "GoldenEagle-Castigate.png",
   "Goldrose-Castigate.png",
   "Graffiti-Redliner.png",
   "Grimm-Castigate.png",

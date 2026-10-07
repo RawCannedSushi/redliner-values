@@ -2549,6 +2549,92 @@ footer a:hover {
   margin: 7px 0;
   color: var(--muted);
 }
+.gallery-exclusive-accent {
+  --skin-ink-light: #286d80;
+  --skin-ink-dark: #c4f1ff;
+  --skin-paint-light: linear-gradient(
+    105deg,
+    #6baec9,
+    #d9f5fa 38%,
+    #9bcde0 64%,
+    #f0fbff 82%,
+    #70b2d0
+  );
+  --skin-paint-vertical-light: linear-gradient(
+    to bottom,
+    #6baec9,
+    #e2f8fc,
+    #8ec9e1
+  );
+  --skin-paint-dark: linear-gradient(
+    105deg,
+    #62aaca,
+    #c4edfa 38%,
+    #85bfdb 64%,
+    #e8faff 82%,
+    #6baacb
+  );
+  --skin-paint-vertical-dark: linear-gradient(
+    to bottom,
+    #62aaca,
+    #e8faff,
+    #85bfdb
+  );
+}
+.gallery-cover.gallery-exclusive-accent {
+  border-color: #8fbecd;
+  background: linear-gradient(150deg, var(--panel) 55%, #ceeaf066);
+}
+:root[data-theme="dark"] .gallery-cover.gallery-exclusive-accent {
+  border-color: #92cddd;
+  background: linear-gradient(150deg, var(--panel) 55%, #29414d);
+}
+.gallery-skin-details .gallery-exclusive-status {
+  display: inline-block;
+  padding: 6px 9px;
+  border: 1px solid var(--skin-ink);
+  color: var(--skin-ink);
+  font:
+    700 12px ui-monospace,
+    Consolas,
+    monospace;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.gallery-exclusive-panel {
+  min-width: 0;
+  padding: 22px;
+  border: 1px solid var(--line);
+  border-top: 2px solid var(--skin-ink);
+  background: linear-gradient(145deg, var(--panel), var(--panel2));
+}
+.gallery-exclusive-kicker {
+  color: var(--skin-ink);
+  font:
+    700 12px ui-monospace,
+    Consolas,
+    monospace;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+.gallery-exclusive-panel h4 {
+  margin: 12px 0 14px;
+  color: var(--text);
+  font:
+    800 clamp(28px, 4vw, 44px)/1 "Archivo Narrow",
+    sans-serif;
+  text-transform: uppercase;
+}
+.gallery-exclusive-panel p {
+  max-width: 58ch;
+  margin: 0 0 14px;
+  color: var(--muted);
+}
+.gallery-exclusive-panel .gallery-exclusive-requirement {
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+  color: var(--text);
+}
 .gallery-banner {
   font-size: 13px;
   text-transform: uppercase;

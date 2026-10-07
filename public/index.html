@@ -305,13 +305,20 @@
               <h3 id="gallery-skin-name"></h3>
               <p id="gallery-skin-meta"></p>
               <p id="gallery-banner" class="gallery-banner"></p>
-              <div class="gallery-value-block">
+              <p
+                id="gallery-exclusive-status"
+                class="gallery-exclusive-status"
+                hidden
+              >
+                Exclusive · Untradable
+              </p>
+              <div id="gallery-value-block" class="gallery-value-block">
                 <span>CURRENT VALUE</span>
                 <strong id="gallery-value"></strong>
               </div>
               <p id="gallery-demand"></p>
             </div>
-            <div class="gallery-history-panel">
+            <div id="gallery-history-panel" class="gallery-history-panel">
               <div class="gallery-history-heading">
                 <strong>VALUE HISTORY</strong>
                 <span id="gallery-history-status" role="status"></span>
@@ -330,6 +337,21 @@
                 id="gallery-history-summary"
                 class="gallery-history-summary"
               ></p>
+            </div>
+            <div
+              id="gallery-exclusive-panel"
+              class="gallery-exclusive-panel"
+              hidden
+            >
+              <span class="gallery-exclusive-kicker">Achievement unlock</span>
+              <h4 id="gallery-exclusive-achievement"></h4>
+              <p>
+                Golden Eagle is untradable. Unlock it by completing this
+                achievement.
+              </p>
+              <p class="gallery-exclusive-requirement">
+                Requirement: <span id="gallery-exclusive-requirement"></span>
+              </p>
             </div>
           </div>
         </div>
