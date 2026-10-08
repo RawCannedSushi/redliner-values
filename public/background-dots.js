@@ -28,7 +28,7 @@ function initBackgroundContours(plane, reducedMotion) {
     context.clearRect(0, 0, width, height);
     if (!color) return;
     context.strokeStyle = color;
-    context.lineWidth = 1;
+    context.lineWidth = 1.5;
     for (
       let radius = phase - 22;
       radius < maxRadius;

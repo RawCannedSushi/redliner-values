@@ -134,7 +134,7 @@ body::before {
     repeating-radial-gradient(
       ellipse at 87% 8%,
       transparent 0 23px,
-      var(--contour) 24px 25px,
+      var(--contour) 24px 25.5px,
       transparent 26px 46px
     ),
     radial-gradient(var(--grain) 0.65px, transparent 0.85px);
@@ -147,7 +147,7 @@ body.dots-interactive::before {
   background: repeating-radial-gradient(
     ellipse at 87% 8%,
     transparent 0 23px,
-    var(--contour) 24px 25px,
+    var(--contour) 24px 25.5px,
     transparent 26px 46px
   );
 }
