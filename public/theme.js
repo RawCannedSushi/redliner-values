@@ -10,6 +10,7 @@ const themeColor = document.querySelector('meta[name="theme-color"]');
 const pageTabs = document.querySelector(".view-tabs");
 const navigation = document.querySelector(".site-navigation");
 const pageMain = document.querySelector("main.shell");
+const compactToolbar = document.getElementById("compact-toolbar");
 let animationTimer;
 
 function setTheme(theme, save = false) {
@@ -44,6 +45,10 @@ function setDensity(density, save = false) {
   if (pageTabs) {
     if (density === "compressed") pageMain.append(pageTabs);
     else navigation.prepend(pageTabs);
+  }
+  if (compactToolbar) {
+    if (density === "compressed") compactToolbar.append(settings);
+    else navigation.append(settings);
   }
   densityButton.setAttribute("aria-pressed", String(density === "compressed"));
   densityButton.setAttribute(

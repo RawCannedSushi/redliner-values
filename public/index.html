@@ -221,29 +221,31 @@
         <strong>Announcement</strong>
         <p id="site-message-text"></p>
       </aside>
-      <div id="shared-filters">
-        <div class="controls">
-          <details class="multi-filter" id="rarity-filter">
-            <summary id="rarity-label">All rarities</summary>
-            <div class="filter-options" id="rarity-options"></div>
-          </details>
-          <details class="multi-filter" id="collection-filter">
-            <summary id="collection-label">All collections</summary>
-            <div class="filter-options" id="collection-options"></div>
-          </details>
-          <select id="sort" aria-label="Sort skins">
-            <option value="high">Value: high to low</option>
-            <option value="low">Value: low to high</option>
-            <option value="demand">Highest demand</option>
-            <option value="name">Name: A to Z</option>
-          </select>
-        </div>
-        <div class="result-line">
-          <span id="result-count" class="count" role="status"
-            >Loading skins…</span
-          ><button id="clear" class="clear" type="button" hidden>
-            Clear filters
-          </button>
+      <div id="compact-toolbar">
+        <div id="shared-filters">
+          <div class="controls">
+            <details class="multi-filter" id="rarity-filter">
+              <summary id="rarity-label">All rarities</summary>
+              <div class="filter-options" id="rarity-options"></div>
+            </details>
+            <details class="multi-filter" id="collection-filter">
+              <summary id="collection-label">All collections</summary>
+              <div class="filter-options" id="collection-options"></div>
+            </details>
+            <select id="sort" aria-label="Sort skins">
+              <option value="high">Value: high to low</option>
+              <option value="low">Value: low to high</option>
+              <option value="demand">Highest demand</option>
+              <option value="name">Name: A to Z</option>
+            </select>
+          </div>
+          <div class="result-line">
+            <span id="result-count" class="count" role="status"
+              >Loading skins…</span
+            ><button id="clear" class="clear" type="button" hidden>
+              Clear filters
+            </button>
+          </div>
         </div>
       </div>
       <div id="list-view">

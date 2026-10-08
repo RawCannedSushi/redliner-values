@@ -383,6 +383,9 @@ main.shell {
   gap: 12px;
   margin-bottom: 14px;
 }
+#compact-toolbar {
+  display: contents;
+}
 :focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 3px;
@@ -3465,10 +3468,19 @@ footer a:hover {
 :root[data-density="compressed"] main.shell {
   padding-top: 12px;
 }
-:root[data-density="compressed"] #shared-filters,
+:root[data-density="compressed"] #compact-toolbar,
 :root[data-density="compressed"] #list-view,
 :root[data-density="compressed"] #inventory-view {
   width: min(100%, 940px);
+}
+:root[data-density="compressed"] #compact-toolbar {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 160px;
+  gap: 10px;
+  align-items: start;
+}
+:root[data-density="compressed"] #shared-filters {
+  min-width: 0;
 }
 :root[data-density="compressed"] .intro {
   align-items: center;
@@ -3499,15 +3511,16 @@ footer a:hover {
   padding: 5px 9px;
 }
 :root[data-density="compressed"] .site-navigation {
-  justify-content: flex-end;
-  margin-bottom: 10px;
+  display: none;
 }
-:root[data-density="compressed"] .site-settings {
-  margin-left: auto;
+:root[data-density="compressed"] #compact-toolbar > .site-settings {
+  width: 100%;
+  margin: 0;
 }
 :root[data-density="compressed"] .site-settings > summary {
-  min-height: 36px;
-  padding: 5px 9px;
+  min-height: 48px;
+  padding: 9px 12px;
+  font-size: 15px;
 }
 :root[data-density="compressed"] .view-tabs {
   position: fixed;
@@ -3541,15 +3554,19 @@ footer a:hover {
   line-height: 1.3;
 }
 :root[data-density="compressed"] .controls {
-  gap: 7px;
-  margin-bottom: 7px;
+  gap: 8px;
+  margin-bottom: 8px;
 }
 :root[data-density="compressed"] .controls select,
 :root[data-density="compressed"] .multi-filter summary {
-  min-height: 36px;
-  height: 36px;
-  padding-inline: 10px;
+  min-height: 48px;
+  height: 48px;
+  padding-inline: 12px;
   border-radius: 0;
+  font-size: 15px;
+}
+:root[data-density="compressed"] .multi-filter[open] {
+  z-index: 45;
 }
 :root[data-density="compressed"] .result-line {
   margin: 6px 0;
@@ -3970,10 +3987,28 @@ footer a:hover {
   :root[data-density="compressed"] .intro-side {
     margin-top: 7px;
   }
-  :root[data-density="compressed"] .controls {
+  :root[data-density="compressed"] #compact-toolbar {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+  :root[data-density="compressed"] #shared-filters,
+  :root[data-density="compressed"] .controls {
+    display: contents;
+  }
+  :root[data-density="compressed"] #rarity-filter {
+    order: 1;
+  }
+  :root[data-density="compressed"] #collection-filter {
+    order: 2;
+  }
   :root[data-density="compressed"] .controls select {
+    order: 3;
+    grid-column: auto;
+  }
+  :root[data-density="compressed"] #compact-toolbar > .site-settings {
+    order: 4;
+  }
+  :root[data-density="compressed"] .result-line {
+    order: 5;
     grid-column: 1 / -1;
   }
   :root[data-density="compressed"] .skin-row {
