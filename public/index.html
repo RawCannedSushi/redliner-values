@@ -417,14 +417,20 @@
           <p class="inventory-total-value">
             Total Value: <strong id="inventory-total">0</strong>
           </p>
-          <div class="inventory-sort-control">
-            <label for="inventory-sort">Sort by</label>
-            <select id="inventory-sort">
-              <option value="high">Value: high to low</option>
-              <option value="low">Value: low to high</option>
-              <option value="demand">Demand</option>
-              <option value="alphabetical">Alphabetical</option>
-            </select>
+          <div class="inventory-controls">
+            <div class="inventory-sort-control">
+              <label for="inventory-sort">Sort by</label>
+              <select id="inventory-sort">
+                <option value="high">Value: high to low</option>
+                <option value="low">Value: low to high</option>
+                <option value="demand">Demand</option>
+                <option value="alphabetical">Alphabetical</option>
+              </select>
+            </div>
+            <label class="inventory-hide-values">
+              <input type="checkbox" id="inventory-hide-values" />
+              <span>Hide values</span>
+            </label>
           </div>
         </div>
         <div id="inventory-grid" class="inventory-grid"></div>

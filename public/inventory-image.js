@@ -60,7 +60,7 @@ function drawPhoto(ctx, image, x, y, width, height) {
   );
 }
 
-function drawCard(ctx, item, image, x, y) {
+function drawCard(ctx, item, image, x, y, hideValues) {
   const { skin, qty } = item;
   ctx.fillStyle = "#202327";
   ctx.fillRect(x, y, CARD_WIDTH, CARD_HEIGHT);
@@ -92,6 +92,12 @@ function drawCard(ctx, item, image, x, y) {
   ctx.lineTo(x + CARD_WIDTH - 18, y + 96.5);
   ctx.stroke();
 
+  if (hideValues) {
+    ctx.fillStyle = "#aeb3b2";
+    ctx.font = '700 20px "Archivo Narrow", Arial, sans-serif';
+    ctx.fillText("VALUE HIDDEN", textX, y + 140);
+    return;
+  }
   ctx.fillStyle = "#aeb3b2";
   ctx.font = "15px ui-monospace, Consolas, monospace";
   ctx.fillText("EACH", textX, y + 122);
@@ -122,6 +128,7 @@ function drawCard(ctx, item, image, x, y) {
 export async function createInventoryPng({
   items,
   total,
+  hideValues = false,
   skinPhotoUrl,
   fallbackPhotoUrl,
 }) {
@@ -174,7 +181,15 @@ export async function createInventoryPng({
   ctx.font = "20px ui-monospace, Consolas, monospace";
   ctx.fillText("TOTAL VALUE", width - MARGIN, 79);
   ctx.fillStyle = "#e65a62";
-  writeFitted(ctx, format.format(total), width - MARGIN, 152, 760, 76, 40);
+  writeFitted(
+    ctx,
+    hideValues ? "HIDDEN" : format.format(total),
+    width - MARGIN,
+    152,
+    760,
+    76,
+    40,
+  );
   ctx.textAlign = "left";
   ctx.fillStyle = "#abb0ae";
   ctx.font = "18px ui-monospace, Consolas, monospace";
@@ -216,6 +231,7 @@ export async function createInventoryPng({
       photos.get(photoUrls[index]),
       MARGIN + column * (CARD_WIDTH + GAP),
       GRID_TOP + row * (CARD_HEIGHT + GAP),
+      hideValues,
     );
   });
 
@@ -229,9 +245,11 @@ export async function createInventoryPng({
   ctx.fillText("ARCHIVES® REDLINER VALUES", MARGIN, height - 38);
   ctx.textAlign = "right";
   ctx.fillText(
-    items.some(({ skin }) => skin.value === null)
-      ? "UNPRICED SKINS EXCLUDED FROM TOTAL"
-      : "VALUES AT TIME OF EXPORT",
+    hideValues
+      ? "VALUES HIDDEN"
+      : items.some(({ skin }) => skin.value === null)
+        ? "UNPRICED SKINS EXCLUDED FROM TOTAL"
+        : "VALUES AT TIME OF EXPORT",
     width - MARGIN,
     height - 38,
   );

@@ -2906,6 +2906,7 @@ footer a:hover {
   align-items: end;
   justify-content: space-between;
   gap: 16px;
+  flex-wrap: wrap;
   margin-bottom: 14px;
 }
 .inventory-total-value {
@@ -2920,6 +2921,12 @@ footer a:hover {
 .inventory-total-value strong {
   color: var(--accent);
   overflow-wrap: anywhere;
+}
+.inventory-controls {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
 }
 .inventory-sort-control {
   display: flex;
@@ -2947,6 +2954,32 @@ footer a:hover {
 .inventory-sort-control select:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
+}
+.inventory-hide-values {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 42px;
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: var(--panel);
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.inventory-hide-values input {
+  width: 17px;
+  height: 17px;
+  margin: 0;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+.inventory-hide-values:focus-within {
+  border-color: var(--accent);
 }
 .inventory-grid {
   display: grid;
@@ -3339,8 +3372,21 @@ footer a:hover {
     align-items: stretch;
     flex-direction: column;
   }
+  .inventory-controls {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    width: 100%;
+  }
   .inventory-sort-control {
-    justify-content: flex-start;
+    display: grid;
+    justify-content: stretch;
+    gap: 4px;
+  }
+  .inventory-sort-control select {
+    width: 100%;
+  }
+  .inventory-hide-values {
+    align-self: end;
   }
   .inventory-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -3770,6 +3816,9 @@ footer a:hover {
 }
 :root[data-density="compressed"] .inventory-sort-control select {
   height: 34px;
+}
+:root[data-density="compressed"] .inventory-hide-values {
+  min-height: 34px;
 }
 :root[data-density="compressed"] .inventory-grid {
   grid-template-columns: 1fr;

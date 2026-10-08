@@ -650,11 +650,15 @@ function element(tag, className, text) {
 }
 const INVENTORY_KEY = "archives-redliner-inventory-v1";
 const INVENTORY_UPDATED_KEY = "archives-redliner-inventory-updated-v1";
+const INVENTORY_HIDE_VALUES_KEY = "archives-redliner-hide-inventory-values-v1";
 let inventory = {};
 let inventoryUpdatedAt = "";
 let inventoryStorageFailed = false;
+let hideInventoryValues = false;
 let googleDriveSync;
 try {
+  hideInventoryValues =
+    localStorage.getItem(INVENTORY_HIDE_VALUES_KEY) === "true";
   inventoryUpdatedAt = localStorage.getItem(INVENTORY_UPDATED_KEY) || "";
   const saved = JSON.parse(localStorage.getItem(INVENTORY_KEY) || "{}");
   if (saved && typeof saved === "object" && !Array.isArray(saved))
@@ -670,6 +674,7 @@ try {
 } catch (error) {
   inventoryStorageFailed = true;
 }
+$("inventory-hide-values").checked = hideInventoryValues;
 function skinKey(skin) {
   return skin.weapon + "\u001f" + skin.name;
 }
@@ -854,12 +859,21 @@ let displayedInventoryTotal;
 let inventoryTotalTarget;
 let inventoryTotalFrame;
 function updateInventoryTotal(total) {
-  if (total === inventoryTotalTarget) return;
+  const totalText = $("inventory-total");
+  if (hideInventoryValues) {
+    cancelAnimationFrame(inventoryTotalFrame);
+    inventoryTotalTarget = displayedInventoryTotal = total;
+    totalText.textContent = "Hidden";
+    return;
+  }
+  if (total === inventoryTotalTarget && totalText.textContent !== "Hidden")
+    return;
+  const wasHidden = totalText.textContent === "Hidden";
   inventoryTotalTarget = total;
   cancelAnimationFrame(inventoryTotalFrame);
-  const totalText = $("inventory-total");
   if (
     displayedInventoryTotal === undefined ||
+    wasHidden ||
     window.matchMedia("(prefers-reduced-motion: reduce)").matches
   ) {
     displayedInventoryTotal = total;
@@ -959,7 +973,11 @@ function renderInventory() {
       element(
         "span",
         "inventory-value",
-        s.value === null ? "Unpriced" : fmt(s.value) + " each",
+        hideInventoryValues
+          ? "Value hidden"
+          : s.value === null
+            ? "Unpriced"
+            : fmt(s.value) + " each",
       ),
       stepper,
     );
@@ -985,6 +1003,16 @@ function renderInventory() {
   restoreFocus();
 }
 $("inventory-sort").addEventListener("change", renderInventory);
+$("inventory-hide-values").addEventListener("change", (event) => {
+  hideInventoryValues = event.target.checked;
+  try {
+    localStorage.setItem(
+      INVENTORY_HIDE_VALUES_KEY,
+      String(hideInventoryValues),
+    );
+  } catch {}
+  renderInventory();
+});
 $("inventory-export").addEventListener("click", () => {
   const blob = new Blob(
     [JSON.stringify({ format: INVENTORY_KEY, items: inventory }, null, 2)],
@@ -1015,6 +1043,7 @@ async function handleInventoryPng(copy) {
     const options = {
       items,
       total,
+      hideValues: hideInventoryValues,
       skinPhotoUrl,
       fallbackPhotoUrl: PHOTO_FALLBACK,
     };
