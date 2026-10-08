@@ -3466,7 +3466,8 @@ footer a:hover {
   padding-top: 12px;
 }
 :root[data-density="compressed"] #shared-filters,
-:root[data-density="compressed"] #list-view {
+:root[data-density="compressed"] #list-view,
+:root[data-density="compressed"] #inventory-view {
   width: min(100%, 940px);
 }
 :root[data-density="compressed"] .intro {
