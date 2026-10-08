@@ -2,7 +2,7 @@ const SPACING = 5;
 const MAX_RADIUS = 125;
 const CANVAS_SIZE = (MAX_RADIUS + SPACING) * 2;
 const CONTOUR_SPACING = 46;
-const CONTOUR_SPEED = 1;
+const CONTOUR_SPEED = 2.5;
 
 function initBackgroundContours(plane, reducedMotion) {
   const canvas = document.createElement("canvas");
