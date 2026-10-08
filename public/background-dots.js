@@ -104,6 +104,15 @@ function initBackgroundDots() {
     if (!reducedMotion.matches) startAnimation();
   }
 
+  function updateDensity() {
+    if (document.documentElement.dataset.density !== "compressed") return;
+    cancelAnimationFrame(frame);
+    frame = 0;
+    targetRadius = currentRadius = 0;
+    plane.style.removeProperty("--dot-radius");
+    drawDots();
+  }
+
   function resizeCanvas() {
     const resolution = Math.min(devicePixelRatio || 1, 2);
     canvas.width = Math.round(CANVAS_SIZE * resolution);
@@ -122,7 +131,12 @@ function initBackgroundDots() {
   window.addEventListener(
     "pointermove",
     (event) => {
-      if (reducedMotion.matches || event.pointerType !== "mouse") return;
+      if (
+        reducedMotion.matches ||
+        document.documentElement.dataset.density === "compressed" ||
+        event.pointerType !== "mouse"
+      )
+        return;
       targetX = event.clientX;
       targetY = event.clientY;
       if (!currentRadius) {
@@ -138,6 +152,7 @@ function initBackgroundDots() {
   window.addEventListener("blur", lowerDots);
   window.addEventListener("resize", resizeCanvas);
   window.addEventListener("themechange", updateColor);
+  window.addEventListener("densitychange", updateDensity);
   reducedMotion.addEventListener("change", () => {
     if (!reducedMotion.matches) return;
     cancelAnimationFrame(frame);

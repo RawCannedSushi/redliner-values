@@ -1,16 +1,13 @@
-// Run before the stylesheet so a saved dark theme never flashes light.
+// Set saved display preferences before the stylesheet paints.
 try {
   const saved = localStorage.getItem("archives-redliner-theme");
   document.documentElement.dataset.theme =
-    saved === "light" || saved === "dark"
-      ? saved
-      : matchMedia("(prefers-color-scheme: dark)").matches
-        ? "dark"
-        : "light";
+    saved === "light" || saved === "dark" ? saved : "dark";
+  document.documentElement.dataset.density =
+    localStorage.getItem("archives-redliner-density") === "compressed"
+      ? "compressed"
+      : "standard";
 } catch {
-  document.documentElement.dataset.theme = matchMedia(
-    "(prefers-color-scheme: dark)",
-  ).matches
-    ? "dark"
-    : "light";
+  document.documentElement.dataset.theme = "dark";
+  document.documentElement.dataset.density = "standard";
 }

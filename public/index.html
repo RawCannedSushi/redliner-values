@@ -5,7 +5,7 @@
 
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#eeede8" />
+    <meta name="theme-color" content="#101114" />
     <script src="/theme-init.js"></script>
     <meta
       name="description"
@@ -165,15 +165,52 @@
             Scam List
           </button>
         </div>
-        <button
-          id="theme-toggle"
-          class="theme-toggle"
-          type="button"
-          aria-label="Dark mode off"
-          aria-pressed="false"
-        >
-          <span>Light</span><span>Dark</span>
-        </button>
+        <details id="site-settings" class="site-settings">
+          <summary>
+            <svg
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.7"
+            >
+              <path
+                d="M12 3.5v2m0 13v2m8.5-8.5h-2m-13 0h-2m14.5-6.5-1.5 1.5m-9 9-1.5 1.5m12 0-1.5-1.5m-9-9L6 5.5"
+              />
+              <circle cx="12" cy="12" r="4" />
+            </svg>
+            Settings
+          </summary>
+          <div class="settings-panel">
+            <div class="settings-option">
+              <span>Theme</span>
+              <button
+                id="theme-toggle"
+                class="theme-toggle"
+                type="button"
+                aria-label="Dark mode on"
+                aria-pressed="true"
+              >
+                <span>Light</span><span>Dark</span>
+              </button>
+            </div>
+            <div class="settings-option">
+              <span>Layout</span>
+              <button
+                id="compressed-toggle"
+                class="mode-toggle"
+                type="button"
+                aria-label="Compressed mode off"
+                aria-pressed="false"
+              >
+                <span>Standard</span><span>Compressed</span>
+              </button>
+              <small
+                >Fit more on screen with a simpler, sheet-like layout.</small
+              >
+            </div>
+          </div>
+        </details>
       </nav>
       <aside
         id="site-message"

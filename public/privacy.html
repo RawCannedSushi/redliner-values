@@ -3,22 +3,43 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#eeede8" />
+    <meta name="theme-color" content="#101114" />
     <script src="/theme-init.js"></script>
     <title>Privacy & Storage · Archives' Redliner Values</title>
     <link rel="stylesheet" href="/styles.css" />
   </head>
   <body class="legal-page">
     <main class="shell legal-copy">
-      <button
-        id="theme-toggle"
-        class="theme-toggle legal-theme-toggle"
-        type="button"
-        aria-label="Dark mode off"
-        aria-pressed="false"
-      >
-        <span>Light</span><span>Dark</span>
-      </button>
+      <details id="site-settings" class="site-settings legal-settings">
+        <summary>⚙ Settings</summary>
+        <div class="settings-panel">
+          <div class="settings-option">
+            <span>Theme</span>
+            <button
+              id="theme-toggle"
+              class="theme-toggle"
+              type="button"
+              aria-label="Dark mode on"
+              aria-pressed="true"
+            >
+              <span>Light</span><span>Dark</span>
+            </button>
+          </div>
+          <div class="settings-option">
+            <span>Layout</span>
+            <button
+              id="compressed-toggle"
+              class="mode-toggle"
+              type="button"
+              aria-label="Compressed mode off"
+              aria-pressed="false"
+            >
+              <span>Standard</span><span>Compressed</span>
+            </button>
+            <small>Fit more on screen with a simpler, sheet-like layout.</small>
+          </div>
+        </div>
+      </details>
       <a class="legal-back" href="/">← Return to Redliner Values</a>
       <h1>Privacy &amp; storage</h1>
       <p class="legal-date">Effective October 7, 2026</p>
@@ -26,9 +47,10 @@
       <h2>What this site stores</h2>
       <p>
         Redliner Values has no user accounts, advertising, or site analytics.
-        Your inventory, rarity preference, and cached value data are stored in
-        your browser. They remain on that browser and device unless you export
-        them or choose the optional Google Drive inventory sync.
+        Your inventory, display preferences, rarity preference, and cached value
+        data are stored in your browser. They remain on that browser and device
+        unless you export them or choose the optional Google Drive inventory
+        sync.
       </p>
       <p>
         The public Scam List shows account names, IDs, explanations, and notes

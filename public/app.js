@@ -1185,6 +1185,7 @@ function render() {
   filtered.forEach((s) => {
     const row = element("tr", "skin-row");
     applyRarityAccent(row, s.rarity);
+    row.dataset.rarity = s.rarity.toLowerCase().replace(/\s+/g, "-");
     const name = element("td", "name-cell");
     name.append(
       element("div", "name", s.name),
@@ -1194,6 +1195,18 @@ function render() {
     const badge = element("span", "rarity", s.rarity);
     applyRarityAccent(badge, s.rarity, "to bottom");
     rarityCell.append(badge);
+    const demandCell = element(
+      "td",
+      "demand",
+      s.demand === null ? "—" : String(s.demand),
+    );
+    if (s.demand !== null) {
+      const demand = Math.max(0, Math.min(10, s.demand));
+      demandCell.style.setProperty(
+        "--demand-heat",
+        `hsl(${Math.round((10 - demand) * 12)} 74% 63%)`,
+      );
+    }
     row.append(
       name,
       rarityCell,
@@ -1204,7 +1217,7 @@ function render() {
         "value" + (s.value === null ? " invalid" : ""),
         s.value === null ? "Unpriced" : fmt(s.value),
       ),
-      element("td", "demand", s.demand === null ? "—" : String(s.demand)),
+      demandCell,
     );
     const trend = element(
       "td",
