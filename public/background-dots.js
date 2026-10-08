@@ -1,6 +1,132 @@
 const SPACING = 5;
 const MAX_RADIUS = 125;
 const CANVAS_SIZE = (MAX_RADIUS + SPACING) * 2;
+const CONTOUR_SPACING = 46;
+const CONTOUR_SPEED = 1;
+
+function initBackgroundContours(plane, reducedMotion) {
+  const canvas = document.createElement("canvas");
+  const context = canvas.getContext("2d");
+  if (!context) return;
+  canvas.className = "background-contour-canvas";
+  canvas.setAttribute("aria-hidden", "true");
+  plane.prepend(canvas);
+
+  let width = 0;
+  let height = 0;
+  let originX = 0;
+  let originY = 0;
+  let horizontalScale = 1;
+  let maxRadius = 0;
+  let color = "";
+  let phase = 0;
+  let frame = 0;
+  let lastTime = 0;
+  let lastPaint = 0;
+
+  function draw() {
+    context.clearRect(0, 0, width, height);
+    if (!color) return;
+    context.strokeStyle = color;
+    context.lineWidth = 1;
+    for (
+      let radius = phase - 22;
+      radius < maxRadius;
+      radius += CONTOUR_SPACING
+    ) {
+      if (radius < 0.5) continue;
+      context.globalAlpha = Math.min(1, radius / 18);
+      context.beginPath();
+      context.ellipse(
+        originX,
+        originY,
+        radius * horizontalScale,
+        radius,
+        0,
+        0,
+        2 * Math.PI,
+      );
+      context.stroke();
+    }
+    context.globalAlpha = 1;
+  }
+
+  function resize() {
+    width = window.innerWidth;
+    height = window.innerHeight;
+    originX = width * 0.87;
+    originY = height * 0.08;
+    horizontalScale = Math.max(0.45, Math.min(2.7, width / height));
+    maxRadius =
+      Math.hypot(
+        Math.max(originX, width - originX) / horizontalScale,
+        Math.max(originY, height - originY),
+      ) + CONTOUR_SPACING;
+    const resolution = Math.min(
+      window.devicePixelRatio || 1,
+      2,
+      Math.sqrt(6_000_000 / (width * height)),
+    );
+    canvas.width = Math.round(width * resolution);
+    canvas.height = Math.round(height * resolution);
+    context.setTransform(resolution, 0, 0, resolution, 0, 0);
+    draw();
+  }
+
+  function updateColor() {
+    color = getComputedStyle(document.documentElement)
+      .getPropertyValue("--contour")
+      .trim();
+    draw();
+  }
+
+  function shouldAnimate() {
+    return (
+      !reducedMotion.matches &&
+      !document.hidden &&
+      document.documentElement.dataset.density !== "compressed"
+    );
+  }
+
+  function animate(time) {
+    if (!shouldAnimate()) {
+      frame = 0;
+      lastTime = 0;
+      return;
+    }
+    if (lastTime)
+      phase =
+        (phase + ((time - lastTime) * CONTOUR_SPEED) / 1000) % CONTOUR_SPACING;
+    lastTime = time;
+    if (time - lastPaint >= 80) {
+      draw();
+      lastPaint = time;
+    }
+    frame = requestAnimationFrame(animate);
+  }
+
+  function updateAnimation() {
+    if (!shouldAnimate()) {
+      cancelAnimationFrame(frame);
+      frame = 0;
+      lastTime = 0;
+      if (reducedMotion.matches) phase = 0;
+      draw();
+    } else if (!frame) {
+      frame = requestAnimationFrame(animate);
+    }
+  }
+
+  window.addEventListener("resize", resize);
+  window.addEventListener("themechange", updateColor);
+  window.addEventListener("densitychange", updateAnimation);
+  document.addEventListener("visibilitychange", updateAnimation);
+  reducedMotion.addEventListener("change", updateAnimation);
+  resize();
+  updateColor();
+  document.body.classList.add("contours-interactive");
+  updateAnimation();
+}
 
 function initBackgroundDots() {
   const canvas = document.createElement("canvas");
@@ -17,6 +143,7 @@ function initBackgroundDots() {
   plane.append(canvas);
   document.body.prepend(plane);
   document.body.classList.add("dots-interactive");
+  initBackgroundContours(plane, reducedMotion);
 
   let targetX = 0;
   let targetY = 0;
