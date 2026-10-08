@@ -1690,9 +1690,12 @@ function switchView(view) {
 document.querySelectorAll("[data-view]").forEach((button) =>
   button.addEventListener("click", () => {
     switchView(button.dataset.view);
-    document
-      .querySelector(".view-tabs")
-      .scrollIntoView({ behavior: "smooth", block: "start" });
+    if (document.documentElement.dataset.density === "compressed")
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    else
+      document
+        .querySelector(".view-tabs")
+        .scrollIntoView({ behavior: "smooth", block: "start" });
   }),
 );
 $("history-range").addEventListener("change", () => loadHistory(true));
@@ -1701,6 +1704,15 @@ let historyRequest;
 const initialView = location.hash.slice(1);
 if (viewPanels[initialView]) switchView(initialView);
 document.querySelector(".view-tabs").addEventListener("keydown", (event) => {
+  if (
+    event.key === "Tab" &&
+    !event.shiftKey &&
+    document.documentElement.dataset.density === "compressed"
+  ) {
+    event.preventDefault();
+    $(viewPanels[activeView]).focus();
+    return;
+  }
   const index = viewTabs.indexOf(event.target);
   if (index < 0) return;
   let next;
@@ -1713,6 +1725,8 @@ document.querySelector(".view-tabs").addEventListener("keydown", (event) => {
   event.preventDefault();
   switchView(viewTabs[next].dataset.view);
   viewTabs[next].focus();
+  if (document.documentElement.dataset.density === "compressed")
+    window.scrollTo({ top: 0, behavior: "smooth" });
 });
 document.addEventListener("keydown", (event) => {
   if (event.key !== "Escape") return;

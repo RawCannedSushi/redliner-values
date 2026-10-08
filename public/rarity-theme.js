@@ -45,6 +45,10 @@ export function applyRarityAccent(element, rarity, direction = "to right") {
     : lightChartColors[rarity] || "#343a40";
   element.classList.add("skin-rarity-accent");
   element.classList.toggle("classified-gradient", rarity === "Classified");
+  element.classList.toggle(
+    "direct-classified-accent",
+    rarity === "Direct Classified",
+  );
   element.style.setProperty("--rarity", rarityAccent(rarity, direction));
   element.style.setProperty("--skin-paint-light", lightPaint);
   element.style.setProperty("--skin-paint-vertical-light", lightPaintVertical);

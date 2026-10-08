@@ -7,6 +7,9 @@ const themeButton = document.getElementById("theme-toggle");
 const densityButton = document.getElementById("compressed-toggle");
 const settings = document.getElementById("site-settings");
 const themeColor = document.querySelector('meta[name="theme-color"]');
+const pageTabs = document.querySelector(".view-tabs");
+const navigation = document.querySelector(".site-navigation");
+const pageMain = document.querySelector("main.shell");
 let animationTimer;
 
 function setTheme(theme, save = false) {
@@ -38,6 +41,10 @@ function setTheme(theme, save = false) {
 
 function setDensity(density, save = false) {
   root.dataset.density = density;
+  if (pageTabs) {
+    if (density === "compressed") pageMain.append(pageTabs);
+    else navigation.prepend(pageTabs);
+  }
   densityButton.setAttribute("aria-pressed", String(density === "compressed"));
   densityButton.setAttribute(
     "aria-label",
