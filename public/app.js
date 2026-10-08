@@ -34,6 +34,23 @@ function copyPngToClipboard(createPng) {
   return navigator.clipboard.write([new ClipboardItem({ "image/png": png })]);
 }
 
+function downloadPng(blob, kind) {
+  const url = URL.createObjectURL(blob);
+  const link = element("a");
+  const date = new Date();
+  const dateStamp = [
+    date.getFullYear(),
+    String(date.getMonth() + 1).padStart(2, "0"),
+    String(date.getDate()).padStart(2, "0"),
+  ].join("-");
+  link.href = url;
+  link.download = `archives-${kind}-${dateStamp}.png`;
+  document.body.append(link);
+  link.click();
+  link.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 60_000);
+}
+
 if (/^https:\/\/github\.com\/[\w.-]+\/[\w.-]+\/?$/.test(SOURCE_REPOSITORY)) {
   document.getElementById("source-link").href = SOURCE_REPOSITORY;
   document.getElementById("source-details").hidden = false;
@@ -67,307 +84,63 @@ document.querySelectorAll(".context-help").forEach((help) => {
 });
 
 const SNAPSHOT_ROWS = [
-  {
-    id: 0,
-    rarity: "Classified",
-    collection: "Precede All",
-    weapon: "Redliner",
-    name: "Inheritor",
-    value: "11250",
-    demand: "10",
-    trend: "Rising",
-  },
-  {
-    id: 1,
-    rarity: "Classified",
-    collection: "Dragonhunt",
-    weapon: "Monarch",
-    name: "Dragora",
-    value: "9200",
-    demand: "10",
-    trend: "Rising",
-  },
-  {
-    id: 2,
-    rarity: "Classified",
-    collection: "Breakthrough",
-    weapon: "Phoenix",
-    name: "Kugelblitz",
-    value: "4500",
-    demand: "8",
-    trend: "Fluctuating",
-  },
-  {
-    id: 3,
-    rarity: "Exotic",
-    collection: "Precede All",
-    weapon: "Castigate",
-    name: "Unleashed",
-    value: "1200",
-    demand: "8",
-    trend: "Rising",
-  },
-  {
-    id: 4,
-    rarity: "Exotic",
-    collection: "Dragonhunt",
-    weapon: "Redliner",
-    name: "Demise",
-    value: "750",
-    demand: "7",
-    trend: "Stable",
-  },
-  {
-    id: 5,
-    rarity: "Exotic",
-    collection: "Breakthrough",
-    weapon: "Siege",
-    name: "Mechanist",
-    value: "400",
-    demand: "6",
-    trend: "Stable",
-  },
-  {
-    id: 6,
-    rarity: "Elite",
-    collection: "Precede All",
-    weapon: "Monarch",
-    name: "AWP",
-    value: "200",
-    demand: "6",
-    trend: "Stable",
-  },
-  {
-    id: 7,
-    rarity: "Elite",
-    collection: "Precede All",
-    weapon: "Redliner",
-    name: "Glass",
-    value: "200",
-    demand: "5",
-    trend: "Stable",
-  },
-  {
-    id: 8,
-    rarity: "Elite",
-    collection: "Breakthrough",
-    weapon: "Monarch",
-    name: "Sentinel",
-    value: "80",
-    demand: "5",
-    trend: "Stable",
-  },
-  {
-    id: 9,
-    rarity: "Elite",
-    collection: "Dragonhunt",
-    weapon: "Phoenix",
-    name: "Blunderbuss",
-    value: "80",
-    demand: "4",
-    trend: "Stable",
-  },
-  {
-    id: 10,
-    rarity: "Elite",
-    collection: "Dragonhunt",
-    weapon: "Siege",
-    name: "Doomsday",
-    value: "80",
-    demand: "4",
-    trend: "Stable",
-  },
-  {
-    id: 11,
-    rarity: "Elite",
-    collection: "Breakthrough",
-    weapon: "Redliner",
-    name: "Type: Neo",
-    value: "80",
-    demand: "4",
-    trend: "Stable",
-  },
-  {
-    id: 12,
-    rarity: "Rare",
-    collection: "Precede All",
-    weapon: "Phoenix",
-    name: "Zealot",
-    value: "25",
-    demand: "4",
-    trend: "Stable",
-  },
-  {
-    id: 13,
-    rarity: "Rare",
-    collection: "Dragonhunt",
-    weapon: "Redliner",
-    name: "Cavalry",
-    value: "20",
-    demand: "4",
-    trend: "Stable",
-  },
-  {
-    id: 14,
-    rarity: "Rare",
-    collection: "Precede All",
-    weapon: "Redliner",
-    name: "Jetstream",
-    value: "20",
-    demand: "4",
-    trend: "Stable",
-  },
-  {
-    id: 15,
-    rarity: "Rare",
-    collection: "Precede All",
-    weapon: "Siege",
-    name: "Afterburn",
-    value: "20",
-    demand: "4",
-    trend: "Stable",
-  },
-  {
-    id: 16,
-    rarity: "Rare",
-    collection: "Dragonhunt",
-    weapon: "Phoenix",
-    name: "Obelisk",
-    value: "10",
-    demand: "4",
-    trend: "Stable",
-  },
-  {
-    id: 17,
-    rarity: "Rare",
-    collection: "Dragonhunt",
-    weapon: "Castigate",
-    name: "Grimm",
-    value: "10",
-    demand: "4",
-    trend: "Stable",
-  },
-  {
-    id: 18,
-    rarity: "Rare",
-    collection: "Breakthrough",
-    weapon: "Redliner",
-    name: "Graffiti",
-    value: "10",
-    demand: "3",
-    trend: "Stable",
-  },
-  {
-    id: 19,
-    rarity: "Rare",
-    collection: "Breakthrough",
-    weapon: "Phoenix",
-    name: "Volt",
-    value: "10",
-    demand: "3",
-    trend: "Stable",
-  },
-  {
-    id: 20,
-    rarity: "Rare",
-    collection: "Breakthrough",
-    weapon: "Castigate",
-    name: "Carmine",
-    value: "10",
-    demand: "3",
-    trend: "Stable",
-  },
-  {
-    id: 21,
-    rarity: "Uncommon",
-    collection: "Dragonhunt",
-    weapon: "Monarch",
-    name: "Cobwebs",
-    value: "5",
-    demand: "3",
-    trend: "Stable",
-  },
-  {
-    id: 22,
-    rarity: "Uncommon",
-    collection: "Precede All",
-    weapon: "Castigate",
-    name: "Goldrose",
-    value: "3",
-    demand: "2",
-    trend: "Stable",
-  },
-  {
-    id: 23,
-    rarity: "Uncommon",
-    collection: "Precede All",
-    weapon: "Monarch",
-    name: "Winter Troop",
-    value: "3",
-    demand: "2",
-    trend: "Stable",
-  },
-  {
-    id: 24,
-    rarity: "Uncommon",
-    collection: "Precede All",
-    weapon: "Siege",
-    name: "Desolated",
-    value: "3",
-    demand: "2",
-    trend: "Stable",
-  },
-  {
-    id: 25,
-    rarity: "Uncommon",
-    collection: "Dragonhunt",
-    weapon: "Phoenix",
-    name: "Heavy-Duty",
-    value: "2",
-    demand: "1",
-    trend: "Stable",
-  },
-  {
-    id: 26,
-    rarity: "Uncommon",
-    collection: "Dragonhunt",
-    weapon: "Castigate",
-    name: "Eroder",
-    value: "2",
-    demand: "1",
-    trend: "Stable",
-  },
-  {
-    id: 27,
-    rarity: "Uncommon",
-    collection: "Breakthrough",
-    weapon: "Monarch",
-    name: "Binary",
-    value: "1",
-    demand: "1",
-    trend: "Stable",
-  },
-  {
-    id: 28,
-    rarity: "Uncommon",
-    collection: "Breakthrough",
-    weapon: "Castigate",
-    name: "Geometric",
-    value: "1",
-    demand: "1",
-    trend: "Stable",
-  },
-  {
-    id: 29,
-    rarity: "Uncommon",
-    collection: "Breakthrough",
-    weapon: "Siege",
-    name: "Rebecca",
-    value: "1",
-    demand: null,
-    trend: "ass",
-  },
-];
+  // rarity, collection, weapon, name, value, demand, trend
+  [
+    "Classified",
+    "Precede All",
+    "Redliner",
+    "Inheritor",
+    "11250",
+    "10",
+    "Rising",
+  ],
+  ["Classified", "Dragonhunt", "Monarch", "Dragora", "9200", "10", "Rising"],
+  [
+    "Classified",
+    "Breakthrough",
+    "Phoenix",
+    "Kugelblitz",
+    "4500",
+    "8",
+    "Fluctuating",
+  ],
+  ["Exotic", "Precede All", "Castigate", "Unleashed", "1200", "8", "Rising"],
+  ["Exotic", "Dragonhunt", "Redliner", "Demise", "750", "7", "Stable"],
+  ["Exotic", "Breakthrough", "Siege", "Mechanist", "400", "6", "Stable"],
+  ["Elite", "Precede All", "Monarch", "AWP", "200", "6", "Stable"],
+  ["Elite", "Precede All", "Redliner", "Glass", "200", "5", "Stable"],
+  ["Elite", "Breakthrough", "Monarch", "Sentinel", "80", "5", "Stable"],
+  ["Elite", "Dragonhunt", "Phoenix", "Blunderbuss", "80", "4", "Stable"],
+  ["Elite", "Dragonhunt", "Siege", "Doomsday", "80", "4", "Stable"],
+  ["Elite", "Breakthrough", "Redliner", "Type: Neo", "80", "4", "Stable"],
+  ["Rare", "Precede All", "Phoenix", "Zealot", "25", "4", "Stable"],
+  ["Rare", "Dragonhunt", "Redliner", "Cavalry", "20", "4", "Stable"],
+  ["Rare", "Precede All", "Redliner", "Jetstream", "20", "4", "Stable"],
+  ["Rare", "Precede All", "Siege", "Afterburn", "20", "4", "Stable"],
+  ["Rare", "Dragonhunt", "Phoenix", "Obelisk", "10", "4", "Stable"],
+  ["Rare", "Dragonhunt", "Castigate", "Grimm", "10", "4", "Stable"],
+  ["Rare", "Breakthrough", "Redliner", "Graffiti", "10", "3", "Stable"],
+  ["Rare", "Breakthrough", "Phoenix", "Volt", "10", "3", "Stable"],
+  ["Rare", "Breakthrough", "Castigate", "Carmine", "10", "3", "Stable"],
+  ["Uncommon", "Dragonhunt", "Monarch", "Cobwebs", "5", "3", "Stable"],
+  ["Uncommon", "Precede All", "Castigate", "Goldrose", "3", "2", "Stable"],
+  ["Uncommon", "Precede All", "Monarch", "Winter Troop", "3", "2", "Stable"],
+  ["Uncommon", "Precede All", "Siege", "Desolated", "3", "2", "Stable"],
+  ["Uncommon", "Dragonhunt", "Phoenix", "Heavy-Duty", "2", "1", "Stable"],
+  ["Uncommon", "Dragonhunt", "Castigate", "Eroder", "2", "1", "Stable"],
+  ["Uncommon", "Breakthrough", "Monarch", "Binary", "1", "1", "Stable"],
+  ["Uncommon", "Breakthrough", "Castigate", "Geometric", "1", "1", "Stable"],
+  ["Uncommon", "Breakthrough", "Siege", "Rebecca", "1", null, "ass"],
+].map(([rarity, collection, weapon, name, value, demand, trend], id) => ({
+  id,
+  rarity,
+  collection,
+  weapon,
+  name,
+  value,
+  demand,
+  trend,
+}));
 const $ = (id) => document.getElementById(id);
 const announcement = String(SITE_MESSAGE || "").trim();
 const announcementText = $("site-message-text");
@@ -1050,21 +823,7 @@ async function handleInventoryPng(copy) {
       status.textContent = "PNG copied to clipboard.";
       return;
     }
-    const blob = await createInventoryPng(options);
-    const url = URL.createObjectURL(blob);
-    const link = element("a");
-    const date = new Date();
-    const dateStamp = [
-      date.getFullYear(),
-      String(date.getMonth() + 1).padStart(2, "0"),
-      String(date.getDate()).padStart(2, "0"),
-    ].join("-");
-    link.href = url;
-    link.download = `archives-inventory-${dateStamp}.png`;
-    document.body.append(link);
-    link.click();
-    link.remove();
-    setTimeout(() => URL.revokeObjectURL(url), 60_000);
+    downloadPng(await createInventoryPng(options), "inventory");
   } catch (error) {
     status.textContent = copy
       ? "Couldn't copy the PNG. Try downloading it instead."
@@ -1569,21 +1328,7 @@ async function handleTradePng(copy) {
       status.textContent = "PNG copied to clipboard.";
       return;
     }
-    const blob = await createTradePng(options);
-    const url = URL.createObjectURL(blob);
-    const link = element("a");
-    const date = new Date();
-    const dateStamp = [
-      date.getFullYear(),
-      String(date.getMonth() + 1).padStart(2, "0"),
-      String(date.getDate()).padStart(2, "0"),
-    ].join("-");
-    link.href = url;
-    link.download = `archives-trade-${dateStamp}.png`;
-    document.body.append(link);
-    link.click();
-    link.remove();
-    setTimeout(() => URL.revokeObjectURL(url), 60_000);
+    downloadPng(await createTradePng(options), "trade");
   } catch {
     status.textContent = copy
       ? "Couldn't copy the PNG. Try downloading it instead."

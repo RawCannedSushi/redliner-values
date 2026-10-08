@@ -1,4 +1,5 @@
 import { rarityStops } from "./rarity-theme.js";
+import { drawPhoto, loadPhotos, pngBlob } from "./export-image.js";
 
 const format = new Intl.NumberFormat("en-US");
 const WIDTH = 1920;
@@ -10,6 +11,7 @@ const CARDS_TOP = 382;
 const CARD_GAP = 14;
 const CARD_WIDTH = (PANEL_WIDTH - 36 - CARD_GAP) / 2;
 const CARD_HEIGHT = 145;
+const PHOTO_STYLE = { border: "#3d4347", inset: 10, size: "naturalWidth" };
 
 function fittedText(ctx, value, x, y, maxWidth, size, minSize = 16) {
   const text = String(value);
@@ -29,43 +31,6 @@ function fittedText(ctx, value, x, y, maxWidth, size, minSize = 16) {
   ctx.fillText(clipped + "…", x, y);
 }
 
-function loadPhoto(url) {
-  return new Promise((resolve) => {
-    const image = new Image();
-    const timeout = setTimeout(() => resolve(null), 8000);
-    image.onload = () => {
-      clearTimeout(timeout);
-      resolve(image);
-    };
-    image.onerror = () => {
-      clearTimeout(timeout);
-      resolve(null);
-    };
-    image.src = url;
-  });
-}
-
-function drawPhoto(ctx, image, x, y, width, height) {
-  ctx.fillStyle = "#111316";
-  ctx.fillRect(x, y, width, height);
-  ctx.strokeStyle = "#3d4347";
-  ctx.strokeRect(x + 0.5, y + 0.5, width - 1, height - 1);
-  if (!image?.naturalWidth || !image?.naturalHeight) return;
-  const scale = Math.min(
-    (width - 10) / image.naturalWidth,
-    (height - 10) / image.naturalHeight,
-  );
-  const drawWidth = image.naturalWidth * scale;
-  const drawHeight = image.naturalHeight * scale;
-  ctx.drawImage(
-    image,
-    x + (width - drawWidth) / 2,
-    y + (height - drawHeight) / 2,
-    drawWidth,
-    drawHeight,
-  );
-}
-
 function drawCard(ctx, { skin, qty }, photo, x, y) {
   ctx.fillStyle = "#212529";
   ctx.fillRect(x, y, CARD_WIDTH, CARD_HEIGHT);
@@ -78,7 +43,7 @@ function drawCard(ctx, { skin, qty }, photo, x, y) {
   ctx.fillStyle = accent;
   ctx.fillRect(x, y, CARD_WIDTH, 4);
 
-  drawPhoto(ctx, photo, x + 12, y + 19, 115, 107);
+  drawPhoto(ctx, photo, x + 12, y + 19, 115, 107, PHOTO_STYLE);
   const textX = x + 142;
   ctx.fillStyle = "#f2f0e9";
   fittedText(ctx, skin.name, textX, y + 43, CARD_WIDTH - 238, 26);
@@ -271,13 +236,7 @@ export async function createTradePng({
 
   const allItems = [...entries.give, ...entries.receive];
   const urls = [...new Set(allItems.map(({ skin }) => skinPhotoUrl(skin)))];
-  const photos = new Map(
-    await Promise.all(urls.map(async (url) => [url, await loadPhoto(url)])),
-  );
-  if ([...photos.values()].some((photo) => !photo)) {
-    const fallback = await loadPhoto(fallbackPhotoUrl);
-    for (const [url, photo] of photos) if (!photo) photos.set(url, fallback);
-  }
+  const photos = await loadPhotos(urls, fallbackPhotoUrl);
   drawPanel(
     ctx,
     "give",
@@ -321,10 +280,5 @@ export async function createTradePng({
   );
   ctx.fillText("archivesvalues.com", WIDTH - MARGIN, height - 27);
 
-  return new Promise((resolve, reject) => {
-    canvas.toBlob(
-      (blob) => (blob ? resolve(blob) : reject(new Error("PNG export failed"))),
-      "image/png",
-    );
-  });
+  return pngBlob(canvas);
 }

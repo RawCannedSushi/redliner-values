@@ -1,4 +1,5 @@
 import { rarityColors, rarityStops } from "./rarity-theme.js";
+import { drawPhoto, loadPhotos, pngBlob } from "./export-image.js";
 
 const format = new Intl.NumberFormat("en-US");
 const CARD_WIDTH = 420;
@@ -6,6 +7,7 @@ const CARD_HEIGHT = 176;
 const GAP = 16;
 const MARGIN = 64;
 const GRID_TOP = 250;
+const PHOTO_STYLE = { border: "#42464b", inset: 12, size: "width" };
 
 function writeFitted(ctx, text, x, y, maxWidth, size, minSize = 17) {
   let fontSize = size;
@@ -23,43 +25,6 @@ function writeFitted(ctx, text, x, y, maxWidth, size, minSize = 17) {
   ctx.fillText(text + "…", x, y);
 }
 
-function loadPhoto(url) {
-  return new Promise((resolve) => {
-    const image = new Image();
-    const timeout = setTimeout(() => resolve(null), 8000);
-    image.onload = () => {
-      clearTimeout(timeout);
-      resolve(image);
-    };
-    image.onerror = () => {
-      clearTimeout(timeout);
-      resolve(null);
-    };
-    image.src = url;
-  });
-}
-
-function drawPhoto(ctx, image, x, y, width, height) {
-  ctx.fillStyle = "#111316";
-  ctx.fillRect(x, y, width, height);
-  ctx.strokeStyle = "#42464b";
-  ctx.strokeRect(x + 0.5, y + 0.5, width - 1, height - 1);
-  if (!image?.naturalWidth || !image?.naturalHeight) return;
-  const scale = Math.min(
-    (width - 12) / image.width,
-    (height - 12) / image.height,
-  );
-  const drawWidth = image.width * scale;
-  const drawHeight = image.height * scale;
-  ctx.drawImage(
-    image,
-    x + (width - drawWidth) / 2,
-    y + (height - drawHeight) / 2,
-    drawWidth,
-    drawHeight,
-  );
-}
-
 function drawCard(ctx, item, image, x, y, hideValues) {
   const { skin, qty } = item;
   ctx.fillStyle = "#202327";
@@ -73,7 +38,7 @@ function drawCard(ctx, item, image, x, y, hideValues) {
   ctx.fillStyle = rarityBar;
   ctx.fillRect(x, y, CARD_WIDTH, 4);
 
-  drawPhoto(ctx, image, x + 14, y + 19, 132, 139);
+  drawPhoto(ctx, image, x + 14, y + 19, 132, 139, PHOTO_STYLE);
   ctx.fillStyle = rarityColors[skin.rarity] || "#82878a";
   ctx.fillRect(x + 22, y + 27, 65, 34);
   ctx.fillStyle = "#101215";
@@ -207,15 +172,7 @@ export async function createInventoryPng({
   ctx.stroke();
 
   const photoUrls = items.map(({ skin }) => skinPhotoUrl(skin));
-  const photos = new Map(
-    await Promise.all(
-      [...new Set(photoUrls)].map(async (url) => [url, await loadPhoto(url)]),
-    ),
-  );
-  if ([...photos.values()].some((photo) => !photo)) {
-    const fallback = await loadPhoto(fallbackPhotoUrl);
-    for (const [url, photo] of photos) if (!photo) photos.set(url, fallback);
-  }
+  const photos = await loadPhotos(photoUrls, fallbackPhotoUrl);
   items.forEach((item, index) => {
     const column = index % columns;
     const row = Math.floor(index / columns);
@@ -248,10 +205,5 @@ export async function createInventoryPng({
     );
   }
 
-  return new Promise((resolve, reject) => {
-    canvas.toBlob(
-      (blob) => (blob ? resolve(blob) : reject(new Error("PNG export failed"))),
-      "image/png",
-    );
-  });
+  return pngBlob(canvas);
 }
