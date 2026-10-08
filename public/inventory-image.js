@@ -82,22 +82,22 @@ function drawCard(ctx, item, image, x, y, hideValues) {
 
   const textX = x + 165;
   ctx.fillStyle = "#f2f0e9";
-  writeFitted(ctx, skin.name, textX, y + 51, 237, 30);
+  writeFitted(ctx, skin.name, textX, y + (hideValues ? 85 : 51), 237, 30);
   ctx.fillStyle = "#b6bab9";
   ctx.font = '18px "Archivo Narrow", Arial, sans-serif';
-  ctx.fillText(`${skin.weapon} · ${skin.rarity}`, textX, y + 79, 237);
+  ctx.fillText(
+    `${skin.weapon} · ${skin.rarity}`,
+    textX,
+    y + (hideValues ? 113 : 79),
+    237,
+  );
+  if (hideValues) return;
   ctx.strokeStyle = "#454a4e";
   ctx.beginPath();
   ctx.moveTo(textX, y + 96.5);
   ctx.lineTo(x + CARD_WIDTH - 18, y + 96.5);
   ctx.stroke();
 
-  if (hideValues) {
-    ctx.fillStyle = "#aeb3b2";
-    ctx.font = '700 20px "Archivo Narrow", Arial, sans-serif';
-    ctx.fillText("VALUE HIDDEN", textX, y + 140);
-    return;
-  }
   ctx.fillStyle = "#aeb3b2";
   ctx.font = "15px ui-monospace, Consolas, monospace";
   ctx.fillText("EACH", textX, y + 122);
@@ -176,20 +176,14 @@ export async function createInventoryPng({
   ctx.font = "20px ui-monospace, Consolas, monospace";
   ctx.fillText("archives® / REDLINER VALUES", MARGIN + 27, 155);
 
-  ctx.textAlign = "right";
-  ctx.fillStyle = "#abb0ae";
-  ctx.font = "20px ui-monospace, Consolas, monospace";
-  ctx.fillText("TOTAL VALUE", width - MARGIN, 79);
-  ctx.fillStyle = "#e65a62";
-  writeFitted(
-    ctx,
-    hideValues ? "HIDDEN" : format.format(total),
-    width - MARGIN,
-    152,
-    760,
-    76,
-    40,
-  );
+  if (!hideValues) {
+    ctx.textAlign = "right";
+    ctx.fillStyle = "#abb0ae";
+    ctx.font = "20px ui-monospace, Consolas, monospace";
+    ctx.fillText("TOTAL VALUE", width - MARGIN, 79);
+    ctx.fillStyle = "#e65a62";
+    writeFitted(ctx, format.format(total), width - MARGIN, 152, 760, 76, 40);
+  }
   ctx.textAlign = "left";
   ctx.fillStyle = "#abb0ae";
   ctx.font = "18px ui-monospace, Consolas, monospace";
@@ -243,16 +237,16 @@ export async function createInventoryPng({
   ctx.fillStyle = "#abb0ae";
   ctx.font = "18px ui-monospace, Consolas, monospace";
   ctx.fillText("ARCHIVES® REDLINER VALUES", MARGIN, height - 38);
-  ctx.textAlign = "right";
-  ctx.fillText(
-    hideValues
-      ? "VALUES HIDDEN"
-      : items.some(({ skin }) => skin.value === null)
+  if (!hideValues) {
+    ctx.textAlign = "right";
+    ctx.fillText(
+      items.some(({ skin }) => skin.value === null)
         ? "UNPRICED SKINS EXCLUDED FROM TOTAL"
         : "VALUES AT TIME OF EXPORT",
-    width - MARGIN,
-    height - 38,
-  );
+      width - MARGIN,
+      height - 38,
+    );
+  }
 
   return new Promise((resolve, reject) => {
     canvas.toBlob(

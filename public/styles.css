@@ -2927,6 +2927,7 @@ footer a:hover {
   align-items: center;
   justify-content: flex-end;
   gap: 10px;
+  margin-left: auto;
 }
 .inventory-sort-control {
   display: flex;
@@ -3068,6 +3069,9 @@ footer a:hover {
   justify-content: space-between;
   gap: 5px;
   margin-top: 8px;
+}
+.inventory-bottom.values-omitted {
+  justify-content: flex-end;
 }
 .inventory-value {
   font-size: 13px;

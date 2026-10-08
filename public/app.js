@@ -863,12 +863,11 @@ function updateInventoryTotal(total) {
   if (hideInventoryValues) {
     cancelAnimationFrame(inventoryTotalFrame);
     inventoryTotalTarget = displayedInventoryTotal = total;
-    totalText.textContent = "Hidden";
+    totalText.textContent = "";
     return;
   }
-  if (total === inventoryTotalTarget && totalText.textContent !== "Hidden")
-    return;
-  const wasHidden = totalText.textContent === "Hidden";
+  if (total === inventoryTotalTarget && totalText.textContent !== "") return;
+  const wasHidden = totalText.textContent === "";
   inventoryTotalTarget = total;
   cancelAnimationFrame(inventoryTotalFrame);
   if (
@@ -938,6 +937,7 @@ function renderInventory() {
     items.reduce((sum, { qty }) => sum + qty, 0),
   );
   $("inventory-unique").textContent = fmt(items.length);
+  $("inventory-total-row").hidden = hideInventoryValues;
   updateInventoryTotal(
     items.reduce((sum, { skin, qty }) => sum + (skin.value || 0) * qty, 0),
   );
@@ -969,18 +969,16 @@ function renderInventory() {
       setInventoryCount(key, (inventory[key] || 0) + 1),
     );
     stepper.append(minus, plus);
-    bottom.append(
-      element(
-        "span",
-        "inventory-value",
-        hideInventoryValues
-          ? "Value hidden"
-          : s.value === null
-            ? "Unpriced"
-            : fmt(s.value) + " each",
-      ),
-      stepper,
-    );
+    if (!hideInventoryValues)
+      bottom.append(
+        element(
+          "span",
+          "inventory-value",
+          s.value === null ? "Unpriced" : fmt(s.value) + " each",
+        ),
+      );
+    else bottom.classList.add("values-omitted");
+    bottom.append(stepper);
     body.append(
       element("h3", "", s.name),
       element("div", "inventory-meta", s.weapon + " · " + s.rarity),
