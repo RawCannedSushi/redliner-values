@@ -1148,6 +1148,8 @@ footer a:hover {
   align-items: center;
   margin-bottom: 22px;
   border-top: 1px solid var(--line);
+  background: var(--panel2);
+  box-shadow: 0 4px 12px var(--shadow);
 }
 .site-settings {
   position: relative;
@@ -3579,7 +3581,7 @@ footer a:hover {
   padding: 0 clamp(12px, 2vw, 28px) env(safe-area-inset-bottom, 0px);
   border-top: 1px solid var(--line-strong);
   border-bottom: 0;
-  background: var(--panel);
+  background: var(--panel2);
   box-shadow: 0 -6px 20px var(--shadow);
 }
 :root[data-density="compressed"] .view-tabs button {
