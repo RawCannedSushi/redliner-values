@@ -164,6 +164,14 @@
           >
             Scam List
           </button>
+          <button
+            type="button"
+            data-view="credits"
+            role="tab"
+            aria-selected="false"
+          >
+            Credits
+          </button>
         </div>
         <details id="site-settings" class="site-settings">
           <summary>
@@ -1001,6 +1009,29 @@
           ↻ Retry
         </button>
         <div id="scam-entries" class="scam-entries"></div>
+      </section>
+      <section
+        id="credits-view"
+        class="credits-view"
+        aria-labelledby="credits-title"
+        hidden
+      >
+        <div class="section-head">
+          <h2 id="credits-title">Credits</h2>
+        </div>
+        <p class="credits-intro">The people behind the archives® value list.</p>
+        <p
+          id="credits-status"
+          class="credits-status"
+          role="status"
+          aria-live="polite"
+        >
+          Loading credits…
+        </p>
+        <button id="credits-retry" class="refresh" type="button" hidden>
+          ↻ Retry
+        </button>
+        <div id="credits-groups" class="credits-groups"></div>
       </section>
     </main>
     <footer>

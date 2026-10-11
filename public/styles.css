@@ -1677,6 +1677,52 @@ footer a:hover {
 .scam-view {
   padding-bottom: 60px;
 }
+.credits-view {
+  padding-bottom: 60px;
+}
+.credits-intro,
+.credits-status {
+  color: var(--muted);
+  margin-bottom: 20px;
+}
+.credits-groups {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+.credits-group {
+  border: 1px solid var(--line);
+  border-top: 2px solid var(--line-strong);
+  background: var(--panel);
+  padding: 18px;
+}
+.credits-group h3 {
+  font:
+    700 21px/1.1 "Archivo Narrow",
+    sans-serif;
+  text-transform: uppercase;
+  overflow-wrap: anywhere;
+}
+.credits-group ul {
+  list-style: none;
+  padding: 0;
+  margin: 15px 0 0;
+}
+.credits-group li {
+  padding: 10px 0;
+  border-top: 1px solid var(--line);
+  overflow-wrap: anywhere;
+}
+@media (max-width: 900px) {
+  .credits-groups {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 520px) {
+  .credits-groups {
+    grid-template-columns: 1fr;
+  }
+}
 .scam-intro {
   color: var(--muted);
   font:

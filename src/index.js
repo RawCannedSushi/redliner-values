@@ -1,5 +1,6 @@
 import { fetchSkins } from "./sheet.js";
 import { fetchScamList } from "./scam-list.js";
+import { fetchCredits } from "./credits.js";
 import { getHistoryPage, recordSnapshot } from "./history.js";
 
 function json(data, status = 200, headers = {}) {
@@ -28,6 +29,9 @@ export default {
     } else if (url.pathname === "/api/scam-list") {
       cacheUrl = `${url.origin}/api/scam-list`;
       load = () => fetchScamList(env);
+    } else if (url.pathname === "/api/credits") {
+      cacheUrl = `${url.origin}/api/credits`;
+      load = () => fetchCredits(env);
     } else if (url.pathname === "/api/history") {
       const range = url.searchParams.get("range") || "7";
       if (!["1", "3", "7", "30", "90", "all"].includes(range))
