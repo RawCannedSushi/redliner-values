@@ -1,4 +1,5 @@
 const $ = (id) => document.getElementById(id);
+const SITE_DEVELOPER = "Sushi (@ttvsushi)";
 
 export function createCredits() {
   const groups = $("credits-groups");
@@ -9,8 +10,22 @@ export function createCredits() {
   let lastChecked = 0;
 
   function render() {
+    const displayGroups = data.groups.map(({ role, members }) => ({
+      role,
+      members: [...members],
+    }));
+    let developer = displayGroups.find(
+      ({ role }) => role.trim().toLowerCase() === "website developer",
+    );
+    if (!developer) {
+      developer = { role: "Website Developer", members: [] };
+      displayGroups.push(developer);
+    }
+    if (!developer.members.includes(SITE_DEVELOPER))
+      developer.members.push(SITE_DEVELOPER);
+
     const fragment = document.createDocumentFragment();
-    for (const group of data.groups) {
+    for (const group of displayGroups) {
       const card = document.createElement("section");
       card.className = "credits-group";
       const heading = document.createElement("h3");
@@ -25,8 +40,7 @@ export function createCredits() {
       fragment.append(card);
     }
     groups.replaceChildren(fragment);
-    status.hidden = !!data.groups.length;
-    if (!data.groups.length) status.textContent = "No credits listed yet.";
+    status.hidden = true;
   }
 
   async function load() {
