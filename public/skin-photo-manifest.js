@@ -40,6 +40,7 @@ export const SKIN_PHOTO_FILES = [
   "Nihility-Redliner.png",
   "Obelisk-Phoenix.png",
   "OriginEnd-Redliner.png",
+  "Ossuary-Redliner.png",
   "Radiance-Monarch.png",
   "Rebecca-Siege.png",
   "Scoria-Monarch.png",
