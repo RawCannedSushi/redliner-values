@@ -14,13 +14,22 @@ export function parseCreditsResponse(body) {
   if (headerIndex < 0) throw new Error("The credits headings were not found.");
 
   const groups = rows[headerIndex]
-    .map((_, index) => ({
-      role: cell(rows[headerIndex], index),
-      members: rows
+    .map((_, index) => {
+      const role = cell(rows[headerIndex], index);
+      const members = rows
         .slice(headerIndex + 1)
         .map((row) => cell(row, index))
-        .filter(Boolean),
-    }))
+        .filter(Boolean);
+      return {
+        role,
+        members:
+          role.toLowerCase() === "administrators"
+            ? members.filter(
+                (member) => member.split(" (")[0].toLowerCase() !== "rio",
+              )
+            : members,
+      };
+    })
     .filter((group) => group.role);
   return { groups };
 }
