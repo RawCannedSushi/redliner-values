@@ -2290,7 +2290,7 @@ footer a:hover {
 }
 .redliner-word {
   color: var(--accent);
-  font-style: normal;
+  font-style: italic;
 }
 .skin-gallery {
   padding-bottom: 60px;
