@@ -20,16 +20,34 @@ const DEFAULT_SKINS = [
     untradable: true,
   }),
 );
-const GOLDEN_EAGLE = Object.freeze({
-  name: "Golden Eagle",
-  weapon: "Castigate",
-  rarity: "Exclusive",
-  value: null,
-  exclusive: true,
-  untradable: true,
-  achievement: "Castigate Max",
-  requirement: "Get 5,000 kills with the Castigate.",
-});
+const EXCLUSIVE_SKINS = [
+  Object.freeze({
+    name: "Golden Eagle",
+    weapon: "Castigate",
+    rarity: "Exclusive",
+    value: null,
+    exclusive: true,
+    untradable: true,
+    unlockLabel: "Achievement unlock",
+    unlockTitle: "Castigate Max",
+    unlockDescription:
+      "Golden Eagle is untradable. Unlock it by completing this achievement.",
+    requirement: "Get 5,000 kills with the Castigate.",
+  }),
+  Object.freeze({
+    name: "Sanguine Pledge",
+    weapon: "Redliner",
+    rarity: "Exclusive",
+    value: null,
+    exclusive: true,
+    untradable: true,
+    unlockLabel: "Ranked unlock",
+    unlockTitle: "Top 50 Ranked",
+    unlockDescription:
+      "Sanguine Pledge is untradable. Unlock it through Ranked placement.",
+    requirement: "Be actively ranked in the Top 50 in either 1v1s or 2v2s.",
+  }),
+];
 const ACCENT_PROPERTIES = [
   "--rarity",
   "--skin-paint-light",
@@ -405,7 +423,9 @@ export function createSkinGallery({
     $("gallery-exclusive-panel").hidden = !skin.exclusive;
     updateInventory();
     if (skin.exclusive) {
-      $("gallery-exclusive-achievement").textContent = skin.achievement;
+      $("gallery-exclusive-kicker").textContent = skin.unlockLabel;
+      $("gallery-exclusive-title").textContent = skin.unlockTitle;
+      $("gallery-exclusive-description").textContent = skin.unlockDescription;
       $("gallery-exclusive-requirement").textContent = skin.requirement;
     }
     if (skin.untradable) return;
@@ -655,7 +675,7 @@ export function createSkinGallery({
     },
     refresh(nextSkins) {
       const selectedKey = weaponSkins[index] && skinKey(weaponSkins[index]);
-      skins = [...nextSkins, GOLDEN_EAGLE, ...DEFAULT_SKINS];
+      skins = [...nextSkins, ...EXCLUSIVE_SKINS, ...DEFAULT_SKINS];
       renderWeapons();
       historyRequest?.abort();
       historyRequest = null;
