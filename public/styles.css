@@ -3278,6 +3278,21 @@ footer a:hover {
   border: 1px solid var(--line);
   border-radius: 4px;
 }
+.inventory-pick-group + .inventory-pick-group {
+  border-top: 1px solid var(--line-strong);
+}
+.inventory-pick-group-label {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  padding: 7px 10px;
+  background: var(--panel2);
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
 .inventory-pick-row {
   display: flex;
   align-items: center;

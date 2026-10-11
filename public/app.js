@@ -548,6 +548,7 @@ function updateInventoryFilters() {
     )
     .sort(
       (a, b) =>
+        a.weapon.localeCompare(b.weapon) ||
         Number(!!inventory[skinKey(a)]) - Number(!!inventory[skinKey(b)]) ||
         (b.value ?? -1) - (a.value ?? -1) ||
         a.name.localeCompare(b.name),
@@ -562,7 +563,15 @@ function updateInventoryFilters() {
         skins.length ? "No matching skins or weapons." : "Loading skins…",
       ),
     );
+  let group;
+  let lastWeapon;
   rows.forEach((s) => {
+    if (s.weapon !== lastWeapon) {
+      group = element("section", "inventory-pick-group");
+      group.append(element("h3", "inventory-pick-group-label", s.weapon));
+      list.append(group);
+      lastWeapon = s.weapon;
+    }
     const key = skinKey(s),
       owned = !!inventory[key],
       label = element(
@@ -603,7 +612,7 @@ function updateInventoryFilters() {
       label.classList.toggle("selected", check.checked);
       updateInventorySelection();
     });
-    list.append(label);
+    group.append(label);
   });
   updateInventorySelection();
 }
