@@ -716,6 +716,12 @@ function renderInventory() {
   );
   $("inventory-export-png").disabled = !items.length || inventoryImageBusy;
   $("inventory-copy-png").disabled = !items.length || inventoryImageBusy;
+  const add = element("button", "inventory-add", "+");
+  add.type = "button";
+  add.setAttribute("aria-label", "Add a skin to inventory");
+  add.disabled = !skins.length;
+  add.addEventListener("click", openInventoryPicker);
+  grid.append(add);
   items.forEach(({ skin: s, key, qty }) => {
     const card = element("article", "inventory-card");
     applyRarityAccent(card, s.rarity);
@@ -765,12 +771,6 @@ function renderInventory() {
     );
     grid.append(card);
   });
-  const add = element("button", "inventory-add", "+");
-  add.type = "button";
-  add.setAttribute("aria-label", "Add a skin to inventory");
-  add.disabled = !skins.length;
-  add.addEventListener("click", openInventoryPicker);
-  grid.append(add);
   restoreFocus();
 }
 $("inventory-sort").addEventListener("change", renderInventory);
