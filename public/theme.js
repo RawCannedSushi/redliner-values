@@ -13,6 +13,37 @@ const pageMain = document.querySelector("main.shell");
 const compactToolbar = document.getElementById("compact-toolbar");
 let animationTimer;
 
+pageTabs.addEventListener(
+  "wheel",
+  (event) => {
+    if (
+      event.ctrlKey ||
+      event.metaKey ||
+      event.shiftKey ||
+      Math.abs(event.deltaX) >= Math.abs(event.deltaY)
+    )
+      return;
+    const maxScroll = pageTabs.scrollWidth - pageTabs.clientWidth;
+    if (maxScroll <= 1) return;
+    const distance =
+      event.deltaY *
+      (event.deltaMode === 1
+        ? 16
+        : event.deltaMode === 2
+          ? pageTabs.clientWidth
+          : 1);
+    if (
+      !distance ||
+      (distance < 0 && pageTabs.scrollLeft <= 0) ||
+      (distance > 0 && pageTabs.scrollLeft >= maxScroll - 1)
+    )
+      return;
+    event.preventDefault();
+    pageTabs.scrollLeft += distance;
+  },
+  { passive: false },
+);
+
 function setTheme(theme, save = false) {
   if (
     root.dataset.theme !== theme &&
