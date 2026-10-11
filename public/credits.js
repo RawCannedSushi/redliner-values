@@ -1,5 +1,23 @@
 const $ = (id) => document.getElementById(id);
 const SITE_DEVELOPER = "Sushi (@ttvsushi)";
+const MEMBER_HANDLES = new Map([
+  ["vspec", "@countkatanas"],
+  ["mohamay", "@Mohamay"],
+  ["sinzeri", "@sinzeri"],
+  ["rio", "@perksaholic"],
+  ["zerby", "@_zerby_"],
+  ["gatecross", "@baehearts4u"],
+  ["yuu", "@ti9g"],
+  ["emilismk", "@emilismk"],
+  ["spaccy", "@spaccy"],
+]);
+
+function displayMember(member) {
+  const name = member.split(" (")[0];
+  const handle = MEMBER_HANDLES.get(name.toLowerCase());
+  if (!handle || /\(@[^)]*\)/.test(member)) return member;
+  return `${name} (${handle})${member.slice(name.length)}`;
+}
 
 export function createCredits() {
   const groups = $("credits-groups");
@@ -33,7 +51,7 @@ export function createCredits() {
       const names = document.createElement("ul");
       for (const member of group.members) {
         const item = document.createElement("li");
-        item.textContent = member;
+        item.textContent = displayMember(member);
         names.append(item);
       }
       card.append(heading, names);
