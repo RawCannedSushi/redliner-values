@@ -1,5 +1,6 @@
 const $ = (id) => document.getElementById(id);
 const SITE_DEVELOPER = "Sushi (@ttvsushi)";
+const LOWERCASE_NAMES = new Set(["vspec", "vsped", "spaccy", "sinzeri"]);
 const MEMBER_HANDLES = new Map([
   ["vspec", "@countkatanas"],
   ["mohamay", "@Mohamay"],
@@ -14,9 +15,14 @@ const MEMBER_HANDLES = new Map([
 
 function displayMember(member) {
   const name = member.split(" (")[0];
-  const handle = MEMBER_HANDLES.get(name.toLowerCase());
-  if (!handle || /\(@[^)]*\)/.test(member)) return member;
-  return `${name} (${handle})${member.slice(name.length)}`;
+  const lowercaseName = name.toLowerCase();
+  const displayName = LOWERCASE_NAMES.has(lowercaseName)
+    ? lowercaseName
+    : name.charAt(0).toUpperCase() + name.slice(1);
+  const suffix = member.slice(name.length);
+  const handle = MEMBER_HANDLES.get(lowercaseName);
+  if (!handle || /\(@[^)]*\)/.test(member)) return displayName + suffix;
+  return `${displayName} (${handle})${suffix}`;
 }
 
 export function createCredits() {
