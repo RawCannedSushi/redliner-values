@@ -84,7 +84,13 @@ function photoFor(skin, photoUrl) {
   return image;
 }
 
-export function createSkinGallery({ photoUrl, skinKey, fmt }) {
+export function createSkinGallery({
+  photoUrl,
+  skinKey,
+  fmt,
+  getInventoryCount,
+  setInventoryCount,
+}) {
   let skins = [];
   let weapon = null;
   let weaponSkins = [];
@@ -347,6 +353,24 @@ export function createSkinGallery({ photoUrl, skinKey, fmt }) {
     });
   }
 
+  function updateInventory() {
+    const skin = weaponSkins[index];
+    $("gallery-inventory-control").hidden = !skin || !!skin.untradable;
+    if (!skin || skin.untradable) return;
+    const count = getInventoryCount(skinKey(skin));
+    $("gallery-inventory-count").textContent = `x${count}`;
+    $("gallery-inventory-minus").disabled = count === 0;
+    $("gallery-inventory-plus").disabled = count >= 9999;
+    $("gallery-inventory-minus").setAttribute(
+      "aria-label",
+      `Remove one ${skin.name} from inventory`,
+    );
+    $("gallery-inventory-plus").setAttribute(
+      "aria-label",
+      `Add one ${skin.name} to inventory`,
+    );
+  }
+
   function renderCurrent() {
     resetParallax();
     const skin = weaponSkins[index];
@@ -379,6 +403,7 @@ export function createSkinGallery({ photoUrl, skinKey, fmt }) {
     $("gallery-history-panel").hidden = !!skin.untradable;
     $("gallery-untradable-status").hidden = !skin.untradable;
     $("gallery-exclusive-panel").hidden = !skin.exclusive;
+    updateInventory();
     if (skin.exclusive) {
       $("gallery-exclusive-achievement").textContent = skin.achievement;
       $("gallery-exclusive-requirement").textContent = skin.requirement;
@@ -574,6 +599,17 @@ export function createSkinGallery({ photoUrl, skinKey, fmt }) {
     ensureHistory();
     renderChart();
   });
+  for (const [id, change] of [
+    ["gallery-inventory-minus", -1],
+    ["gallery-inventory-plus", 1],
+  ]) {
+    $(id).addEventListener("click", () => {
+      const skin = weaponSkins[index];
+      if (!skin || skin.untradable) return;
+      const key = skinKey(skin);
+      setInventoryCount(key, getInventoryCount(key) + change);
+    });
+  }
   $("gallery-stage").addEventListener("keydown", (event) => {
     if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
     event.preventDefault();
@@ -632,5 +668,6 @@ export function createSkinGallery({ photoUrl, skinKey, fmt }) {
           ensureHistory();
       }
     },
+    updateInventory,
   };
 }

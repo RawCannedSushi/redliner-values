@@ -488,7 +488,13 @@ function skinPhotoUrl(skin) {
     normalizePhotoPart(skin.name) + "\u001f" + normalizePhotoPart(skin.weapon);
   return skinPhotoPaths.get(key) || PHOTO_FALLBACK;
 }
-const gallery = createSkinGallery({ photoUrl: skinPhotoUrl, skinKey, fmt });
+const gallery = createSkinGallery({
+  photoUrl: skinPhotoUrl,
+  skinKey,
+  fmt,
+  getInventoryCount: (key) => inventory[key] || 0,
+  setInventoryCount,
+});
 function saveInventory({
   sync = true,
   updatedAt = new Date().toISOString(),
@@ -781,6 +787,7 @@ function renderInventory() {
     grid.append(card);
   });
   restoreFocus();
+  gallery.updateInventory();
 }
 $("inventory-sort").addEventListener("change", renderInventory);
 $("inventory-hide-values").addEventListener("change", (event) => {

@@ -2776,6 +2776,51 @@ footer a:hover {
     800 49px/1 "Archivo Narrow",
     sans-serif;
 }
+.gallery-inventory-control {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 20px;
+  padding-top: 15px;
+  border-top: 1px solid var(--line);
+}
+.gallery-inventory-control > span {
+  color: var(--muted);
+  font-size: 12px;
+}
+.gallery-inventory-stepper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.gallery-inventory-stepper button {
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--line-strong);
+  background: var(--panel2);
+  color: var(--text);
+  font-size: 23px;
+  cursor: pointer;
+}
+.gallery-inventory-stepper button:hover:not(:disabled),
+.gallery-inventory-stepper button:focus-visible {
+  border-color: var(--skin-ink, var(--accent));
+  color: var(--skin-ink, var(--accent));
+}
+.gallery-inventory-stepper button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+.gallery-inventory-stepper output {
+  min-width: 60px;
+  color: var(--skin-ink, var(--accent));
+  font:
+    700 25px "Archivo Narrow",
+    sans-serif;
+  text-align: center;
+}
 .gallery-history-heading {
   display: flex;
   justify-content: space-between;
