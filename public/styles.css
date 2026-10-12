@@ -566,7 +566,8 @@ button:disabled {
   text-transform: uppercase;
   letter-spacing: 0.03em;
 }
-.trend.rising {
+.trend.rising,
+.trend.increasing {
   color: var(--good);
 }
 .trend.fluctuating,

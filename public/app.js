@@ -321,11 +321,12 @@ function normalize(raw, i) {
     name: text("name"),
     value: numeric,
     demand,
-    trend: /^(Stable|Unstable|Fluctuating|Rising|Lowering|Hyped|N\/A)$/i.test(
-      trend,
-    )
-      ? trend
-      : "N/A",
+    trend:
+      /^(Stable|Unstable|Fluctuating|Rising|Increasing|Lowering|Hyped|N\/A)$/i.test(
+        trend,
+      )
+        ? trend
+        : "N/A",
   };
 }
 function setStatus(kind, message) {
