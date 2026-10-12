@@ -176,6 +176,41 @@ function compareRarity(a, b) {
       (bRank === -1 ? rarityOrder.length : bRank) || a.localeCompare(b)
   );
 }
+const pickerSortLabels = {
+  rarity: "Rarity",
+  value: "Value",
+  weapon: "Weapon type",
+};
+function pickerSortMode(prefix) {
+  return $(prefix + "-sort-options").querySelector("input:checked").value;
+}
+function comparePickerSkins(a, b, mode) {
+  const byRarity = compareRarity(a.rarity, b.rarity);
+  const byValue = (b.value ?? -1) - (a.value ?? -1);
+  const byWeapon = a.weapon.localeCompare(b.weapon);
+  const byName = a.name.localeCompare(b.name);
+  if (mode === "value") return byValue || byRarity || byWeapon || byName;
+  if (mode === "weapon") return byWeapon || byRarity || byValue || byName;
+  return byRarity || byName || byWeapon;
+}
+function closePickerSort(prefix) {
+  $(prefix + "-sort-options").hidden = true;
+  $(prefix + "-sort-toggle").setAttribute("aria-expanded", "false");
+}
+function setupPickerSort(prefix, update) {
+  const toggle = $(prefix + "-sort-toggle");
+  const options = $(prefix + "-sort-options");
+  toggle.addEventListener("click", () => {
+    options.hidden = !options.hidden;
+    toggle.setAttribute("aria-expanded", String(!options.hidden));
+  });
+  options.addEventListener("change", () => {
+    toggle.textContent = "Sort by: " + pickerSortLabels[pickerSortMode(prefix)];
+    closePickerSort(prefix);
+    toggle.focus();
+    update();
+  });
+}
 const chartColors = {
   ...rarityColors,
   "Direct Classified": "#000000",
@@ -551,17 +586,12 @@ function updateInventoryFilters() {
     if (inventory[key] || !available.has(key))
       pendingInventorySkins.delete(key);
   const query = $("inventory-pick-search").value.trim().toLowerCase();
+  const sortMode = pickerSortMode("inventory-pick");
   const rows = skins
     .filter(
       (s) => !query || (s.name + " " + s.weapon).toLowerCase().includes(query),
     )
-    .sort(
-      (a, b) =>
-        a.weapon.localeCompare(b.weapon) ||
-        Number(!!inventory[skinKey(a)]) - Number(!!inventory[skinKey(b)]) ||
-        (b.value ?? -1) - (a.value ?? -1) ||
-        a.name.localeCompare(b.name),
-    );
+    .sort((a, b) => comparePickerSkins(a, b, sortMode));
   const list = $("inventory-pick-results");
   list.replaceChildren();
   if (!rows.length)
@@ -573,13 +603,14 @@ function updateInventoryFilters() {
       ),
     );
   let group;
-  let lastWeapon;
+  let lastGroup;
   rows.forEach((s) => {
-    if (s.weapon !== lastWeapon) {
+    const groupLabel = sortMode === "rarity" ? s.rarity : s.weapon;
+    if (sortMode !== "value" && groupLabel !== lastGroup) {
       group = element("section", "inventory-pick-group");
-      group.append(element("h3", "inventory-pick-group-label", s.weapon));
+      group.append(element("h3", "inventory-pick-group-label", groupLabel));
       list.append(group);
-      lastWeapon = s.weapon;
+      lastGroup = groupLabel;
     }
     const key = skinKey(s),
       owned = !!inventory[key],
@@ -621,18 +652,23 @@ function updateInventoryFilters() {
       label.classList.toggle("selected", check.checked);
       updateInventorySelection();
     });
-    group.append(label);
+    (group || list).append(label);
   });
   updateInventorySelection();
 }
 function openInventoryPicker() {
   pendingInventorySkins.clear();
   $("inventory-pick-search").value = "";
+  closePickerSort("inventory-pick");
   updateInventoryFilters();
   $("inventory-dialog").showModal();
   $("inventory-pick-search").focus();
 }
+setupPickerSort("inventory-pick", updateInventoryFilters);
 $("inventory-pick-search").addEventListener("input", updateInventoryFilters);
+$("inventory-dialog").addEventListener("close", () =>
+  closePickerSort("inventory-pick"),
+);
 $("inventory-cancel").addEventListener("click", () =>
   $("inventory-dialog").close(),
 );
@@ -1034,15 +1070,10 @@ function render() {
   });
   container.append(fragment);
 }
-function tradeSkinChoices() {
+function tradeSkinChoices(sortMode = "rarity") {
   return skins
     .filter((s) => s.value !== null)
-    .sort(
-      (a, b) =>
-        compareRarity(a.rarity, b.rarity) ||
-        a.name.localeCompare(b.name) ||
-        a.weapon.localeCompare(b.weapon),
-    );
+    .sort((a, b) => comparePickerSkins(a, b, sortMode));
 }
 function updatePickerLabel(side) {
   const select = $(side + "-select");
@@ -1064,25 +1095,27 @@ function renderPickerOptions(side) {
     .value.trim()
     .toLocaleLowerCase()
     .split(/\s+/);
+  const sortMode = pickerSortMode(side);
   options.replaceChildren();
   let group;
-  let lastRarity;
+  let lastGroup;
   let count = 0;
-  for (const skin of tradeSkinChoices()) {
+  for (const skin of tradeSkinChoices(sortMode)) {
     const searchable = [skin.name, skin.weapon, skin.rarity, skin.collection]
       .join(" ")
       .toLocaleLowerCase();
     if (!terms.every((term) => searchable.includes(term))) continue;
-    const rarity = skin.rarity || "Other";
-    if (rarity !== lastRarity) {
+    const groupLabel =
+      sortMode === "rarity" ? skin.rarity || "Other" : skin.weapon;
+    if (sortMode !== "value" && groupLabel !== lastGroup) {
       group = element("div", "trade-picker-group");
       group.setAttribute("role", "group");
-      group.setAttribute("aria-label", rarity);
-      const heading = element("div", "trade-picker-group-label", rarity);
+      group.setAttribute("aria-label", groupLabel);
+      const heading = element("div", "trade-picker-group-label", groupLabel);
       heading.setAttribute("aria-hidden", "true");
       group.append(heading);
       options.append(group);
-      lastRarity = rarity;
+      lastGroup = groupLabel;
     }
     const key = skinKey(skin);
     const choice = element(
@@ -1102,7 +1135,7 @@ function renderPickerOptions(side) {
       choice.setAttribute("aria-pressed", String(selectOption.selected));
       updatePickerLabel(side);
     });
-    group.append(choice);
+    (group || options).append(choice);
     count++;
   }
   if (!count)
@@ -1143,6 +1176,7 @@ function closeTradePicker(side) {
   $(side + "-panel").hidden = true;
   $(side + "-trigger").setAttribute("aria-expanded", "false");
   $(side + "-search").value = "";
+  closePickerSort(side);
 }
 function tradeSnapshot() {
   const entries = { give: [], receive: [] };
@@ -1380,6 +1414,7 @@ for (const side of ["give", "receive"]) {
   const trigger = $(side + "-trigger");
   const panel = $(side + "-panel");
   const search = $(side + "-search");
+  setupPickerSort(side, () => renderPickerOptions(side));
   trigger.addEventListener("click", () => {
     if (!panel.hidden) {
       closeTradePicker(side);
@@ -1410,7 +1445,13 @@ for (const side of ["give", "receive"]) {
     }
     if (event.key !== "ArrowDown" && event.key !== "ArrowUp") return;
     event.preventDefault();
-    const focusable = [search, ...choices];
+    const sortOptions = $(side + "-sort-options");
+    const focusable = [
+      search,
+      $(side + "-sort-toggle"),
+      ...(sortOptions.hidden ? [] : [...sortOptions.querySelectorAll("input")]),
+      ...choices,
+    ];
     const direction = event.key === "ArrowDown" ? 1 : -1;
     const index = focusable.indexOf(document.activeElement);
     focusable[

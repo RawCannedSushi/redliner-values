@@ -676,6 +676,59 @@ button:disabled {
   background: var(--menu-bg);
   box-shadow: 0 12px 28px var(--shadow);
 }
+.skin-picker-sort-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  min-height: 38px;
+  padding: 7px 12px;
+  border: 1px solid var(--line);
+  background: var(--panel2);
+  color: var(--text);
+  text-align: left;
+  font-size: 13px;
+}
+.skin-picker-sort-toggle::after {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-right: 1px solid currentColor;
+  border-bottom: 1px solid currentColor;
+  transform: translateY(-2px) rotate(45deg);
+}
+.skin-picker-sort-toggle[aria-expanded="true"]::after {
+  transform: translateY(2px) rotate(225deg);
+}
+.skin-picker-sort-options {
+  border: 1px solid var(--line);
+  border-top: 0;
+  background: var(--menu-bg);
+}
+.skin-picker-sort-options:not([hidden]) {
+  display: grid;
+}
+.skin-picker-sort-options label {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 34px;
+  padding: 5px 12px;
+  color: var(--text);
+  font-size: 13px;
+  cursor: pointer;
+}
+.skin-picker-sort-options label:hover {
+  background: var(--menu-hover);
+}
+.skin-picker-sort-options input {
+  accent-color: var(--accent);
+}
+.trade-picker-panel .skin-picker-sort-toggle,
+.trade-picker-panel .skin-picker-sort-options {
+  border-left: 0;
+  border-right: 0;
+}
 .trade-picker input[type="search"] {
   display: block;
   width: 100%;
@@ -3324,6 +3377,10 @@ footer a:hover {
   border: 1px solid var(--line-strong);
   border-radius: 4px;
   padding: 0 10px;
+}
+.inventory-dialog .skin-picker-sort-toggle {
+  margin-top: 8px;
+  border-radius: 4px;
 }
 .legal-page {
   min-height: 100vh;

@@ -517,6 +517,45 @@
             aria-label="Search skins or weapons"
             autocomplete="off"
           />
+          <button
+            id="inventory-pick-sort-toggle"
+            class="skin-picker-sort-toggle"
+            type="button"
+            aria-expanded="false"
+            aria-controls="inventory-pick-sort-options"
+          >
+            Sort by: Rarity
+          </button>
+          <div
+            id="inventory-pick-sort-options"
+            class="skin-picker-sort-options"
+            role="radiogroup"
+            aria-label="Sort skins by"
+            hidden
+          >
+            <label
+              ><input
+                type="radio"
+                name="inventory-pick-sort"
+                value="rarity"
+                checked
+              />Rarity</label
+            >
+            <label
+              ><input
+                type="radio"
+                name="inventory-pick-sort"
+                value="value"
+              />Value</label
+            >
+            <label
+              ><input
+                type="radio"
+                name="inventory-pick-sort"
+                value="weapon"
+              />Weapon type</label
+            >
+          </div>
           <div
             id="inventory-pick-results"
             class="inventory-pick-results"
@@ -681,6 +720,45 @@
                       placeholder="Search skins…"
                       autocomplete="off"
                     />
+                    <button
+                      id="give-sort-toggle"
+                      class="skin-picker-sort-toggle"
+                      type="button"
+                      aria-expanded="false"
+                      aria-controls="give-sort-options"
+                    >
+                      Sort by: Rarity
+                    </button>
+                    <div
+                      id="give-sort-options"
+                      class="skin-picker-sort-options"
+                      role="radiogroup"
+                      aria-label="Sort skins you give by"
+                      hidden
+                    >
+                      <label
+                        ><input
+                          type="radio"
+                          name="give-sort"
+                          value="rarity"
+                          checked
+                        />Rarity</label
+                      >
+                      <label
+                        ><input
+                          type="radio"
+                          name="give-sort"
+                          value="value"
+                        />Value</label
+                      >
+                      <label
+                        ><input
+                          type="radio"
+                          name="give-sort"
+                          value="weapon"
+                        />Weapon type</label
+                      >
+                    </div>
                     <div id="give-options" class="trade-picker-options"></div>
                   </div>
                 </div>
@@ -746,6 +824,45 @@
                       placeholder="Search skins…"
                       autocomplete="off"
                     />
+                    <button
+                      id="receive-sort-toggle"
+                      class="skin-picker-sort-toggle"
+                      type="button"
+                      aria-expanded="false"
+                      aria-controls="receive-sort-options"
+                    >
+                      Sort by: Rarity
+                    </button>
+                    <div
+                      id="receive-sort-options"
+                      class="skin-picker-sort-options"
+                      role="radiogroup"
+                      aria-label="Sort skins you receive by"
+                      hidden
+                    >
+                      <label
+                        ><input
+                          type="radio"
+                          name="receive-sort"
+                          value="rarity"
+                          checked
+                        />Rarity</label
+                      >
+                      <label
+                        ><input
+                          type="radio"
+                          name="receive-sort"
+                          value="value"
+                        />Value</label
+                      >
+                      <label
+                        ><input
+                          type="radio"
+                          name="receive-sort"
+                          value="weapon"
+                        />Weapon type</label
+                      >
+                    </div>
                     <div
                       id="receive-options"
                       class="trade-picker-options"
