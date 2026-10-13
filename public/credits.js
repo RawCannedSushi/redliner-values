@@ -1,5 +1,6 @@
 const $ = (id) => document.getElementById(id);
 const SITE_DEVELOPER = "Sushi (@ttvsushi)";
+const SITE_CONTRIBUTOR = "Lee (@liamgraves) - Weapon video help";
 const LOWERCASE_NAMES = new Set(["vspec", "vsped", "spaccy", "sinzeri"]);
 const MEMBER_HANDLES = new Map([
   ["vspec", "@countkatanas"],
@@ -47,6 +48,15 @@ export function createCredits() {
     }
     if (!developer.members.includes(SITE_DEVELOPER))
       developer.members.push(SITE_DEVELOPER);
+    let contributor = displayGroups.find(
+      ({ role }) => role.trim().toLowerCase() === "website contributor",
+    );
+    if (!contributor) {
+      contributor = { role: "Website Contributor", members: [] };
+      displayGroups.push(contributor);
+    }
+    if (!contributor.members.includes(SITE_CONTRIBUTOR))
+      contributor.members.push(SITE_CONTRIBUTOR);
 
     const fragment = document.createDocumentFragment();
     for (const group of displayGroups) {
