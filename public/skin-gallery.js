@@ -10,6 +10,31 @@ const SKIN_ANIMATIONS = {
     },
     { label: "Firing", src: "/skin-media/Castigate-Carmine-Firing.gif" },
   ],
+  "Castigate\u001fEroder": [
+    {
+      label: "Weapon inspect",
+      src: "/skin-media/Castigate-Eroder-Inspect.gif",
+    },
+    { label: "Firing", src: "/skin-media/Castigate-Eroder-Firing.gif" },
+  ],
+  "Castigate\u001fGeometric": [
+    {
+      label: "Weapon inspect",
+      src: "/skin-media/Castigate-Geometric-Inspect.gif",
+    },
+    { label: "Firing", src: "/skin-media/Castigate-Geometric-Firing.gif" },
+  ],
+  "Castigate\u001fGoldrose": [
+    {
+      label: "Weapon inspect",
+      src: "/skin-media/Castigate-Goldrose-Inspect.gif",
+    },
+    { label: "Firing", src: "/skin-media/Castigate-Goldrose-Firing.gif" },
+  ],
+  "Castigate\u001fGrimm": [
+    { label: "Weapon inspect", src: "/skin-media/Castigate-Grimm-Inspect.gif" },
+    { label: "Firing", src: "/skin-media/Castigate-Grimm-Firing.gif" },
+  ],
 };
 const DEFAULT_SKINS = [
   "Castigate",
