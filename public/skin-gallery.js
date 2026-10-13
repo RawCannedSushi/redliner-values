@@ -35,6 +35,25 @@ const SKIN_ANIMATIONS = {
     { label: "Weapon inspect", src: "/skin-media/Castigate-Grimm-Inspect.gif" },
     { label: "Firing", src: "/skin-media/Castigate-Grimm-Firing.gif" },
   ],
+  "Monarch\u001fBinary": [
+    { label: "Weapon inspect", src: "/skin-media/Monarch-Binary-Inspect.gif" },
+    { label: "Firing", src: "/skin-media/Monarch-Binary-Firing.gif" },
+  ],
+  "Monarch\u001fCobwebs": [
+    { label: "Weapon inspect", src: "/skin-media/Monarch-Cobwebs-Inspect.gif" },
+    { label: "Firing", src: "/skin-media/Monarch-Cobwebs-Firing.gif" },
+  ],
+  "Monarch\u001fScoria": [
+    { label: "Weapon inspect", src: "/skin-media/Monarch-Scoria-Inspect.gif" },
+    { label: "Firing", src: "/skin-media/Monarch-Scoria-Firing.gif" },
+  ],
+  "Monarch\u001fWinter Troop": [
+    {
+      label: "Weapon inspect",
+      src: "/skin-media/Monarch-WinterTroop-Inspect.gif",
+    },
+    { label: "Firing", src: "/skin-media/Monarch-WinterTroop-Firing.gif" },
+  ],
 };
 const DEFAULT_SKINS = [
   "Castigate",
