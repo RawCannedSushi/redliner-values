@@ -2,6 +2,15 @@ import { applyRarityAccent } from "./rarity-theme.js";
 
 const $ = (id) => document.getElementById(id);
 const PHOTO_FALLBACK = "/skin-photos/unknown.png";
+const SKIN_ANIMATIONS = {
+  "Castigate\u001fCarmine": [
+    {
+      label: "Weapon inspect",
+      src: "/skin-media/Castigate-Carmine-Inspect.gif",
+    },
+    { label: "Firing", src: "/skin-media/Castigate-Carmine-Firing.gif" },
+  ],
+};
 const DEFAULT_SKINS = [
   "Castigate",
   "Liberator",
@@ -421,6 +430,7 @@ export function createSkinGallery({
     $("gallery-history-panel").hidden = !!skin.untradable;
     $("gallery-untradable-status").hidden = !skin.untradable;
     $("gallery-exclusive-panel").hidden = !skin.exclusive;
+    renderAnimations(skin);
     updateInventory();
     if (skin.exclusive) {
       $("gallery-exclusive-kicker").textContent = skin.unlockLabel;
@@ -438,6 +448,26 @@ export function createSkinGallery({
     if (skin.trend && skin.trend !== "N/A") details.push(skin.trend);
     $("gallery-demand").textContent = details.join("  ·  ");
     renderChart();
+  }
+
+  function renderAnimations(skin) {
+    const panel = $("gallery-animations");
+    const clips = SKIN_ANIMATIONS[skinKey(skin)] || [];
+    panel.replaceChildren();
+    panel.hidden = clips.length === 0;
+    for (const { label, src } of clips) {
+      const figure = document.createElement("figure");
+      const caption = document.createElement("figcaption");
+      caption.textContent = label;
+      const image = document.createElement("img");
+      image.src = src;
+      image.alt = `${skin.name} ${skin.weapon} ${label.toLowerCase()}`;
+      image.width = 720;
+      image.height = 405;
+      image.loading = "lazy";
+      figure.append(caption, image);
+      panel.append(figure);
+    }
   }
 
   function clearChart(message) {
