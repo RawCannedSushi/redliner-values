@@ -1,6 +1,7 @@
-export const SITE_MESSAGE = "Want to influence the value list? Join the";
-export const SITE_MESSAGE_LINK_TEXT = "archives® Discord server!";
-export const SITE_MESSAGE_LINK_URL = "https://discord.gg/F6DJWXfkHD";
+export const SITE_MESSAGE =
+  '"Rebecca value going up in 2027, stay tuned 🤑🤑🤑"  -Mohamay';
+export const SITE_MESSAGE_LINK_TEXT = "";
+export const SITE_MESSAGE_LINK_URL = "";
 
 export const SOURCE_REPOSITORY =
   "https://github.com/RawCannedSushi/redliner-values.git";

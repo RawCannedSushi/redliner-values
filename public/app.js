@@ -146,15 +146,15 @@ const $ = (id) => document.getElementById(id);
 const announcement = String(SITE_MESSAGE || "").trim();
 const announcementText = $("site-message-text");
 if (announcement) {
-  const discordLink = document.createElement("a");
-  discordLink.href = SITE_MESSAGE_LINK_URL;
-  discordLink.textContent = SITE_MESSAGE_LINK_TEXT;
-  discordLink.target = "_blank";
-  discordLink.rel = "noopener noreferrer";
-  announcementText.replaceChildren(
-    document.createTextNode(`${announcement} `),
-    discordLink,
-  );
+  announcementText.textContent = announcement;
+  if (SITE_MESSAGE_LINK_TEXT && SITE_MESSAGE_LINK_URL) {
+    const announcementLink = document.createElement("a");
+    announcementLink.href = SITE_MESSAGE_LINK_URL;
+    announcementLink.textContent = SITE_MESSAGE_LINK_TEXT;
+    announcementLink.target = "_blank";
+    announcementLink.rel = "noopener noreferrer";
+    announcementText.append(" ", announcementLink);
+  }
 }
 $("site-message").hidden = !announcement;
 const numberFormat = new Intl.NumberFormat("en-US");
