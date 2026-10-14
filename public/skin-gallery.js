@@ -3,6 +3,13 @@ import { applyRarityAccent } from "./rarity-theme.js";
 const $ = (id) => document.getElementById(id);
 const PHOTO_FALLBACK = "/skin-photos/unknown.png";
 const SKIN_ANIMATIONS = {
+  "Castigate\u001fDefault": [
+    {
+      label: "Weapon inspect",
+      src: "/skin-media/Castigate-Default-Inspect.webp",
+    },
+    { label: "Firing", src: "/skin-media/Castigate-Default-Firing.webp" },
+  ],
   "Castigate\u001fCarmine": [
     {
       label: "Weapon inspect",
@@ -45,6 +52,21 @@ const SKIN_ANIMATIONS = {
     },
     { label: "Firing", src: "/skin-media/Castigate-Grimm-Firing.webp" },
   ],
+  "Liberator\u001fDefault": [
+    {
+      label: "Weapon inspect",
+      src: "/skin-media/Liberator-Default-Inspect.webp",
+    },
+    { label: "Slashing", src: "/skin-media/Liberator-Default-Slashing.webp" },
+    { label: "Firing", src: "/skin-media/Liberator-Default-Firing.webp" },
+  ],
+  "Monarch\u001fDefault": [
+    {
+      label: "Weapon inspect",
+      src: "/skin-media/Monarch-Default-Inspect.webp",
+    },
+    { label: "Firing", src: "/skin-media/Monarch-Default-Firing.webp" },
+  ],
   "Monarch\u001fBinary": [
     { label: "Weapon inspect", src: "/skin-media/Monarch-Binary-Inspect.webp" },
     { label: "Firing", src: "/skin-media/Monarch-Binary-Firing.webp" },
@@ -73,6 +95,13 @@ const SKIN_ANIMATIONS = {
       src: "/skin-media/Monarch-WinterTroop-Inspect.webp",
     },
     { label: "Firing", src: "/skin-media/Monarch-WinterTroop-Firing.webp" },
+  ],
+  "Phoenix\u001fDefault": [
+    {
+      label: "Weapon inspect",
+      src: "/skin-media/Phoenix-Default-Inspect.webp",
+    },
+    { label: "Firing", src: "/skin-media/Phoenix-Default-Firing.webp" },
   ],
   "Phoenix\u001fBlunderbuss": [
     {
@@ -106,6 +135,13 @@ const SKIN_ANIMATIONS = {
       src: "/skin-media/Phoenix-Obelisk-Inspect.webp",
     },
     { label: "Firing", src: "/skin-media/Phoenix-Obelisk-Firing.webp" },
+  ],
+  "Redliner\u001fDefault": [
+    {
+      label: "Weapon inspect",
+      src: "/skin-media/Redliner-Default-Inspect.webp",
+    },
+    { label: "Attack", src: "/skin-media/Redliner-Default-Attack.webp" },
   ],
   "Redliner\u001fCavalry": [
     {
@@ -146,6 +182,10 @@ const SKIN_ANIMATIONS = {
     },
     { label: "Attack", src: "/skin-media/Redliner-TypeNeo-Attack.webp" },
   ],
+  "Revolt\u001fDefault": [
+    { label: "Weapon inspect", src: "/skin-media/Revolt-Default-Inspect.webp" },
+    { label: "Firing", src: "/skin-media/Revolt-Default-Firing.webp" },
+  ],
   "Revolt\u001fDune": [
     { label: "Weapon inspect", src: "/skin-media/Revolt-Dune-Inspect.webp" },
     { label: "Firing", src: "/skin-media/Revolt-Dune-Firing.webp" },
@@ -157,6 +197,10 @@ const SKIN_ANIMATIONS = {
   "Revolt\u001fSurge": [
     { label: "Weapon inspect", src: "/skin-media/Revolt-Surge-Inspect.webp" },
     { label: "Firing", src: "/skin-media/Revolt-Surge-Firing.webp" },
+  ],
+  "Siege\u001fDefault": [
+    { label: "Weapon inspect", src: "/skin-media/Siege-Default-Inspect.webp" },
+    { label: "Firing", src: "/skin-media/Siege-Default-Firing.webp" },
   ],
   "Siege\u001fAfterburn": [
     {
