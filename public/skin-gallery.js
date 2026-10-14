@@ -6,6 +6,12 @@ const SKIN_SHOWCASES = {
   "Monarch\u001fDragora": {
     src: "/skin-media/Monarch-Dragora-Showcase.mp4",
     poster: "/skin-media/Monarch-Dragora-Showcase.jpg",
+    description: "inspect, firing, and elimination effect audio",
+  },
+  "Redliner\u001fInheritor": {
+    src: "/skin-media/Redliner-Inheritor-Showcase.mp4",
+    poster: "/skin-media/Redliner-Inheritor-Showcase.jpg",
+    description: "inspect, attack, and parry audio",
   },
 };
 const SKIN_ANIMATIONS = {
@@ -701,7 +707,7 @@ export function createSkinGallery({
       video.height = 720;
       video.setAttribute(
         "aria-label",
-        `${skin.name} ${skin.weapon} weapon showcase with inspect, firing, and elimination effect audio`,
+        `${skin.name} ${skin.weapon} weapon showcase with ${showcase.description}`,
       );
       figure.append(caption, video);
       panel.append(figure);
