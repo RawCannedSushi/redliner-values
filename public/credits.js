@@ -1,6 +1,9 @@
 const $ = (id) => document.getElementById(id);
 const SITE_DEVELOPER = "Sushi (@ttvsushi)";
-const SITE_CONTRIBUTOR = "Lee (@liamgraves) - Weapon video help";
+const SITE_CONTRIBUTORS = [
+  "Lee (@liamgraves) - Weapon video help",
+  "Gluin (@gluin_025) - Weapon video help",
+];
 const LOWERCASE_NAMES = new Set(["vspec", "vsped", "spaccy", "sinzeri"]);
 const MEMBER_HANDLES = new Map([
   ["vspec", "@countkatanas"],
@@ -55,8 +58,10 @@ export function createCredits() {
       contributor = { role: "Website Contributor", members: [] };
       displayGroups.push(contributor);
     }
-    if (!contributor.members.includes(SITE_CONTRIBUTOR))
-      contributor.members.push(SITE_CONTRIBUTOR);
+    for (const member of SITE_CONTRIBUTORS) {
+      if (!contributor.members.includes(member))
+        contributor.members.push(member);
+    }
 
     const fragment = document.createDocumentFragment();
     for (const group of displayGroups) {
