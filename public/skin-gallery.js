@@ -6,53 +6,59 @@ const SKIN_ANIMATIONS = {
   "Castigate\u001fCarmine": [
     {
       label: "Weapon inspect",
-      src: "/skin-media/Castigate-Carmine-Inspect.gif",
+      src: "/skin-media/Castigate-Carmine-Inspect.webp",
     },
-    { label: "Firing", src: "/skin-media/Castigate-Carmine-Firing.gif" },
+    { label: "Firing", src: "/skin-media/Castigate-Carmine-Firing.webp" },
   ],
   "Castigate\u001fEroder": [
     {
       label: "Weapon inspect",
-      src: "/skin-media/Castigate-Eroder-Inspect.gif",
+      src: "/skin-media/Castigate-Eroder-Inspect.webp",
     },
-    { label: "Firing", src: "/skin-media/Castigate-Eroder-Firing.gif" },
+    { label: "Firing", src: "/skin-media/Castigate-Eroder-Firing.webp" },
   ],
   "Castigate\u001fGeometric": [
     {
       label: "Weapon inspect",
-      src: "/skin-media/Castigate-Geometric-Inspect.gif",
+      src: "/skin-media/Castigate-Geometric-Inspect.webp",
     },
-    { label: "Firing", src: "/skin-media/Castigate-Geometric-Firing.gif" },
+    { label: "Firing", src: "/skin-media/Castigate-Geometric-Firing.webp" },
   ],
   "Castigate\u001fGoldrose": [
     {
       label: "Weapon inspect",
-      src: "/skin-media/Castigate-Goldrose-Inspect.gif",
+      src: "/skin-media/Castigate-Goldrose-Inspect.webp",
     },
-    { label: "Firing", src: "/skin-media/Castigate-Goldrose-Firing.gif" },
+    { label: "Firing", src: "/skin-media/Castigate-Goldrose-Firing.webp" },
   ],
   "Castigate\u001fGrimm": [
-    { label: "Weapon inspect", src: "/skin-media/Castigate-Grimm-Inspect.gif" },
-    { label: "Firing", src: "/skin-media/Castigate-Grimm-Firing.gif" },
+    {
+      label: "Weapon inspect",
+      src: "/skin-media/Castigate-Grimm-Inspect.webp",
+    },
+    { label: "Firing", src: "/skin-media/Castigate-Grimm-Firing.webp" },
   ],
   "Monarch\u001fBinary": [
-    { label: "Weapon inspect", src: "/skin-media/Monarch-Binary-Inspect.gif" },
-    { label: "Firing", src: "/skin-media/Monarch-Binary-Firing.gif" },
+    { label: "Weapon inspect", src: "/skin-media/Monarch-Binary-Inspect.webp" },
+    { label: "Firing", src: "/skin-media/Monarch-Binary-Firing.webp" },
   ],
   "Monarch\u001fCobwebs": [
-    { label: "Weapon inspect", src: "/skin-media/Monarch-Cobwebs-Inspect.gif" },
-    { label: "Firing", src: "/skin-media/Monarch-Cobwebs-Firing.gif" },
+    {
+      label: "Weapon inspect",
+      src: "/skin-media/Monarch-Cobwebs-Inspect.webp",
+    },
+    { label: "Firing", src: "/skin-media/Monarch-Cobwebs-Firing.webp" },
   ],
   "Monarch\u001fScoria": [
-    { label: "Weapon inspect", src: "/skin-media/Monarch-Scoria-Inspect.gif" },
-    { label: "Firing", src: "/skin-media/Monarch-Scoria-Firing.gif" },
+    { label: "Weapon inspect", src: "/skin-media/Monarch-Scoria-Inspect.webp" },
+    { label: "Firing", src: "/skin-media/Monarch-Scoria-Firing.webp" },
   ],
   "Monarch\u001fWinter Troop": [
     {
       label: "Weapon inspect",
-      src: "/skin-media/Monarch-WinterTroop-Inspect.gif",
+      src: "/skin-media/Monarch-WinterTroop-Inspect.webp",
     },
-    { label: "Firing", src: "/skin-media/Monarch-WinterTroop-Firing.gif" },
+    { label: "Firing", src: "/skin-media/Monarch-WinterTroop-Firing.webp" },
   ],
   "Phoenix\u001fBlunderbuss": [
     {
@@ -79,6 +85,90 @@ const SKIN_ANIMATIONS = {
   "Phoenix\u001fZealot": [
     { label: "Weapon inspect", src: "/skin-media/Phoenix-Zealot-Inspect.webp" },
     { label: "Firing", src: "/skin-media/Phoenix-Zealot-Firing.webp" },
+  ],
+  "Phoenix\u001fObelisk": [
+    {
+      label: "Weapon inspect",
+      src: "/skin-media/Phoenix-Obelisk-Inspect.webp",
+    },
+    { label: "Firing", src: "/skin-media/Phoenix-Obelisk-Firing.webp" },
+  ],
+  "Redliner\u001fCavalry": [
+    {
+      label: "Weapon inspect",
+      src: "/skin-media/Redliner-Cavalry-Inspect.webp",
+    },
+    { label: "Attack", src: "/skin-media/Redliner-Cavalry-Attack.webp" },
+  ],
+  "Redliner\u001fGlass": [
+    { label: "Weapon inspect", src: "/skin-media/Redliner-Glass-Inspect.webp" },
+    { label: "Attack", src: "/skin-media/Redliner-Glass-Attack.webp" },
+  ],
+  "Redliner\u001fGraffiti": [
+    {
+      label: "Weapon inspect",
+      src: "/skin-media/Redliner-Graffiti-Inspect.webp",
+    },
+    { label: "Attack", src: "/skin-media/Redliner-Graffiti-Attack.webp" },
+  ],
+  "Redliner\u001fHigh Voltage": [
+    {
+      label: "Weapon inspect",
+      src: "/skin-media/Redliner-HighVoltage-Inspect.webp",
+    },
+    { label: "Attack", src: "/skin-media/Redliner-HighVoltage-Attack.webp" },
+  ],
+  "Redliner\u001fJetstream": [
+    {
+      label: "Weapon inspect",
+      src: "/skin-media/Redliner-Jetstream-Inspect.webp",
+    },
+    { label: "Attack", src: "/skin-media/Redliner-Jetstream-Attack.webp" },
+  ],
+  "Redliner\u001fType: Neo": [
+    {
+      label: "Weapon inspect",
+      src: "/skin-media/Redliner-TypeNeo-Inspect.webp",
+    },
+    { label: "Attack", src: "/skin-media/Redliner-TypeNeo-Attack.webp" },
+  ],
+  "Revolt\u001fDune": [
+    { label: "Weapon inspect", src: "/skin-media/Revolt-Dune-Inspect.webp" },
+    { label: "Firing", src: "/skin-media/Revolt-Dune-Firing.webp" },
+  ],
+  "Revolt\u001fEntropy": [
+    { label: "Weapon inspect", src: "/skin-media/Revolt-Entropy-Inspect.webp" },
+    { label: "Firing", src: "/skin-media/Revolt-Entropy-Firing.webp" },
+  ],
+  "Revolt\u001fSurge": [
+    { label: "Weapon inspect", src: "/skin-media/Revolt-Surge-Inspect.webp" },
+    { label: "Firing", src: "/skin-media/Revolt-Surge-Firing.webp" },
+  ],
+  "Siege\u001fAfterburn": [
+    {
+      label: "Weapon inspect",
+      src: "/skin-media/Siege-Afterburn-Inspect.webp",
+    },
+    { label: "Firing", src: "/skin-media/Siege-Afterburn-Firing.webp" },
+  ],
+  "Siege\u001fDesolated": [
+    {
+      label: "Weapon inspect",
+      src: "/skin-media/Siege-Desolated-Inspect.webp",
+    },
+    { label: "Firing", src: "/skin-media/Siege-Desolated-Firing.webp" },
+  ],
+  "Siege\u001fDoomsday": [
+    { label: "Weapon inspect", src: "/skin-media/Siege-Doomsday-Inspect.webp" },
+    { label: "Firing", src: "/skin-media/Siege-Doomsday-Firing.webp" },
+  ],
+  "Siege\u001fMonolith": [
+    { label: "Weapon inspect", src: "/skin-media/Siege-Monolith-Inspect.webp" },
+    { label: "Firing", src: "/skin-media/Siege-Monolith-Firing.webp" },
+  ],
+  "Siege\u001fRebecca": [
+    { label: "Weapon inspect", src: "/skin-media/Siege-Rebecca-Inspect.webp" },
+    { label: "Firing", src: "/skin-media/Siege-Rebecca-Firing.webp" },
   ],
 };
 const DEFAULT_SKINS = [
