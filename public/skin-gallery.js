@@ -54,6 +54,32 @@ const SKIN_ANIMATIONS = {
     },
     { label: "Firing", src: "/skin-media/Monarch-WinterTroop-Firing.gif" },
   ],
+  "Phoenix\u001fBlunderbuss": [
+    {
+      label: "Weapon inspect",
+      src: "/skin-media/Phoenix-Blunderbuss-Inspect.webp",
+    },
+    { label: "Firing", src: "/skin-media/Phoenix-Blunderbuss-Firing.webp" },
+  ],
+  "Phoenix\u001fHeavy-Duty": [
+    {
+      label: "Weapon inspect",
+      src: "/skin-media/Phoenix-HeavyDuty-Inspect.webp",
+    },
+    { label: "Firing", src: "/skin-media/Phoenix-HeavyDuty-Firing.webp" },
+  ],
+  "Phoenix\u001fStatic": [
+    { label: "Weapon inspect", src: "/skin-media/Phoenix-Static-Inspect.webp" },
+    { label: "Firing", src: "/skin-media/Phoenix-Static-Firing.webp" },
+  ],
+  "Phoenix\u001fVolt": [
+    { label: "Weapon inspect", src: "/skin-media/Phoenix-Volt-Inspect.webp" },
+    { label: "Firing", src: "/skin-media/Phoenix-Volt-Firing.webp" },
+  ],
+  "Phoenix\u001fZealot": [
+    { label: "Weapon inspect", src: "/skin-media/Phoenix-Zealot-Inspect.webp" },
+    { label: "Firing", src: "/skin-media/Phoenix-Zealot-Firing.webp" },
+  ],
 };
 const DEFAULT_SKINS = [
   "Castigate",
