@@ -28,6 +28,11 @@ const SKIN_SHOWCASES = {
     poster: "/skin-media/Redliner-Inheritor-Showcase.jpg",
     description: "inspect, attack, and parry audio",
   },
+  "Siege\u001fDomini": {
+    src: "/skin-media/Siege-Domini-Showcase.mp4",
+    poster: "/skin-media/Siege-Domini-Showcase.jpg",
+    description: "inspect, firing, and kill effect audio",
+  },
 };
 const SKIN_ANIMATIONS = {
   "Castigate\u001fDefault": [
