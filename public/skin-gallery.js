@@ -17,6 +17,13 @@ const SKIN_ANIMATIONS = {
     },
     { label: "Firing", src: "/skin-media/Castigate-Eroder-Firing.webp" },
   ],
+  "Castigate\u001fFractal": [
+    {
+      label: "Weapon inspect",
+      src: "/skin-media/Castigate-Fractal-Inspect.webp",
+    },
+    { label: "Firing", src: "/skin-media/Castigate-Fractal-Firing.webp" },
+  ],
   "Castigate\u001fGeometric": [
     {
       label: "Weapon inspect",
@@ -52,6 +59,13 @@ const SKIN_ANIMATIONS = {
   "Monarch\u001fScoria": [
     { label: "Weapon inspect", src: "/skin-media/Monarch-Scoria-Inspect.webp" },
     { label: "Firing", src: "/skin-media/Monarch-Scoria-Firing.webp" },
+  ],
+  "Monarch\u001fSentinel": [
+    {
+      label: "Weapon inspect",
+      src: "/skin-media/Monarch-Sentinel-Inspect.webp",
+    },
+    { label: "Weapon draw", src: "/skin-media/Monarch-Sentinel-Draw.webp" },
   ],
   "Monarch\u001fWinter Troop": [
     {
