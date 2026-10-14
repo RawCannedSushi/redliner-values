@@ -2,7 +2,6 @@ import { fetchSkins } from "./sheet.js";
 import { fetchScamList } from "./scam-list.js";
 import { fetchCredits } from "./credits.js";
 import { getHistoryPage, recordSnapshot } from "./history.js";
-import { prunePresence, recordPresence } from "./presence.js";
 
 function json(data, status = 200, headers = {}) {
   return Response.json(data, {
@@ -19,41 +18,6 @@ export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
     if (!url.pathname.startsWith("/api/")) return env.ASSETS.fetch(request);
-    if (url.pathname === "/api/online") {
-      if (request.method !== "POST")
-        return json({ error: "Use POST." }, 405, { Allow: "POST" });
-      if (
-        !request.headers
-          .get("Content-Type")
-          ?.toLowerCase()
-          .startsWith("application/json")
-      )
-        return json({ error: "Use JSON." }, 415);
-      if (Number(request.headers.get("Content-Length")) > 128)
-        return json({ error: "Request too large." }, 413);
-      let id;
-      try {
-        const body = await request.text();
-        if (body.length > 128)
-          return json({ error: "Request too large." }, 413);
-        id = JSON.parse(body).id;
-      } catch {
-        return json({ error: "Invalid request." }, 400);
-      }
-      if (
-        typeof id !== "string" ||
-        !/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
-          id,
-        )
-      )
-        return json({ error: "Invalid visitor ID." }, 400);
-      try {
-        return json(await recordPresence(env.DB, id));
-      } catch (error) {
-        console.error("Online count failed", error.message);
-        return json({ error: "Online count unavailable." }, 502);
-      }
-    }
     if (request.method !== "GET")
       return json({ error: "Use GET." }, 405, { Allow: "GET" });
     let cacheUrl;
@@ -108,15 +72,7 @@ export default {
     }
   },
   async scheduled(controller, env) {
-    try {
-      const skins = await fetchSkins(env);
-      await recordSnapshot(env.DB, skins, new Date(controller.scheduledTime));
-    } finally {
-      try {
-        await prunePresence(env.DB, controller.scheduledTime);
-      } catch (error) {
-        console.error("Online cleanup failed", error.message);
-      }
-    }
+    const skins = await fetchSkins(env);
+    await recordSnapshot(env.DB, skins, new Date(controller.scheduledTime));
   },
 };

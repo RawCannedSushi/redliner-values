@@ -160,68 +160,6 @@ $("site-message").hidden = !announcement;
 const numberFormat = new Intl.NumberFormat("en-US");
 const fmt = (n) => numberFormat.format(n);
 const REFRESH_INTERVAL = 15 * 60 * 1000;
-const ONLINE_INTERVAL = 60 * 1000;
-const ONLINE_ID_LIFETIME = 15 * 60 * 1000;
-const ONLINE_ID_KEY = "archives-online-visitor";
-const ONLINE_ID_PATTERN =
-  /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-let temporaryOnlineId;
-let onlineRequestPending = false;
-
-function onlineVisitorId() {
-  const now = Date.now();
-  try {
-    const saved = JSON.parse(localStorage.getItem(ONLINE_ID_KEY));
-    if (
-      ONLINE_ID_PATTERN.test(saved?.id) &&
-      Number.isFinite(saved.expires) &&
-      saved.expires > now
-    ) {
-      if (saved.expires - now < ONLINE_ID_LIFETIME / 2) {
-        localStorage.setItem(
-          ONLINE_ID_KEY,
-          JSON.stringify({ id: saved.id, expires: now + ONLINE_ID_LIFETIME }),
-        );
-      }
-      return saved.id;
-    }
-    const id = crypto.randomUUID();
-    localStorage.setItem(
-      ONLINE_ID_KEY,
-      JSON.stringify({ id, expires: now + ONLINE_ID_LIFETIME }),
-    );
-    return id;
-  } catch {
-    temporaryOnlineId ||= crypto.randomUUID();
-    return temporaryOnlineId;
-  }
-}
-
-async function refreshOnlineCount() {
-  if (document.hidden || onlineRequestPending) return;
-  onlineRequestPending = true;
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 10_000);
-  try {
-    const response = await fetch("/api/online", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id: onlineVisitorId() }),
-      cache: "no-store",
-      signal: controller.signal,
-    });
-    if (!response.ok) throw new Error("Online count unavailable");
-    const { count } = await response.json();
-    if (!Number.isSafeInteger(count) || count < 0)
-      throw new Error("Invalid online count");
-    $("online-count").textContent = fmt(count);
-  } catch {
-    $("online-count").textContent = "—";
-  } finally {
-    clearTimeout(timeout);
-    onlineRequestPending = false;
-  }
-}
 const rarityOrder = [
   "Classified",
   "Direct Classified",
@@ -2181,8 +2119,3 @@ startOpeningIntro();
 
 load();
 setInterval(load, REFRESH_INTERVAL);
-refreshOnlineCount();
-setInterval(refreshOnlineCount, ONLINE_INTERVAL);
-document.addEventListener("visibilitychange", () => {
-  if (!document.hidden) refreshOnlineCount();
-});
