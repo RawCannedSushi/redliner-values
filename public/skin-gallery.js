@@ -3,6 +3,11 @@ import { applyRarityAccent } from "./rarity-theme.js";
 const $ = (id) => document.getElementById(id);
 const PHOTO_FALLBACK = "/skin-photos/unknown.png";
 const SKIN_SHOWCASES = {
+  "Castigate\u001fFuneralist": {
+    src: "/skin-media/Castigate-Funeralist-Showcase.mp4",
+    poster: "/skin-media/Castigate-Funeralist-Showcase.jpg",
+    description: "inspect, firing, and kill effect audio",
+  },
   "Monarch\u001fDragora": {
     src: "/skin-media/Monarch-Dragora-Showcase.mp4",
     poster: "/skin-media/Monarch-Dragora-Showcase.jpg",
