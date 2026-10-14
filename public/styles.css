@@ -285,6 +285,32 @@ main.shell {
   gap: 12px;
   padding-bottom: 3px;
 }
+.online-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 34px;
+  padding: 7px 11px;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  color: var(--text);
+  font:
+    600 12px/1.2 ui-monospace,
+    Consolas,
+    monospace;
+  white-space: nowrap;
+}
+.online-status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--good);
+}
+.online-status strong {
+  color: var(--good);
+  font-size: 16px;
+  font-variant-numeric: tabular-nums;
+}
 .status {
   display: flex;
   align-items: center;
@@ -3760,6 +3786,10 @@ footer a:hover {
 :root[data-density="compressed"] .intro-side {
   gap: 7px;
   padding: 0;
+}
+:root[data-density="compressed"] .online-status {
+  min-height: 31px;
+  padding: 5px 8px;
 }
 :root[data-density="compressed"] .refresh,
 :root[data-density="compressed"] .discord-link {
