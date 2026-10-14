@@ -18,6 +18,11 @@ const SKIN_SHOWCASES = {
     poster: "/skin-media/Monarch-Dragora-Showcase.jpg",
     description: "inspect, firing, and elimination effect audio",
   },
+  "Phoenix\u001fKugelblitz": {
+    src: "/skin-media/Phoenix-Kugelblitz-Showcase.mp4",
+    poster: "/skin-media/Phoenix-Kugelblitz-Showcase.jpg",
+    description: "inspect, firing, and kill effect audio",
+  },
   "Redliner\u001fInheritor": {
     src: "/skin-media/Redliner-Inheritor-Showcase.mp4",
     poster: "/skin-media/Redliner-Inheritor-Showcase.jpg",
