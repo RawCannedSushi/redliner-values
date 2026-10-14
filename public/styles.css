@@ -1053,6 +1053,9 @@ footer .shell {
   justify-content: space-between;
   gap: 16px;
 }
+.footer-support {
+  margin-bottom: 14px;
+}
 footer a {
   text-decoration: underline;
   text-underline-offset: 3px;
