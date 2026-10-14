@@ -2991,6 +2991,9 @@ footer a:hover {
   padding: 2px;
   background: var(--skin-paint, var(--accent));
 }
+.gallery-animations .gallery-showcase {
+  grid-column: 1 / -1;
+}
 .gallery-animations figcaption {
   padding: 9px 12px;
   background: var(--panel);
@@ -3001,7 +3004,8 @@ footer a:hover {
     monospace;
   text-transform: uppercase;
 }
-.gallery-animations img {
+.gallery-animations img,
+.gallery-animations video {
   display: block;
   width: 100%;
   height: auto;

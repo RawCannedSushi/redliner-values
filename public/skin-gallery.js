@@ -2,6 +2,12 @@ import { applyRarityAccent } from "./rarity-theme.js";
 
 const $ = (id) => document.getElementById(id);
 const PHOTO_FALLBACK = "/skin-photos/unknown.png";
+const SKIN_SHOWCASES = {
+  "Monarch\u001fDragora": {
+    src: "/skin-media/Monarch-Dragora-Showcase.mp4",
+    poster: "/skin-media/Monarch-Dragora-Showcase.jpg",
+  },
+};
 const SKIN_ANIMATIONS = {
   "Castigate\u001fDefault": [
     {
@@ -668,11 +674,39 @@ export function createSkinGallery({
     renderChart();
   }
 
+  function pauseShowcase() {
+    $("gallery-animations").querySelector("video")?.pause();
+  }
+
   function renderAnimations(skin) {
     const panel = $("gallery-animations");
-    const clips = SKIN_ANIMATIONS[skinKey(skin)] || [];
+    const key = skinKey(skin);
+    const showcase = SKIN_SHOWCASES[key];
+    const clips = showcase ? [] : SKIN_ANIMATIONS[key] || [];
+    pauseShowcase();
     panel.replaceChildren();
-    panel.hidden = clips.length === 0;
+    panel.hidden = !showcase && clips.length === 0;
+    if (showcase) {
+      const figure = document.createElement("figure");
+      figure.className = "gallery-showcase";
+      const caption = document.createElement("figcaption");
+      caption.textContent = "WEAPON SHOWCASE";
+      const video = document.createElement("video");
+      video.src = showcase.src;
+      video.poster = showcase.poster;
+      video.controls = true;
+      video.playsInline = true;
+      video.preload = "metadata";
+      video.width = 1280;
+      video.height = 720;
+      video.setAttribute(
+        "aria-label",
+        `${skin.name} ${skin.weapon} weapon showcase with inspect, firing, and elimination effect audio`,
+      );
+      figure.append(caption, video);
+      panel.append(figure);
+      return;
+    }
     for (const { label, src } of clips) {
       const figure = document.createElement("figure");
       const caption = document.createElement("figcaption");
@@ -850,6 +884,7 @@ export function createSkinGallery({
   }
 
   $("gallery-back").addEventListener("click", () => {
+    pauseShowcase();
     setExpanded(false, true);
     weapon = null;
     $("gallery-explore").hidden = true;
@@ -916,6 +951,7 @@ export function createSkinGallery({
     },
     leave() {
       active = false;
+      pauseShowcase();
       setExpanded(false, true);
       historyRequest?.abort();
       historyRequest = null;
