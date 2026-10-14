@@ -8,6 +8,11 @@ const SKIN_SHOWCASES = {
     poster: "/skin-media/Castigate-Funeralist-Showcase.jpg",
     description: "inspect, firing, and kill effect audio",
   },
+  "Castigate\u001fUnleashed": {
+    src: "/skin-media/Castigate-Unleashed-Showcase.mp4",
+    poster: "/skin-media/Castigate-Unleashed-Showcase.jpg",
+    description: "inspect and firing audio",
+  },
   "Monarch\u001fDragora": {
     src: "/skin-media/Monarch-Dragora-Showcase.mp4",
     poster: "/skin-media/Monarch-Dragora-Showcase.jpg",
