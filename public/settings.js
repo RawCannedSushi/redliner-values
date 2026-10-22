@@ -1,5 +1,4 @@
-export const SITE_MESSAGE =
-  '"Rebecca value going up in 2027, stay tuned 🤑🤑🤑"  -Mohamay';
+export const SITE_MESSAGE = `"If I don't reach plat on Overwatch then I'm decreasing Inheritor value" - Mohamay`;
 export const SITE_MESSAGE_LINK_TEXT = "";
 export const SITE_MESSAGE_LINK_URL = "";
 

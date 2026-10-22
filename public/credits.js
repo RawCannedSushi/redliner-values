@@ -10,7 +10,6 @@ const MEMBER_HANDLES = new Map([
   ["mohamay", "@Mohamay"],
   ["sinzeri", "@sinzeri"],
   ["rio", "@perksaholic"],
-  ["zerby", "@_zerby_"],
   ["gatecross", "@baehearts4u"],
   ["yuu", "@ti9g"],
   ["emilismk", "@emilismk"],

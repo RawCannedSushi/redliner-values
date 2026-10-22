@@ -19,7 +19,10 @@ export function parseCreditsResponse(body) {
       const members = rows
         .slice(headerIndex + 1)
         .map((row) => cell(row, index))
-        .filter(Boolean);
+        .filter(
+          (member) =>
+            member && member.split(" (")[0].trim().toLowerCase() !== "zerby",
+        );
       return {
         role,
         members:
