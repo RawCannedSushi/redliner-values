@@ -88,7 +88,10 @@ export function createCredits() {
     status.hidden = false;
     status.textContent = data ? "Checking for updates…" : "Loading credits…";
     try {
-      const response = await fetch("/api/credits", { cache: "no-store" });
+      const cacheWindow = Math.floor(Date.now() / 120000);
+      const response = await fetch(`/api/credits/${cacheWindow}`, {
+        cache: "no-store",
+      });
       if (!response.ok) throw new Error("Credits request failed");
       const next = await response.json();
       if (

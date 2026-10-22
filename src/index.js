@@ -29,8 +29,11 @@ export default {
     } else if (url.pathname === "/api/scam-list") {
       cacheUrl = `${url.origin}/api/scam-list`;
       load = () => fetchScamList(env);
-    } else if (url.pathname === "/api/credits") {
-      cacheUrl = `${url.origin}/api/credits`;
+    } else if (
+      url.pathname === "/api/credits" ||
+      /^\/api\/credits\/\d+$/.test(url.pathname)
+    ) {
+      cacheUrl = `${url.origin}/api/credits/current`;
       load = () => fetchCredits(env);
     } else if (url.pathname === "/api/history") {
       const range = url.searchParams.get("range") || "7";
