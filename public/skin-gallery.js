@@ -361,6 +361,31 @@ function photoFor(skin, photoUrl) {
   return image;
 }
 
+export function galleryChoices(skins, by) {
+  const groups = new Map();
+  for (const skin of skins) {
+    if (by === "banner" && skin.untradable) continue;
+    const name = by === "banner" ? skin.collection : skin.weapon;
+    if (!name) continue;
+    if (!groups.has(name)) groups.set(name, []);
+    groups.get(name).push(skin);
+  }
+  return [...groups]
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([name, members]) => ({
+      name,
+      members,
+      featured:
+        by === "banner"
+          ? members.reduce((best, skin) =>
+              (skin.value ?? -Infinity) > (best.value ?? -Infinity)
+                ? skin
+                : best,
+            )
+          : members.find((skin) => skin.defaultSkin) || members[0],
+    }));
+}
+
 export function createSkinGallery({
   photoUrl,
   skinKey,
@@ -369,8 +394,9 @@ export function createSkinGallery({
   setInventoryCount,
 }) {
   let skins = [];
-  let weapon = null;
-  let weaponSkins = [];
+  let browseBy = "weapon";
+  let selectedGroup = null;
+  let groupSkins = [];
   let coverButtons = [];
   let index = 0;
   let history = null;
@@ -480,9 +506,18 @@ export function createSkinGallery({
   reducedMotion.addEventListener("change", resetParallax);
   finePointer.addEventListener("change", resetParallax);
 
-  function renderWeapons() {
+  function renderChoices() {
     const container = $("gallery-weapons");
     container.replaceChildren();
+    const byBanner = browseBy === "banner";
+    $("gallery-by-weapon").setAttribute("aria-pressed", String(!byBanner));
+    $("gallery-by-banner").setAttribute("aria-pressed", String(byBanner));
+    $("gallery-kicker").textContent = byBanner
+      ? "SELECT A BANNER / EXPLORE ITS SKINS"
+      : "SELECT A WEAPON / EXPLORE ITS SKINS";
+    $("gallery-back").textContent = byBanner
+      ? "← All banners"
+      : "← All weapons";
     if (!skins.length) {
       const note = document.createElement("p");
       note.className = "gallery-empty";
@@ -490,82 +525,90 @@ export function createSkinGallery({
       container.append(note);
       return;
     }
-    const groups = new Map();
-    for (const skin of skins) {
-      if (!skin.weapon) continue;
-      if (!groups.has(skin.weapon)) groups.set(skin.weapon, []);
-      groups.get(skin.weapon).push(skin);
+    const choices = galleryChoices(skins, browseBy);
+    if (!choices.length) {
+      const note = document.createElement("p");
+      note.className = "gallery-empty";
+      note.textContent = "No banners available yet.";
+      container.append(note);
     }
-    for (const name of [...groups.keys()].sort((a, b) => a.localeCompare(b))) {
-      const group = groups.get(name);
-      const featured = group.find((skin) => skin.defaultSkin) || group[0];
+    for (const { name, members, featured } of choices) {
       const button = document.createElement("button");
       button.type = "button";
       button.className = "gallery-weapon";
-      button.setAttribute("aria-label", `Explore ${name} skins`);
+      button.setAttribute(
+        "aria-label",
+        byBanner ? `Explore ${name} banner skins` : `Explore ${name} skins`,
+      );
       applyGalleryAccent(button, featured);
       const text = document.createElement("span");
       text.className = "gallery-weapon-copy";
       const title = document.createElement("strong");
       title.textContent = name;
       const count = document.createElement("small");
-      count.textContent = `${group.length} ${group.length === 1 ? "SKIN" : "SKINS"} / EXPLORE ↗`;
+      count.textContent = `${members.length} ${members.length === 1 ? "SKIN" : "SKINS"} / EXPLORE ↗`;
       text.append(title, count);
       const accent = document.createElement("span");
       accent.className = "gallery-weapon-accent";
       button.append(text, photoFor(featured, photoUrl), accent);
-      button.addEventListener("click", () => selectWeapon(name));
+      button.addEventListener("click", () => selectGroup(name));
       container.append(button);
     }
   }
 
-  function selectWeapon(name) {
-    weapon = name;
+  function selectGroup(name) {
+    selectedGroup = name;
     index = 0;
     buildCovers();
+    if (!selectedGroup) return;
     $("gallery-chooser").hidden = true;
     $("gallery-explore").hidden = false;
     $("gallery-stage").focus({ preventScroll: true });
-    if (!weaponSkins[index].untradable) ensureHistory();
+    if (!groupSkins[index].untradable) ensureHistory();
   }
 
   function buildCovers(preferredKey) {
     setExpanded(false, true);
-    weaponSkins = skins.filter((skin) => skin.weapon === weapon);
-    const hasExclusive = weaponSkins.some((skin) => skin.exclusive);
+    groupSkins = skins.filter((skin) =>
+      browseBy === "banner"
+        ? !skin.untradable && skin.collection === selectedGroup
+        : skin.weapon === selectedGroup,
+    );
+    const hasExclusive = groupSkins.some((skin) => skin.exclusive);
     const exclusiveRank = (skin) => {
       if (skin.rarity === "Classified") return 0;
       if (skin.rarity === "Direct Classified") return 1;
       return skin.exclusive ? 2 : 3;
     };
-    weaponSkins.sort(
+    groupSkins.sort(
       (a, b) =>
         (hasExclusive ? exclusiveRank(a) - exclusiveRank(b) : 0) ||
         (b.value ?? -1) - (a.value ?? -1) ||
         a.name.localeCompare(b.name),
     );
-    if (!weaponSkins.length) {
-      weapon = null;
+    if (!groupSkins.length) {
+      selectedGroup = null;
       $("gallery-chooser").hidden = false;
       $("gallery-explore").hidden = true;
       return;
     }
     if (preferredKey) {
-      const previousIndex = weaponSkins.findIndex(
+      const previousIndex = groupSkins.findIndex(
         (skin) => skinKey(skin) === preferredKey,
       );
       index = previousIndex < 0 ? 0 : previousIndex;
     }
-    index = Math.min(index, weaponSkins.length - 1);
-    $("gallery-weapon-name").textContent = weapon;
+    index = Math.min(index, groupSkins.length - 1);
+    $("gallery-weapon-name").textContent = selectedGroup;
     const jump = $("gallery-jump");
     jump.replaceChildren();
     const stage = $("gallery-stage");
     stage.replaceChildren();
-    coverButtons = weaponSkins.map((skin, skinIndex) => {
+    coverButtons = groupSkins.map((skin, skinIndex) => {
       const option = document.createElement("option");
       option.value = String(skinIndex);
-      option.textContent = skin.name;
+      option.textContent =
+        browseBy === "banner" ? `${skin.name} / ${skin.weapon}` : skin.name;
       jump.append(option);
 
       const button = document.createElement("button");
@@ -584,7 +627,8 @@ export function createSkinGallery({
       art.className = "gallery-cover-art";
       const label = document.createElement("span");
       label.className = "gallery-cover-label";
-      label.textContent = skin.name;
+      label.textContent =
+        browseBy === "banner" ? `${skin.name} / ${skin.weapon}` : skin.name;
       art.append(photoFor(skin, photoUrl));
       inner.append(art, label);
       button.append(inner);
@@ -608,12 +652,12 @@ export function createSkinGallery({
   }
 
   function setIndex(next) {
-    const bounded = Math.min(Math.max(next, 0), weaponSkins.length - 1);
+    const bounded = Math.min(Math.max(next, 0), groupSkins.length - 1);
     if (bounded === index) return;
     setExpanded(false);
     index = bounded;
     renderCurrent();
-    if (!weaponSkins[index].untradable) ensureHistory();
+    if (!groupSkins[index].untradable) ensureHistory();
   }
 
   function renderCoverState() {
@@ -631,7 +675,7 @@ export function createSkinGallery({
   }
 
   function updateInventory() {
-    const skin = weaponSkins[index];
+    const skin = groupSkins[index];
     $("gallery-inventory-control").hidden = !skin || !!skin.untradable;
     if (!skin || skin.untradable) return;
     const count = getInventoryCount(skinKey(skin));
@@ -650,7 +694,7 @@ export function createSkinGallery({
 
   function renderCurrent() {
     resetParallax();
-    const skin = weaponSkins[index];
+    const skin = groupSkins[index];
     if (!skin) return;
     applyGalleryAccent($("gallery-explore"), skin);
     coverButtons.forEach((button, buttonIndex) => {
@@ -662,13 +706,13 @@ export function createSkinGallery({
       else button.removeAttribute("aria-current");
     });
     renderCoverState();
-    $("gallery-position").textContent = `${index + 1} / ${weaponSkins.length}`;
+    $("gallery-position").textContent = `${index + 1} / ${groupSkins.length}`;
     $("gallery-prev").disabled = index === 0;
-    $("gallery-next").disabled = index === weaponSkins.length - 1;
+    $("gallery-next").disabled = index === groupSkins.length - 1;
     $("gallery-jump").value = String(index);
     $("gallery-stage").setAttribute(
       "aria-label",
-      `${skin.name}, ${index + 1} of ${weaponSkins.length}. Use left and right arrows to browse.`,
+      `${skin.name}, ${index + 1} of ${groupSkins.length}. Use left and right arrows to browse.`,
     );
     $("gallery-rarity").textContent = skin.rarity || "Unknown rarity";
     $("gallery-skin-name").textContent = skin.name;
@@ -759,7 +803,7 @@ export function createSkinGallery({
   }
 
   function renderChart() {
-    const skin = weaponSkins[index];
+    const skin = groupSkins[index];
     if (!skin || skin.untradable) return;
     if (!history) {
       clearChart(
@@ -909,10 +953,20 @@ export function createSkinGallery({
       });
   }
 
+  for (const [id, by] of [
+    ["gallery-by-weapon", "weapon"],
+    ["gallery-by-banner", "banner"],
+  ]) {
+    $(id).addEventListener("click", () => {
+      if (browseBy === by) return;
+      browseBy = by;
+      renderChoices();
+    });
+  }
   $("gallery-back").addEventListener("click", () => {
     pauseShowcase();
     setExpanded(false, true);
-    weapon = null;
+    selectedGroup = null;
     $("gallery-explore").hidden = true;
     $("gallery-chooser").hidden = false;
     $("gallery-weapons")
@@ -933,7 +987,7 @@ export function createSkinGallery({
     ["gallery-inventory-plus", 1],
   ]) {
     $(id).addEventListener("click", () => {
-      const skin = weaponSkins[index];
+      const skin = groupSkins[index];
       if (!skin || skin.untradable) return;
       const key = skinKey(skin);
       setInventoryCount(key, getInventoryCount(key) + change);
@@ -968,11 +1022,11 @@ export function createSkinGallery({
     { passive: true },
   );
 
-  renderWeapons();
+  renderChoices();
   return {
     enter() {
       active = true;
-      if (weapon && !history && !weaponSkins[index]?.untradable)
+      if (selectedGroup && !history && !groupSkins[index]?.untradable)
         ensureHistory();
     },
     leave() {
@@ -984,17 +1038,17 @@ export function createSkinGallery({
       historyPromise = null;
     },
     refresh(nextSkins) {
-      const selectedKey = weaponSkins[index] && skinKey(weaponSkins[index]);
+      const selectedKey = groupSkins[index] && skinKey(groupSkins[index]);
       skins = [...nextSkins, ...EXCLUSIVE_SKINS, ...DEFAULT_SKINS];
-      renderWeapons();
+      renderChoices();
       historyRequest?.abort();
       historyRequest = null;
       historyPromise = null;
       history = null;
       historyError = false;
-      if (weapon) {
+      if (selectedGroup) {
         buildCovers(selectedKey);
-        if (weapon && active && !weaponSkins[index]?.untradable)
+        if (selectedGroup && active && !groupSkins[index]?.untradable)
           ensureHistory();
       }
     },

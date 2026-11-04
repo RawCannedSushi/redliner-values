@@ -2400,6 +2400,43 @@ footer a:hover {
 .skin-gallery {
   padding-bottom: 60px;
 }
+.gallery-browse-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 0 0 16px;
+  color: var(--muted);
+  font:
+    700 12px ui-monospace,
+    Consolas,
+    monospace;
+  letter-spacing: 0.06em;
+}
+.gallery-browse-toggle {
+  display: inline-flex;
+  padding: 3px;
+  border: 1px solid var(--line);
+  background: var(--panel);
+}
+.gallery-browse-toggle button {
+  padding: 7px 14px;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  cursor: pointer;
+}
+.gallery-browse-toggle button[aria-pressed="true"] {
+  border-bottom-color: var(--accent);
+  background: var(--text);
+  color: var(--bg);
+}
+.gallery-browse-toggle button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
 .gallery-kicker,
 .gallery-weapon small,
 .gallery-rarity,

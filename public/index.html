@@ -302,7 +302,24 @@
           <h2 id="gallery-title">Skin Gallery</h2>
         </div>
         <div id="gallery-chooser">
-          <p class="gallery-kicker">SELECT A WEAPON / EXPLORE ITS SKINS</p>
+          <div class="gallery-browse-controls">
+            <span>BROWSE BY</span>
+            <div
+              class="gallery-browse-toggle"
+              role="group"
+              aria-label="Browse gallery by"
+            >
+              <button id="gallery-by-weapon" type="button" aria-pressed="true">
+                Weapon
+              </button>
+              <button id="gallery-by-banner" type="button" aria-pressed="false">
+                Banner
+              </button>
+            </div>
+          </div>
+          <p id="gallery-kicker" class="gallery-kicker">
+            SELECT A WEAPON / EXPLORE ITS SKINS
+          </p>
           <div id="gallery-weapons" class="gallery-weapons"></div>
         </div>
         <div id="gallery-explore" hidden>
