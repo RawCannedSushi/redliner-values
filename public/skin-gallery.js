@@ -4,6 +4,11 @@ const $ = (id) => document.getElementById(id);
 const PHOTO_FALLBACK = "/skin-photos/unknown.png";
 const DIRECT_CLASSIFIED_BANNER = "Direct Classifieds";
 const SKIN_SHOWCASES = {
+  "Castigate\u001fRite Of The Dead": {
+    src: "/skin-media/Castigate-RiteOfTheDead-Showcase.mp4",
+    poster: "/skin-media/Castigate-RiteOfTheDead-Showcase.jpg",
+    description: "gameplay footage and audio",
+  },
   "Castigate\u001fFuneralist": {
     src: "/skin-media/Castigate-Funeralist-Showcase.mp4",
     poster: "/skin-media/Castigate-Funeralist-Showcase.jpg",
@@ -14,25 +19,85 @@ const SKIN_SHOWCASES = {
     poster: "/skin-media/Castigate-Unleashed-Showcase.jpg",
     description: "inspect and firing audio",
   },
+  "Liberator\u001fBlooming Death": {
+    src: "/skin-media/Liberator-BloomingDeath-Showcase.mp4",
+    poster: "/skin-media/Liberator-BloomingDeath-Showcase.jpg",
+    description: "gameplay footage and audio",
+  },
+  "Liberator\u001fTether": {
+    src: "/skin-media/Liberator-Tether-Showcase.mp4",
+    poster: "/skin-media/Liberator-Tether-Showcase.jpg",
+    description: "gameplay footage and audio",
+  },
   "Monarch\u001fDragora": {
     src: "/skin-media/Monarch-Dragora-Showcase.mp4",
     poster: "/skin-media/Monarch-Dragora-Showcase.jpg",
     description: "inspect, firing, and elimination effect audio",
+  },
+  "Monarch\u001fRadiance": {
+    src: "/skin-media/Monarch-Radiance-Showcase.mp4",
+    poster: "/skin-media/Monarch-Radiance-Showcase.jpg",
+    description: "gameplay footage and audio",
+  },
+  "Monarch\u001fSub-Zero": {
+    src: "/skin-media/Monarch-SubZero-Showcase.mp4",
+    poster: "/skin-media/Monarch-SubZero-Showcase.jpg",
+    description: "gameplay footage and audio",
   },
   "Phoenix\u001fKugelblitz": {
     src: "/skin-media/Phoenix-Kugelblitz-Showcase.mp4",
     poster: "/skin-media/Phoenix-Kugelblitz-Showcase.jpg",
     description: "inspect, firing, and kill effect audio",
   },
+  "Redliner\u001fDemise": {
+    src: "/skin-media/Redliner-Demise-Showcase.mp4",
+    poster: "/skin-media/Redliner-Demise-Showcase.jpg",
+    description: "gameplay footage and audio",
+  },
   "Redliner\u001fInheritor": {
     src: "/skin-media/Redliner-Inheritor-Showcase.mp4",
     poster: "/skin-media/Redliner-Inheritor-Showcase.jpg",
     description: "inspect, attack, and parry audio",
   },
+  "Redliner\u001fKōmyō": {
+    src: "/skin-media/Redliner-Komyo-Showcase.mp4",
+    poster: "/skin-media/Redliner-Komyo-Showcase.jpg",
+    description: "gameplay footage and audio",
+  },
+  "Redliner\u001fNihility": {
+    src: "/skin-media/Redliner-Nihility-Showcase.mp4",
+    poster: "/skin-media/Redliner-Nihility-Showcase.jpg",
+    description: "gameplay footage and audio",
+  },
+  "Redliner\u001fOrigin & End": {
+    src: "/skin-media/Redliner-OriginAndEnd-Showcase.mp4",
+    poster: "/skin-media/Redliner-OriginAndEnd-Showcase.jpg",
+    description: "gameplay footage and audio",
+  },
+  "Redliner\u001fOssuary": {
+    src: "/skin-media/Redliner-Ossuary-Showcase.mp4",
+    poster: "/skin-media/Redliner-Ossuary-Showcase.jpg",
+    description: "gameplay footage and audio",
+  },
+  "Redliner\u001fSub-Zero": {
+    src: "/skin-media/Redliner-SubZero-Showcase.mp4",
+    poster: "/skin-media/Redliner-SubZero-Showcase.jpg",
+    description: "gameplay footage and audio",
+  },
+  "Revolt\u001fDracula": {
+    src: "/skin-media/Revolt-Dracula-Showcase.mp4",
+    poster: "/skin-media/Revolt-Dracula-Showcase.jpg",
+    description: "gameplay footage and audio",
+  },
   "Siege\u001fDomini": {
     src: "/skin-media/Siege-Domini-Showcase.mp4",
     poster: "/skin-media/Siege-Domini-Showcase.jpg",
     description: "inspect, firing, and kill effect audio",
+  },
+  "Siege\u001fMechanist": {
+    src: "/skin-media/Siege-Mechanist-Showcase.mp4",
+    poster: "/skin-media/Siege-Mechanist-Showcase.jpg",
+    description: "gameplay footage and audio",
   },
 };
 const SKIN_ANIMATIONS = {
