@@ -525,7 +525,10 @@ function skinPhoto(skin) {
 function skinPhotoUrl(skin) {
   const key =
     normalizePhotoPart(skin.name) + "\u001f" + normalizePhotoPart(skin.weapon);
-  return skinPhotoPaths.get(key) || PHOTO_FALLBACK;
+  if (skinPhotoPaths.has(key)) return skinPhotoPaths.get(key);
+  if (key === "rebbeca\u001fsiege")
+    return skinPhotoPaths.get("rebecca\u001fsiege") || PHOTO_FALLBACK;
+  return PHOTO_FALLBACK;
 }
 const gallery = createSkinGallery({
   photoUrl: skinPhotoUrl,
