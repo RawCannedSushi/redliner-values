@@ -2,6 +2,7 @@ import { applyRarityAccent } from "./rarity-theme.js";
 
 const $ = (id) => document.getElementById(id);
 const PHOTO_FALLBACK = "/skin-photos/unknown.png";
+const DIRECT_CLASSIFIED_BANNER = "Direct Classifieds";
 const SKIN_SHOWCASES = {
   "Castigate\u001fFuneralist": {
     src: "/skin-media/Castigate-Funeralist-Showcase.mp4",
@@ -361,11 +362,18 @@ function photoFor(skin, photoUrl) {
   return image;
 }
 
+function galleryGroupName(skin, by) {
+  if (by !== "banner") return skin.weapon;
+  return skin.rarity === "Direct Classified"
+    ? DIRECT_CLASSIFIED_BANNER
+    : skin.collection;
+}
+
 export function galleryChoices(skins, by) {
   const groups = new Map();
   for (const skin of skins) {
     if (by === "banner" && skin.untradable) continue;
-    const name = by === "banner" ? skin.collection : skin.weapon;
+    const name = galleryGroupName(skin, by);
     if (!name) continue;
     if (!groups.has(name)) groups.set(name, []);
     groups.get(name).push(skin);
@@ -571,7 +579,7 @@ export function createSkinGallery({
     setExpanded(false, true);
     groupSkins = skins.filter((skin) =>
       browseBy === "banner"
-        ? !skin.untradable && skin.collection === selectedGroup
+        ? !skin.untradable && galleryGroupName(skin, browseBy) === selectedGroup
         : skin.weapon === selectedGroup,
     );
     const hasExclusive = groupSkins.some((skin) => skin.exclusive);
