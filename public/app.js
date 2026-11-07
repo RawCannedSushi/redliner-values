@@ -312,20 +312,28 @@ function normalize(raw, i) {
   const demand = /^\d+(?:\.\d+)?$/.test(text("demand"))
     ? Number(text("demand"))
     : null;
+  const weapon = text("weapon");
+  const name = text("name");
   const trend = text("trend");
+  const correctedTrend =
+    name.toLowerCase() === "sub-zero" &&
+    (weapon === "Monarch" || weapon === "Redliner") &&
+    trend.toLowerCase() === "stable"
+      ? "Manipulated"
+      : trend;
   return {
     id: i,
     rarity: text("rarity"),
     collection: text("collection"),
-    weapon: text("weapon"),
-    name: text("name"),
+    weapon,
+    name,
     value: numeric,
     demand,
     trend:
-      /^(Stable|Unstable|Fluctuating|Rising|Increasing|Lowering|Hyped|N\/A)$/i.test(
-        trend,
+      /^(Stable|Unstable|Fluctuating|Rising|Increasing|Lowering|Hyped|Manipulated|N\/A)$/i.test(
+        correctedTrend,
       )
-        ? trend
+        ? correctedTrend
         : "N/A",
   };
 }

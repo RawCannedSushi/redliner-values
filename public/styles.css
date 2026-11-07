@@ -574,7 +574,8 @@ button:disabled {
 .trend.unstable {
   color: var(--warn);
 }
-.trend.lowering {
+.trend.lowering,
+.trend.manipulated {
   color: var(--danger);
 }
 .empty {
