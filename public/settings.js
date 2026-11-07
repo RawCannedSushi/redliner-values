@@ -1,4 +1,4 @@
-export const SITE_MESSAGE = `"If I don't reach plat on Overwatch then I'm decreasing Inheritor value" - Mohamay`;
+export const SITE_MESSAGE = `"I haven't reached plat on Overwatch. Deleting the list forever." -Mohamay`;
 export const SITE_MESSAGE_LINK_TEXT = "";
 export const SITE_MESSAGE_LINK_URL = "";
 
