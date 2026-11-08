@@ -1,6 +1,7 @@
-export const SITE_MESSAGE = `"I haven't reached plat on Overwatch. Deleting the list forever." -Mohamay`;
-export const SITE_MESSAGE_LINK_TEXT = "";
-export const SITE_MESSAGE_LINK_URL = "";
+export const SITE_MESSAGE =
+  "Archives is hosting a Redliner art competition! Winner gets an Inheritor! More info can be found on the";
+export const SITE_MESSAGE_LINK_TEXT = "Discord!";
+export const SITE_MESSAGE_LINK_URL = "https://discord.gg/pvS8Gw4E7d";
 
 export const SOURCE_REPOSITORY =
   "https://github.com/RawCannedSushi/redliner-values.git";
