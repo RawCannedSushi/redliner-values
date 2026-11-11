@@ -578,12 +578,16 @@ function rememberControlFocus(container) {
     replacement?.focus({ preventScroll: true });
   };
 }
-function setInventoryCount(key, qty) {
+function setInventoryCount(key, qty, { render = true } = {}) {
   const count = Math.min(9999, Math.max(0, Number.parseInt(qty, 10) || 0));
   if (count) inventory[key] = count;
   else delete inventory[key];
   saveInventory();
-  renderInventory();
+  if (render) renderInventory();
+  else {
+    updateInventorySummary(inventoryItems());
+    gallery.updateInventory();
+  }
 }
 const pendingInventorySkins = new Set();
 function updateInventorySelection() {
@@ -767,11 +771,7 @@ function inventoryItems() {
   return items;
 }
 let inventoryImageBusy = false;
-function renderInventory() {
-  const grid = $("inventory-grid");
-  const restoreFocus = rememberControlFocus(grid);
-  grid.replaceChildren();
-  const items = inventoryItems();
+function updateInventorySummary(items) {
   $("inventory-count").textContent = fmt(
     items.reduce((sum, { qty }) => sum + qty, 0),
   );
@@ -782,6 +782,13 @@ function renderInventory() {
   );
   $("inventory-export-png").disabled = !items.length || inventoryImageBusy;
   $("inventory-copy-png").disabled = !items.length || inventoryImageBusy;
+}
+function renderInventory() {
+  const grid = $("inventory-grid");
+  const restoreFocus = rememberControlFocus(grid);
+  grid.replaceChildren();
+  const items = inventoryItems();
+  updateInventorySummary(items);
   const add = element("button", "inventory-add", "+");
   add.type = "button";
   add.setAttribute("aria-label", "Add a skin to inventory");
@@ -814,6 +821,37 @@ function renderInventory() {
       setInventoryCount(key, (inventory[key] || 0) + 1),
     );
     stepper.append(minus, plus);
+    const quantity = element("label", "inventory-quantity");
+    const quantityInput = element("input");
+    quantityInput.type = "text";
+    quantityInput.inputMode = "numeric";
+    quantityInput.pattern = "[0-9]*";
+    quantityInput.value = String(qty);
+    quantityInput.setAttribute(
+      "aria-label",
+      "Quantity of " + s.name + " " + s.weapon + " in inventory (0 to 9999)",
+    );
+    quantityInput.addEventListener("focus", () => quantityInput.select());
+    quantityInput.addEventListener("change", () => {
+      const entered = quantityInput.value.trim();
+      if (!/^\d{1,4}$/.test(entered)) {
+        quantityInput.value = String(qty);
+        return;
+      }
+      const count = Number(entered);
+      quantityInput.value = String(count);
+      if (count !== qty) setInventoryCount(key, count, { render: count === 0 });
+    });
+    quantityInput.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        quantityInput.blur();
+      } else if (event.key === "Escape") {
+        quantityInput.value = String(qty);
+        quantityInput.blur();
+      }
+    });
+    quantity.append("x", quantityInput);
     if (!hideInventoryValues)
       bottom.append(
         element(
@@ -829,12 +867,7 @@ function renderInventory() {
       element("div", "inventory-meta", s.weapon + " · " + s.rarity),
       bottom,
     );
-    card.append(
-      art,
-      element("span", "inventory-quantity", "x" + qty),
-      remove,
-      body,
-    );
+    card.append(art, quantity, remove, body);
     grid.append(card);
   });
   restoreFocus();

@@ -3270,8 +3270,27 @@ footer a:hover {
   position: absolute;
   top: 9px;
   left: 11px;
+  display: inline-flex;
+  align-items: baseline;
+  cursor: text;
   font-size: 21px;
   font-weight: 700;
+}
+.inventory-quantity input {
+  width: 4ch;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  border-bottom: 1px dotted currentColor;
+  border-radius: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: center;
+}
+.inventory-quantity input:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
 .inventory-delete {
   position: absolute;
@@ -4082,7 +4101,7 @@ footer a:hover {
 }
 :root[data-density="compressed"] .inventory-card {
   display: grid;
-  grid-template-columns: 52px 42px minmax(0, 1fr) 32px;
+  grid-template-columns: 52px 54px minmax(0, 1fr) 32px;
   align-items: center;
   gap: 9px;
   min-height: 72px;
@@ -4111,8 +4130,10 @@ footer a:hover {
   position: static;
   grid-column: 2;
   grid-row: 1;
+  min-height: 30px;
+  align-items: center;
   font-size: 18px;
-  text-align: center;
+  justify-content: center;
 }
 :root[data-density="compressed"] .inventory-card-body {
   position: static;
@@ -4340,7 +4361,7 @@ footer a:hover {
     height: 300px;
   }
   :root[data-density="compressed"] .inventory-card {
-    grid-template-columns: 44px minmax(0, 1fr) 30px;
+    grid-template-columns: 44px 44px minmax(0, 1fr) 30px;
     gap: 7px;
     min-height: 79px;
   }
@@ -4349,16 +4370,15 @@ footer a:hover {
     height: 44px;
   }
   :root[data-density="compressed"] .inventory-quantity {
-    position: absolute;
-    top: 4px;
-    left: 42px;
+    position: static;
+    grid-column: 2;
     padding: 1px 4px;
     background: var(--panel2);
     border: 1px solid var(--line);
     font-size: 12px;
   }
   :root[data-density="compressed"] .inventory-card-body {
-    grid-column: 2;
+    grid-column: 3;
     display: block;
   }
   :root[data-density="compressed"] .inventory-card h3 {
@@ -4370,7 +4390,7 @@ footer a:hover {
     margin-top: 2px;
   }
   :root[data-density="compressed"] .inventory-delete {
-    grid-column: 3;
+    grid-column: 4;
   }
   :root[data-density="compressed"] .inventory-stepper button {
     width: 26px;
