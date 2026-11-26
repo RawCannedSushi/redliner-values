@@ -1,3 +1,4 @@
+import { rarityStops } from "./rarity-theme.js";
 import { drawPhoto, loadPhotos, pngBlob } from "./export-image.js";
 
 const WIDTH = 1920;
@@ -59,6 +60,12 @@ function drawCard(ctx, item, photo, x, y) {
   ctx.fillRect(x, y, CARD_WIDTH, CARD_HEIGHT);
   ctx.strokeStyle = "#50575a";
   ctx.strokeRect(x + 0.5, y + 0.5, CARD_WIDTH - 1, CARD_HEIGHT - 1);
+  const [start, end] = rarityStops(skin.rarity);
+  const gradient = ctx.createLinearGradient(x, y, x + CARD_WIDTH, y);
+  gradient.addColorStop(0, start);
+  gradient.addColorStop(1, end);
+  ctx.fillStyle = gradient;
+  ctx.fillRect(x, y, CARD_WIDTH, 4);
   drawPhoto(ctx, photo, x + 9, y + 9, 82, 52, PHOTO_STYLE);
   ctx.fillStyle = "#f2f0e9";
   fittedText(ctx, name, x + 102, y + 45, CARD_WIDTH - 190, 24);
