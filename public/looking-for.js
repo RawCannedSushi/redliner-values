@@ -30,6 +30,7 @@ function savedListings() {
         id: listing.id,
         have: cleanItems(listing.have),
         want: cleanItems(listing.want),
+        offers: listing.offers === true,
         include: listing.include !== false,
         note:
           typeof listing.note === "string" ? listing.note.slice(0, 180) : "",
@@ -179,19 +180,32 @@ export function createLookingFor({
     add.onclick = () => openPicker(listing.id, side);
     head.append(add);
     pane.append(head);
+    if (side === "want") {
+      const offersLabel = node("label", "looking-for-offers-option");
+      const offers = node("input");
+      offers.type = "checkbox";
+      offers.checked = listing.offers;
+      offers.onchange = () => {
+        listing.offers = offers.checked;
+        save();
+        render();
+      };
+      offersLabel.append(offers, node("span", "", "Offers"));
+      pane.append(offersLabel);
+    }
     const items = node("div", "looking-for-items");
     if (listing[side].length) {
       listing[side].forEach((item) =>
         items.append(createItemRow(listing, side, item)),
       );
-    } else {
+    } else if (side !== "want" || !listing.offers) {
       items.append(
         node(
           "div",
           "looking-for-side-empty",
           side === "have"
             ? "Add what you're trading"
-            : "Add a skin, or use the note for open offers",
+            : "Add skins or select Offers",
         ),
       );
     }
@@ -202,7 +216,9 @@ export function createLookingFor({
   function exportReady(listing) {
     return (
       listing.have.length > 0 &&
-      (listing.want.length > 0 || listing.note.trim().length > 0)
+      (listing.want.length > 0 ||
+        listing.offers ||
+        listing.note.trim().length > 0)
     );
   }
 
@@ -385,6 +401,7 @@ export function createLookingFor({
         skin: { ...lookup(item.key) },
         quantity: item.quantity,
       })),
+      offers: trade.offers,
       note: trade.note.trim(),
     }));
     const createPng = () =>
@@ -410,6 +427,7 @@ export function createLookingFor({
       id: crypto.randomUUID(),
       have: [],
       want: [],
+      offers: false,
       include: true,
       note: "",
     });

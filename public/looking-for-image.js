@@ -75,12 +75,34 @@ function drawCard(ctx, item, photo, x, y) {
   ctx.textAlign = "left";
 }
 
-function drawPanel(ctx, items, photos, photoUrl, x, y, height, emptyText) {
+function drawOffersCard(ctx, x, y) {
+  ctx.fillStyle = "#24282c";
+  ctx.fillRect(x, y, CARD_WIDTH, CARD_HEIGHT);
+  ctx.strokeStyle = "#50575a";
+  ctx.strokeRect(x + 0.5, y + 0.5, CARD_WIDTH - 1, CARD_HEIGHT - 1);
+  ctx.fillStyle = "#f2f0e9";
+  ctx.font = '700 26px "Archivo Narrow", Arial, sans-serif';
+  ctx.textAlign = "center";
+  ctx.fillText("OFFERS", x + CARD_WIDTH / 2, y + 45);
+  ctx.textAlign = "left";
+}
+
+function drawPanel(
+  ctx,
+  items,
+  photos,
+  photoUrl,
+  x,
+  y,
+  height,
+  emptyText,
+  offers = false,
+) {
   ctx.fillStyle = "#191d20";
   ctx.fillRect(x, y, PANEL_WIDTH, height);
   ctx.strokeStyle = "#62696c";
   ctx.strokeRect(x + 0.5, y + 0.5, PANEL_WIDTH - 1, height - 1);
-  if (!items.length) {
+  if (!items.length && !offers) {
     ctx.fillStyle = "#aeb6b8";
     ctx.font = '26px "Archivo Narrow", Arial, sans-serif';
     ctx.fillText(emptyText, x + 18, y + 70);
@@ -96,6 +118,15 @@ function drawPanel(ctx, items, photos, photoUrl, x, y, height, emptyText) {
       y + 14 + row * (CARD_HEIGHT + CARD_GAP),
     );
   });
+  if (offers) {
+    const column = items.length % 2;
+    const row = Math.floor(items.length / 2);
+    drawOffersCard(
+      ctx,
+      x + 14 + column * (CARD_WIDTH + CARD_GAP),
+      y + 14 + row * (CARD_HEIGHT + CARD_GAP),
+    );
+  }
 }
 
 function drawArrow(ctx, centerY) {
@@ -153,6 +184,7 @@ function drawTrade(ctx, trade, index, layout, photos, photoUrl, y) {
     panelY,
     panelHeight,
     "OPEN TO OFFERS",
+    trade.offers === true,
   );
   drawArrow(ctx, panelY + panelHeight / 2);
   if (noteHeight) {
@@ -190,7 +222,7 @@ export async function createLookingForPng(
     const rows = Math.max(
       1,
       Math.ceil(listing.have.length / 2),
-      Math.ceil(listing.want.length / 2),
+      Math.ceil((listing.want.length + (listing.offers ? 1 : 0)) / 2),
     );
     const panelHeight = 28 + rows * CARD_HEIGHT + (rows - 1) * CARD_GAP;
     const noteLines = wrapText(measure, listing.note, WIDTH - MARGIN * 2 - 162);
