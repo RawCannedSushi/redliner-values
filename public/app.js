@@ -315,12 +315,6 @@ function normalize(raw, i) {
   const weapon = text("weapon");
   const name = text("name");
   const trend = text("trend");
-  const correctedTrend =
-    name.toLowerCase() === "sub-zero" &&
-    (weapon === "Monarch" || weapon === "Redliner") &&
-    trend.toLowerCase() === "stable"
-      ? "Manipulated"
-      : trend;
   return {
     id: i,
     rarity: text("rarity"),
@@ -331,9 +325,9 @@ function normalize(raw, i) {
     demand,
     trend:
       /^(Stable|Unstable|Fluctuating|Rising|Increasing|Lowering|Hyped|Manipulated|N\/A)$/i.test(
-        correctedTrend,
+        trend,
       )
-        ? correctedTrend
+        ? trend
         : "N/A",
   };
 }
