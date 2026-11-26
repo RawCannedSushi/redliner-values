@@ -3,6 +3,10 @@ import { applyRarityAccent } from "./rarity-theme.js";
 const $ = (id) => document.getElementById(id);
 const PHOTO_FALLBACK = "/skin-photos/unknown.png";
 const DIRECT_CLASSIFIED_BANNER = "Direct Classifieds";
+const OLD_MODEL_PHOTOS = new Map([
+  ["Redliner\u001fDefault", "/skin-photos/old-models/Default-Redliner.png"],
+  ["Redliner\u001fInheritor", "/skin-photos/old-models/Inheritor-Redliner.png"],
+]);
 const SKIN_SHOWCASES = {
   "Castigate\u001fRite Of The Dead": {
     src: "/skin-media/Castigate-RiteOfTheDead-Showcase.mp4",
@@ -372,6 +376,19 @@ const EXCLUSIVE_SKINS = [
       "Sanguine Pledge is untradable. Unlock it through Ranked placement.",
     requirement: "Be actively ranked in the Top 50 in either 1v1s or 2v2s.",
   }),
+  Object.freeze({
+    name: "Conjurer",
+    weapon: "Castigate",
+    rarity: "Exclusive",
+    value: null,
+    exclusive: true,
+    untradable: true,
+    unlockLabel: "Code unlock",
+    unlockTitle: "SUNDER",
+    unlockDescription:
+      "Conjurer is untradable. It was obtained during the Tag update.",
+    requirement: 'Redeem the code "SUNDER" during the Tag update.',
+  }),
 ];
 const ACCENT_PROPERTIES = [
   "--rarity",
@@ -488,6 +505,14 @@ export function createSkinGallery({
   let expanded = false;
   let zoomAnimating = false;
   let zoomTimer = 0;
+  const modelVersions = new Map();
+
+  function modelPhotoUrl(skin) {
+    const key = skinKey(skin);
+    return modelVersions.get(key) === "old"
+      ? OLD_MODEL_PHOTOS.get(key) || photoUrl(skin)
+      : photoUrl(skin);
+  }
 
   function zoomGeometry() {
     const stage = $("gallery-stage");
@@ -702,7 +727,7 @@ export function createSkinGallery({
       label.className = "gallery-cover-label";
       label.textContent =
         browseBy === "banner" ? `${skin.name} / ${skin.weapon}` : skin.name;
-      art.append(photoFor(skin, photoUrl));
+      art.append(photoFor(skin, modelPhotoUrl));
       inner.append(art, label);
       button.append(inner);
       button.addEventListener("pointermove", (event) =>
@@ -791,6 +816,14 @@ export function createSkinGallery({
     $("gallery-skin-name").textContent = skin.name;
     $("gallery-skin-meta").textContent = skin.weapon;
     $("gallery-skin-meta").hidden = !!skin.defaultSkin;
+    const modelKey = skinKey(skin);
+    const hasOldModel = OLD_MODEL_PHOTOS.has(modelKey);
+    $("gallery-model-switch").hidden = !hasOldModel;
+    if (hasOldModel) {
+      const oldSelected = modelVersions.get(modelKey) === "old";
+      $("gallery-model-new").setAttribute("aria-pressed", String(!oldSelected));
+      $("gallery-model-old").setAttribute("aria-pressed", String(oldSelected));
+    }
     $("gallery-banner").hidden = !!skin.untradable;
     $("gallery-value-block").hidden = !!skin.untradable;
     $("gallery-demand").hidden = !!skin.untradable;
@@ -1051,6 +1084,25 @@ export function createSkinGallery({
   $("gallery-jump").addEventListener("change", (event) =>
     setIndex(Number(event.target.value)),
   );
+  for (const version of ["new", "old"]) {
+    $("gallery-model-" + version).addEventListener("click", () => {
+      const skin = groupSkins[index];
+      if (!skin || !OLD_MODEL_PHOTOS.has(skinKey(skin))) return;
+      modelVersions.set(skinKey(skin), version);
+      const image = coverButtons[index]?.querySelector(
+        ".gallery-cover-art img",
+      );
+      if (image) image.src = modelPhotoUrl(skin);
+      $("gallery-model-new").setAttribute(
+        "aria-pressed",
+        String(version === "new"),
+      );
+      $("gallery-model-old").setAttribute(
+        "aria-pressed",
+        String(version === "old"),
+      );
+    });
+  }
   $("gallery-history-retry").addEventListener("click", () => {
     ensureHistory();
     renderChart();
