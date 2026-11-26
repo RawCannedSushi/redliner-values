@@ -217,6 +217,18 @@
                 >Fit more on screen with a simpler, sheet-like layout.</small
               >
             </div>
+            <div class="settings-option">
+              <span>Inventory shortcut</span>
+              <button
+                id="quick-inventory-setting"
+                class="mode-toggle"
+                type="button"
+                aria-label="Inventory shortcut on"
+                aria-pressed="true"
+              >
+                <span>Off</span><span>On</span>
+              </button>
+            </div>
           </div>
         </details>
       </nav>
@@ -1203,6 +1215,87 @@
         <div id="credits-groups" class="credits-groups"></div>
       </section>
     </main>
+    <aside
+      id="quick-inventory"
+      class="quick-inventory"
+      aria-label="Inventory shortcut"
+    >
+      <section
+        id="quick-inventory-panel"
+        class="quick-inventory-panel"
+        aria-label="My Inventory preview"
+        hidden
+      >
+        <div class="quick-inventory-heading">
+          <div>
+            <strong>My Inventory</strong>
+            <small id="quick-inventory-summary"></small>
+          </div>
+          <button id="quick-inventory-open" type="button">
+            Open full page ↗
+          </button>
+        </div>
+        <div class="quick-inventory-controls">
+          <label class="quick-inventory-search">
+            <span class="sr-only">Search your inventory</span>
+            <input
+              id="quick-inventory-search"
+              type="search"
+              placeholder="Search your inventory"
+              autocomplete="off"
+            />
+          </label>
+          <details id="quick-inventory-filters" class="quick-inventory-filters">
+            <summary>Filters</summary>
+            <div class="quick-inventory-filter-menu">
+              <label
+                >Weapon
+                <select id="quick-inventory-weapon">
+                  <option value="">All weapons</option>
+                </select></label
+              >
+              <label
+                >Rarity
+                <select id="quick-inventory-rarity">
+                  <option value="">All rarities</option>
+                </select></label
+              >
+              <label
+                >Sort by
+                <select id="quick-inventory-sort">
+                  <option value="high">Value: high to low</option>
+                  <option value="low">Value: low to high</option>
+                  <option value="demand">Demand</option>
+                  <option value="alphabetical">Alphabetical</option>
+                </select>
+              </label>
+            </div>
+          </details>
+        </div>
+        <div id="quick-inventory-list" class="quick-inventory-list"></div>
+        <div id="quick-inventory-total" class="quick-inventory-total"></div>
+      </section>
+      <button
+        id="quick-inventory-button"
+        class="quick-inventory-button"
+        type="button"
+        aria-controls="quick-inventory-panel"
+        aria-expanded="false"
+      >
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.7"
+          aria-hidden="true"
+        >
+          <rect x="3" y="5" width="18" height="16" rx="1" />
+          <path d="M3 10h18M8 5V3h8v2" />
+        </svg>
+        <span>My Inventory</span>
+        <span id="quick-inventory-count" class="quick-inventory-count">0</span>
+      </button>
+    </aside>
     <footer>
       <div class="shell footer-support">
         <span

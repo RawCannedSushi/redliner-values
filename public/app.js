@@ -471,14 +471,17 @@ function element(tag, className, text) {
 const INVENTORY_KEY = "archives-redliner-inventory-v1";
 const INVENTORY_UPDATED_KEY = "archives-redliner-inventory-updated-v1";
 const INVENTORY_HIDE_VALUES_KEY = "archives-redliner-hide-inventory-values-v1";
+const QUICK_INVENTORY_KEY = "archives-redliner-quick-inventory-v1";
 let inventory = {};
 let inventoryUpdatedAt = "";
 let inventoryStorageFailed = false;
 let hideInventoryValues = false;
+let showQuickInventory = true;
 let googleDriveSync;
 try {
   hideInventoryValues =
     localStorage.getItem(INVENTORY_HIDE_VALUES_KEY) === "true";
+  showQuickInventory = localStorage.getItem(QUICK_INVENTORY_KEY) !== "false";
   inventoryUpdatedAt = localStorage.getItem(INVENTORY_UPDATED_KEY) || "";
   const saved = JSON.parse(localStorage.getItem(INVENTORY_KEY) || "{}");
   if (saved && typeof saved === "object" && !Array.isArray(saved))
@@ -586,6 +589,7 @@ function setInventoryCount(key, qty, { render = true } = {}) {
   if (render) renderInventory();
   else {
     updateInventorySummary(inventoryItems());
+    renderQuickInventory();
     gallery.updateInventory();
   }
 }
@@ -735,7 +739,7 @@ function updateInventoryTotal(total) {
   }
   inventoryTotalFrame = requestAnimationFrame(tick);
 }
-function inventoryItems() {
+function inventoryItems(sort = $("inventory-sort").value) {
   const byKey = new Map(skins.map((s) => [skinKey(s), s]));
   const items = Object.entries(inventory)
     .filter(([, qty]) => qty > 0)
@@ -755,7 +759,6 @@ function inventoryItems() {
     });
   const byName = (a, b) =>
     a.name.localeCompare(b.name) || a.weapon.localeCompare(b.weapon);
-  const sort = $("inventory-sort").value;
   items.sort(({ skin: a }, { skin: b }) => {
     if (sort === "low")
       return (a.value ?? Infinity) - (b.value ?? Infinity) || byName(a, b);
@@ -770,6 +773,154 @@ function inventoryItems() {
   });
   return items;
 }
+const quickInventory = $("quick-inventory");
+const quickInventoryPanel = $("quick-inventory-panel");
+const quickInventoryButton = $("quick-inventory-button");
+const quickInventorySetting = $("quick-inventory-setting");
+function closeQuickInventory() {
+  quickInventoryPanel.hidden = true;
+  quickInventoryButton.setAttribute("aria-expanded", "false");
+  $("quick-inventory-filters").open = false;
+}
+function setQuickInventoryVisibility(enabled, save = false) {
+  showQuickInventory = enabled;
+  quickInventory.hidden = !enabled || activeView === "inventory";
+  quickInventorySetting.setAttribute("aria-pressed", String(enabled));
+  quickInventorySetting.setAttribute(
+    "aria-label",
+    `Inventory shortcut ${enabled ? "on" : "off"}`,
+  );
+  if (!enabled) closeQuickInventory();
+  if (save) {
+    try {
+      localStorage.setItem(QUICK_INVENTORY_KEY, String(enabled));
+    } catch {}
+  }
+}
+function updateQuickInventoryOptions(id, values, allLabel) {
+  const select = $(id);
+  const selected = select.value;
+  select.replaceChildren();
+  const all = element("option", "", allLabel);
+  all.value = "";
+  select.append(all);
+  values.forEach((value) => {
+    const option = element("option", "", value);
+    option.value = value;
+    select.append(option);
+  });
+  select.value = values.includes(selected) ? selected : "";
+}
+function renderQuickInventory() {
+  const items = inventoryItems($("quick-inventory-sort").value);
+  const count = items.reduce((sum, { qty }) => sum + qty, 0);
+  $("quick-inventory-count").textContent = fmt(count);
+  $("quick-inventory-summary").textContent =
+    `${fmt(count)} items · ${fmt(items.length)} skins`;
+  updateQuickInventoryOptions(
+    "quick-inventory-weapon",
+    [...new Set(items.map(({ skin }) => skin.weapon))].sort(),
+    "All weapons",
+  );
+  updateQuickInventoryOptions(
+    "quick-inventory-rarity",
+    [...new Set(items.map(({ skin }) => skin.rarity))].sort(compareRarity),
+    "All rarities",
+  );
+  const query = $("quick-inventory-search").value.trim().toLowerCase();
+  const weapon = $("quick-inventory-weapon").value;
+  const rarity = $("quick-inventory-rarity").value;
+  const matching = items.filter(
+    ({ skin }) =>
+      (!weapon || skin.weapon === weapon) &&
+      (!rarity || skin.rarity === rarity) &&
+      (!query ||
+        `${skin.name} ${skin.weapon} ${skin.rarity} ${skin.collection}`
+          .toLowerCase()
+          .includes(query)),
+  );
+  const list = $("quick-inventory-list");
+  list.replaceChildren();
+  if (!matching.length) {
+    list.append(
+      element(
+        "p",
+        "quick-inventory-empty",
+        items.length
+          ? "No skins match your search or filters."
+          : "Your inventory is empty. Open the full page to add skins.",
+      ),
+    );
+  }
+  matching.forEach(({ skin, qty }) => {
+    const row = element("div", "quick-inventory-row");
+    applyRarityAccent(row, skin.rarity);
+    const art = element("div", "quick-inventory-art");
+    art.append(skinPhoto(skin));
+    const details = element("div", "quick-inventory-item-details");
+    details.append(
+      element("strong", "", skin.name),
+      element("small", "", `${skin.weapon} · ${skin.rarity}`),
+    );
+    const numbers = element("div", "quick-inventory-item-numbers");
+    numbers.append(element("strong", "", `×${fmt(qty)}`));
+    if (!hideInventoryValues)
+      numbers.append(
+        element(
+          "small",
+          "",
+          skin.value === null ? "Unpriced" : fmt(skin.value * qty),
+        ),
+      );
+    row.append(art, details, numbers);
+    list.append(row);
+  });
+  const total = $("quick-inventory-total");
+  total.hidden = hideInventoryValues;
+  if (!hideInventoryValues)
+    total.textContent = `Total Value: ${fmt(
+      items.reduce((sum, { skin, qty }) => sum + (skin.value || 0) * qty, 0),
+    )}`;
+}
+setQuickInventoryVisibility(showQuickInventory);
+quickInventorySetting.addEventListener("click", () =>
+  setQuickInventoryVisibility(!showQuickInventory, true),
+);
+quickInventoryButton.addEventListener("click", () => {
+  quickInventoryPanel.hidden = !quickInventoryPanel.hidden;
+  quickInventoryButton.setAttribute(
+    "aria-expanded",
+    String(!quickInventoryPanel.hidden),
+  );
+  if (!quickInventoryPanel.hidden) {
+    renderQuickInventory();
+    $("quick-inventory-search").focus();
+  }
+});
+$("quick-inventory-open").addEventListener("click", () => {
+  closeQuickInventory();
+  $("tab-inventory").click();
+});
+$("quick-inventory-search").addEventListener("input", renderQuickInventory);
+for (const id of [
+  "quick-inventory-weapon",
+  "quick-inventory-rarity",
+  "quick-inventory-sort",
+])
+  $(id).addEventListener("change", renderQuickInventory);
+document.addEventListener("pointerdown", (event) => {
+  if (!quickInventoryPanel.hidden && !quickInventory.contains(event.target))
+    closeQuickInventory();
+});
+document.addEventListener("keydown", (event) => {
+  if (event.key !== "Escape" || quickInventoryPanel.hidden) return;
+  closeQuickInventory();
+  quickInventoryButton.focus();
+});
+window.addEventListener("storage", (event) => {
+  if (event.key === QUICK_INVENTORY_KEY)
+    setQuickInventoryVisibility(event.newValue !== "false");
+});
 let inventoryImageBusy = false;
 function updateInventorySummary(items) {
   $("inventory-count").textContent = fmt(
@@ -871,6 +1022,7 @@ function renderInventory() {
     grid.append(card);
   });
   restoreFocus();
+  renderQuickInventory();
   gallery.updateInventory();
 }
 $("inventory-sort").addEventListener("change", renderInventory);
@@ -1532,12 +1684,14 @@ document.querySelectorAll(".trade-add").forEach((button) =>
 let historyLoading = false;
 function switchView(view) {
   hideSkinTooltip();
+  if (view === "inventory") closeQuickInventory();
   if (view !== "gallery") gallery.leave();
   if (view !== "trade") {
     closeTradePicker("give");
     closeTradePicker("receive");
   }
   activeView = view;
+  quickInventory.hidden = !showQuickInventory || view === "inventory";
   Object.entries(viewPanels).forEach(([name, id]) => {
     $(id).hidden = name !== view;
   });

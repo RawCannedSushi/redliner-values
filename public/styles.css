@@ -4127,6 +4127,262 @@ footer a:hover {
   padding: 0;
   border-radius: 0;
 }
+.quick-inventory {
+  position: fixed;
+  z-index: 80;
+  right: clamp(12px, 2vw, 28px);
+  bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+  pointer-events: none;
+}
+.quick-inventory[hidden],
+.quick-inventory-panel[hidden],
+.quick-inventory-total[hidden] {
+  display: none;
+}
+.quick-inventory > * {
+  pointer-events: auto;
+}
+.quick-inventory-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 48px;
+  padding: 10px 13px;
+  border: 1px solid var(--line-strong);
+  background: var(--panel2);
+  color: var(--text);
+  box-shadow: 0 8px 24px var(--shadow);
+  font:
+    700 14px "Archivo Narrow",
+    sans-serif;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+}
+.quick-inventory-button:hover,
+.quick-inventory-button[aria-expanded="true"] {
+  border-color: var(--accent);
+}
+.quick-inventory-button svg {
+  width: 19px;
+  height: 19px;
+  color: var(--accent);
+}
+.quick-inventory-count {
+  min-width: 26px;
+  padding: 2px 5px;
+  border: 1px solid var(--line);
+  color: var(--muted);
+  font:
+    700 11px ui-monospace,
+    Consolas,
+    monospace;
+  text-align: center;
+}
+.quick-inventory-panel {
+  display: flex;
+  flex-direction: column;
+  width: min(390px, calc(100vw - 24px));
+  max-height: calc(100dvh - 100px - env(safe-area-inset-bottom, 0px));
+  border: 1px solid var(--line-strong);
+  background: var(--menu-bg);
+  color: var(--text);
+  box-shadow: 0 18px 48px var(--shadow);
+}
+.quick-inventory-heading,
+.quick-inventory-controls,
+.quick-inventory-total {
+  padding: 11px 13px;
+}
+.quick-inventory-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  border-bottom: 1px solid var(--line);
+}
+.quick-inventory-heading strong {
+  display: block;
+  font-size: 20px;
+  line-height: 1.1;
+}
+.quick-inventory-heading small {
+  display: block;
+  color: var(--muted);
+  font-size: 12px;
+}
+.quick-inventory-heading button {
+  flex: none;
+  padding: 5px 7px;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  color: var(--text);
+  font:
+    700 12px "Archivo Narrow",
+    sans-serif;
+  cursor: pointer;
+}
+.quick-inventory-heading button:hover {
+  border-color: var(--accent);
+}
+.quick-inventory-controls {
+  display: flex;
+  gap: 7px;
+  border-bottom: 1px solid var(--line);
+}
+.quick-inventory-search {
+  flex: 1;
+  min-width: 0;
+}
+.quick-inventory-search span {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.quick-inventory-search input,
+.quick-inventory-filters > summary,
+.quick-inventory-filter-menu select {
+  min-height: 36px;
+  border: 1px solid var(--line);
+  border-radius: 0;
+  background: var(--panel);
+  color: var(--text);
+  font: inherit;
+}
+.quick-inventory-search input {
+  width: 100%;
+  padding: 7px 9px;
+}
+.quick-inventory-filters {
+  position: relative;
+  flex: none;
+}
+.quick-inventory-filters > summary {
+  display: flex;
+  align-items: center;
+  padding: 7px 10px;
+  list-style: none;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.quick-inventory-filters > summary::-webkit-details-marker {
+  display: none;
+}
+.quick-inventory-filters[open] > summary {
+  border-color: var(--accent);
+}
+.quick-inventory-filter-menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  z-index: 2;
+  display: grid;
+  gap: 8px;
+  width: 220px;
+  padding: 12px;
+  border: 1px solid var(--line-strong);
+  background: var(--menu-bg);
+  box-shadow: 0 10px 22px var(--shadow);
+}
+.quick-inventory-filter-menu label {
+  display: grid;
+  gap: 3px;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+.quick-inventory-filter-menu select {
+  width: 100%;
+  padding: 4px 6px;
+  font-size: 13px;
+  text-transform: none;
+}
+.quick-inventory-list {
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.quick-inventory-row {
+  position: relative;
+  display: grid;
+  grid-template-columns: 54px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 9px;
+  min-height: 64px;
+  padding: 7px 12px 7px 15px;
+  border-bottom: 1px solid var(--line);
+}
+.quick-inventory-row::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 3px;
+  background: var(--skin-paint, var(--accent));
+}
+.quick-inventory-art {
+  width: 54px;
+  height: 48px;
+  padding: 2px;
+  border: 1px solid var(--line);
+  background: var(--panel);
+}
+.quick-inventory-item-details,
+.quick-inventory-item-numbers {
+  min-width: 0;
+}
+.quick-inventory-item-details strong,
+.quick-inventory-item-details small,
+.quick-inventory-item-numbers strong,
+.quick-inventory-item-numbers small {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.quick-inventory-item-details strong {
+  font-size: 16px;
+  line-height: 1.1;
+}
+.quick-inventory-item-details small,
+.quick-inventory-item-numbers small {
+  color: var(--muted);
+  font-size: 12px;
+}
+.quick-inventory-item-numbers {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.quick-inventory-item-numbers strong {
+  font-size: 16px;
+}
+.quick-inventory-empty {
+  margin: 0;
+  padding: 22px 14px;
+  color: var(--muted);
+  font-size: 13px;
+  text-align: center;
+}
+.quick-inventory-total {
+  border-top: 1px solid var(--line-strong);
+  color: var(--text);
+  font-size: 15px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+:root[data-density="compressed"] .quick-inventory {
+  bottom: calc(60px + env(safe-area-inset-bottom, 0px));
+}
+:root[data-density="compressed"] .quick-inventory-panel {
+  max-height: calc(100dvh - 144px - env(safe-area-inset-bottom, 0px));
+}
 :root[data-density="compressed"] .inventory-card,
 :root[data-density="compressed"] .inventory-add {
   aspect-ratio: auto;
