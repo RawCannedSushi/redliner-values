@@ -136,13 +136,6 @@
             Trade calculator</button
           ><button
             type="button"
-            data-view="history"
-            role="tab"
-            aria-selected="false"
-          >
-            Value Chart</button
-          ><button
-            type="button"
             data-view="gallery"
             role="tab"
             aria-selected="false"
@@ -277,19 +270,38 @@
       </div>
       <div id="list-view">
         <section id="catalog" aria-labelledby="catalog-title">
-          <div class="section-head">
-            <h2 id="catalog-title">Value list</h2>
-            <details class="context-help">
-              <summary
-                aria-label="About listed values"
-                title="About listed values"
+          <div class="section-head value-view-head">
+            <div class="value-view-left">
+              <h2 id="catalog-title">
+                <button
+                  type="button"
+                  data-value-view="list"
+                  aria-pressed="true"
+                >
+                  Value List
+                </button>
+              </h2>
+              <details class="context-help">
+                <summary
+                  aria-label="About listed values"
+                  title="About listed values"
+                >
+                  ⓘ
+                </summary>
+                <div class="context-help-panel">
+                  Values are a guide. Demand also matters.
+                </div>
+              </details>
+            </div>
+            <h2>
+              <button
+                type="button"
+                data-value-view="history"
+                aria-pressed="false"
               >
-                ⓘ
-              </summary>
-              <div class="context-help-panel">
-                Values are a guide. Demand also matters.
-              </div>
-            </details>
+                Value Chart
+              </button>
+            </h2>
           </div>
           <table class="catalog" aria-labelledby="catalog-title">
             <thead>
@@ -1050,25 +1062,36 @@
         aria-labelledby="history-title"
         hidden
       >
-        <div class="section-head">
-          <h2 id="history-title">Value history</h2>
-          <details class="context-help">
-            <summary
-              aria-label="About value history"
-              title="About value history"
-            >
-              ⓘ
-            </summary>
-            <div class="context-help-panel">
-              Compare saved values for skins matching your filters. History
-              checks for changed values about every 15 minutes and saves a daily
-              baseline. Refreshing the value list does not save a snapshot. The
-              latest list may be cached for up to two minutes. History keeps
-              about two years of observations; changes between checks may not be
-              captured. Long chart ranges show evenly spaced recorded points.
-              The sheet does not provide earlier history.
-            </div>
-          </details>
+        <div class="section-head value-view-head">
+          <div class="value-view-left">
+            <h2>
+              <button type="button" data-value-view="list" aria-pressed="false">
+                Value List
+              </button>
+            </h2>
+            <details class="context-help">
+              <summary
+                aria-label="About value history"
+                title="About value history"
+              >
+                ⓘ
+              </summary>
+              <div class="context-help-panel">
+                Compare saved values for skins matching your filters. History
+                checks for changed values about every 15 minutes and saves a
+                daily baseline. Refreshing the value list does not save a
+                snapshot. The latest list may be cached for up to two minutes.
+                History keeps about two years of observations; changes between
+                checks may not be captured. Long chart ranges show evenly spaced
+                recorded points. The sheet does not provide earlier history.
+              </div>
+            </details>
+          </div>
+          <h2 id="history-title">
+            <button type="button" data-value-view="history" aria-pressed="true">
+              Value Chart
+            </button>
+          </h2>
         </div>
         <div class="history-tools">
           <span id="history-status" role="status">Loading snapshots…</span

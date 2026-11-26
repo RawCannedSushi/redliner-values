@@ -294,17 +294,22 @@ const viewPanels = {
   scams: "scam-view",
   credits: "credits-view",
 };
-const viewTabs = [...document.querySelectorAll("[data-view]")];
+const viewTabs = [...document.querySelectorAll(".view-tabs [data-view]")];
 viewTabs.forEach((tab) => {
   const view = tab.dataset.view;
   tab.id = "tab-" + view;
-  tab.setAttribute("aria-controls", viewPanels[view]);
+  tab.setAttribute(
+    "aria-controls",
+    view === "list" ? "list-view history-view" : viewPanels[view],
+  );
   tab.tabIndex = view === "list" ? 0 : -1;
   const panel = $(viewPanels[view]);
   panel.setAttribute("role", "tabpanel");
   panel.setAttribute("aria-labelledby", tab.id);
   panel.tabIndex = 0;
 });
+$(viewPanels.history).setAttribute("role", "tabpanel");
+$(viewPanels.history).tabIndex = 0;
 
 function normalize(raw, i) {
   const text = (key) => String(raw[key] ?? "").trim();
@@ -1707,13 +1712,21 @@ function switchView(view) {
     view === "info" ||
     view === "scams" ||
     view === "credits";
-  document.querySelectorAll("[data-view]").forEach((button) => {
-    const active = button.dataset.view === view;
+  viewTabs.forEach((button) => {
+    const active = button.dataset.view === (view === "history" ? "list" : view);
     button.classList.toggle("active", active);
     button.tabIndex = active ? 0 : -1;
     if (button.getAttribute("role") === "tab")
       button.setAttribute("aria-selected", String(active));
   });
+  if (view === "list" || view === "history") {
+    document.querySelectorAll("[data-value-view]").forEach((button) => {
+      button.setAttribute(
+        "aria-pressed",
+        String(button.dataset.valueView === view),
+      );
+    });
+  }
   if (view === "history") {
     if (!historyData) loadHistory();
     else renderHistory();
@@ -1726,9 +1739,20 @@ function switchView(view) {
     renderInventory();
   }
 }
-document.querySelectorAll("[data-view]").forEach((button) =>
+viewTabs.forEach((button) =>
   button.addEventListener("click", () => {
     switchView(button.dataset.view);
+    if (document.documentElement.dataset.density === "compressed")
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    else
+      document
+        .querySelector(".view-tabs")
+        .scrollIntoView({ behavior: "smooth", block: "start" });
+  }),
+);
+document.querySelectorAll("[data-value-view]").forEach((button) =>
+  button.addEventListener("click", () => {
+    switchView(button.dataset.valueView);
     if (document.documentElement.dataset.density === "compressed")
       window.scrollTo({ top: 0, behavior: "smooth" });
     else
@@ -2292,7 +2316,11 @@ function startOpeningIntro() {
     if (needsRarityWelcome) $("rarity-welcome").showModal();
     else if (!seen)
       viewTabs
-        .find((tab) => tab.dataset.view === activeView)
+        .find(
+          (tab) =>
+            tab.dataset.view ===
+            (activeView === "history" ? "list" : activeView),
+        )
         .focus({ preventScroll: true });
   };
   if (seen || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
