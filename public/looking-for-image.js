@@ -1,4 +1,3 @@
-import { rarityStops } from "./rarity-theme.js";
 import { drawPhoto, loadPhotos, pngBlob } from "./export-image.js";
 
 const WIDTH = 1920;
@@ -9,7 +8,7 @@ const RIGHT_X = MARGIN + PANEL_WIDTH + CENTER_GAP;
 const BODY_TOP = 284;
 const CARD_GAP = 10;
 const CARD_WIDTH = (PANEL_WIDTH - 28 - CARD_GAP) / 2;
-const CARD_HEIGHT = 94;
+const CARD_HEIGHT = 70;
 const PHOTO_STYLE = { border: "#42494e", inset: 8, size: "naturalWidth" };
 
 function fittedText(ctx, value, x, y, maxWidth, size, minSize = 15) {
@@ -53,32 +52,19 @@ function wrapText(ctx, value, maxWidth) {
 
 function drawCard(ctx, item, photo, x, y) {
   const { skin, quantity } = item;
+  const name = /^rite of the dead$/i.test(skin.name.trim())
+    ? "ROTD"
+    : skin.name;
   ctx.fillStyle = "#24282c";
   ctx.fillRect(x, y, CARD_WIDTH, CARD_HEIGHT);
   ctx.strokeStyle = "#50575a";
   ctx.strokeRect(x + 0.5, y + 0.5, CARD_WIDTH - 1, CARD_HEIGHT - 1);
-  const [start, end] = rarityStops(skin.rarity);
-  const gradient = ctx.createLinearGradient(x, y, x + CARD_WIDTH, y);
-  gradient.addColorStop(0, start);
-  gradient.addColorStop(1, end);
-  ctx.fillStyle = gradient;
-  ctx.fillRect(x, y, CARD_WIDTH, 4);
-  drawPhoto(ctx, photo, x + 10, y + 12, 96, 70, PHOTO_STYLE);
+  drawPhoto(ctx, photo, x + 9, y + 9, 82, 52, PHOTO_STYLE);
   ctx.fillStyle = "#f2f0e9";
-  fittedText(ctx, skin.name, x + 119, y + 38, CARD_WIDTH - 199, 25);
-  ctx.fillStyle = "#aeb6b8";
-  fittedText(
-    ctx,
-    [skin.weapon, skin.rarity].filter(Boolean).join(" · "),
-    x + 119,
-    y + 66,
-    CARD_WIDTH - 134,
-    17,
-  );
-  ctx.fillStyle = "#f2f0e9";
-  ctx.font = '700 29px "Archivo Narrow", Arial, sans-serif';
+  fittedText(ctx, name, x + 102, y + 45, CARD_WIDTH - 190, 24);
+  ctx.font = '700 28px "Archivo Narrow", Arial, sans-serif';
   ctx.textAlign = "right";
-  ctx.fillText(`×${quantity}`, x + CARD_WIDTH - 12, y + 38);
+  ctx.fillText(`×${quantity}`, x + CARD_WIDTH - 12, y + 45);
   ctx.textAlign = "left";
 }
 
@@ -129,9 +115,8 @@ function drawTrade(ctx, trade, index, layout, photos, photoUrl, y) {
   ctx.fillStyle = "#171b1e";
   ctx.fillRect(MARGIN, y, WIDTH - MARGIN * 2, height - 12);
   ctx.strokeStyle = "#3e4549";
+  ctx.lineWidth = 1;
   ctx.strokeRect(MARGIN + 0.5, y + 0.5, WIDTH - MARGIN * 2 - 1, height - 13);
-  ctx.fillStyle = "#ef302e";
-  ctx.fillRect(MARGIN, y, 5, height - 12);
   ctx.fillStyle = "#d9dcda";
   ctx.font = '700 24px "Archivo Narrow", Arial, sans-serif';
   ctx.textAlign = "center";
@@ -167,8 +152,6 @@ function drawTrade(ctx, trade, index, layout, photos, photoUrl, y) {
     const noteY = panelY + panelHeight + 12;
     ctx.fillStyle = "#24282c";
     ctx.fillRect(MARGIN + 18, noteY, WIDTH - MARGIN * 2 - 36, noteHeight);
-    ctx.fillStyle = "#ef302e";
-    ctx.fillRect(MARGIN + 18, noteY, 3, noteHeight);
     ctx.fillStyle = "#aeb6b8";
     ctx.font = "18px ui-monospace, Consolas, monospace";
     ctx.fillText("NOTE", MARGIN + 36, noteY + 32);
@@ -250,8 +233,10 @@ export async function createLookingForPng(
   ctx.stroke();
   ctx.fillStyle = "#f2f0e9";
   ctx.font = '800 31px "Archivo Narrow", Arial, sans-serif';
-  ctx.fillText("TRADING", MARGIN + 18, 263);
-  ctx.fillText("LOOKING FOR", RIGHT_X - 18, 263);
+  ctx.textAlign = "center";
+  ctx.fillText("TRADING", MARGIN + 18 + PANEL_WIDTH / 2, 263);
+  ctx.fillText("LOOKING FOR", RIGHT_X - 18 + PANEL_WIDTH / 2, 263);
+  ctx.textAlign = "left";
   let y = BODY_TOP;
   listings.forEach((listing, index) => {
     drawTrade(ctx, listing, index, layouts[index], photos, photoUrl, y);
