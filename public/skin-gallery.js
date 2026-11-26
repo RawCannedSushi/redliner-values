@@ -396,6 +396,8 @@ const EXCLUSIVE_SKINS = [
     unlockLabel: "Code unlock",
     unlockTitle: "SUNDER",
     prominentUnlock: true,
+    requirement:
+      'Redeem "SUNDER" during the Tag update (the only time Conjurer was unlockable).',
   }),
 ];
 const ACCENT_PROPERTIES = [
