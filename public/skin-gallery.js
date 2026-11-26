@@ -393,7 +393,9 @@ const EXCLUSIVE_SKINS = [
     value: null,
     exclusive: true,
     untradable: true,
-    unlockLabel: "Unlocked with code: Sunder",
+    unlockLabel: "Code unlock",
+    unlockTitle: "SUNDER",
+    prominentUnlock: true,
   }),
 ];
 const ACCENT_PROPERTIES = [
@@ -836,16 +838,15 @@ export function createSkinGallery({
     $("gallery-history-panel").hidden = !!skin.untradable;
     $("gallery-untradable-status").hidden = !skin.untradable;
     $("gallery-exclusive-panel").classList.toggle(
-      "gallery-exclusive-panel--compact",
-      !!skin.exclusive && !skin.unlockTitle,
+      "gallery-exclusive-panel--prominent",
+      !!skin.prominentUnlock,
     );
     $("gallery-exclusive-panel").hidden = !skin.exclusive;
     renderAnimations(skin);
     updateInventory();
     if (skin.exclusive) {
       $("gallery-exclusive-kicker").textContent = skin.unlockLabel;
-      $("gallery-exclusive-title").textContent = skin.unlockTitle || "";
-      $("gallery-exclusive-title").hidden = !skin.unlockTitle;
+      $("gallery-exclusive-title").textContent = skin.unlockTitle;
       $("gallery-exclusive-description").textContent =
         skin.unlockDescription || "";
       $("gallery-exclusive-description").hidden = !skin.unlockDescription;
