@@ -213,7 +213,7 @@ export function createLookingFor({
   function updateCombinedControls(clearMessage = true) {
     const selected = selectedTrades();
     const unfinished = selected.find((listing) => !exportReady(listing));
-    selectedSummary.textContent = `${selected.length} of ${listings.length} ${listings.length === 1 ? "trade" : "trades"} selected`;
+    selectedSummary.textContent = `${selected.length}/${listings.length} selected`;
     selectedDownload.disabled = selectedCopy.disabled =
       selected.length === 0 || Boolean(unfinished);
     if (unfinished) {

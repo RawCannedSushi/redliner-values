@@ -591,17 +591,21 @@
           <p>
             Make several small trades, then choose which ones go in your PNG.
           </p>
-          <button id="looking-for-add" type="button">+ Add trade</button>
         </div>
         <div class="looking-for-board-actions">
-          <strong id="looking-for-selected-summary">0 trades selected</strong>
-          <button id="looking-for-download-selected" type="button" disabled>
-            Download selected PNG
-          </button>
-          <button id="looking-for-copy-selected" type="button" disabled>
-            Copy selected PNG
-          </button>
-          <span id="looking-for-export-status" role="status"></span>
+          <div class="looking-for-board-export">
+            <strong id="looking-for-selected-summary">0/0 selected</strong>
+            <button id="looking-for-download-selected" type="button" disabled>
+              Download PNG
+            </button>
+            <button id="looking-for-copy-selected" type="button" disabled>
+              Copy to Clipboard
+            </button>
+            <span id="looking-for-export-status" role="status"></span>
+          </div>
+          <div class="looking-for-board-add">
+            <button id="looking-for-add" type="button">+ Add trade</button>
+          </div>
         </div>
         <div id="looking-for-list" class="looking-for-list"></div>
         <p id="looking-for-status" class="footnote" role="status"></p>

@@ -3483,7 +3483,6 @@ footer a:hover {
 .looking-for-picker button {
   cursor: pointer;
 }
-.looking-for-toolbar button,
 .looking-for-side-head button,
 .looking-for-board-actions button,
 .looking-for-picker-footer button {
@@ -3496,7 +3495,6 @@ footer a:hover {
     700 15px "Archivo Narrow",
     sans-serif;
 }
-.looking-for-toolbar button,
 .looking-for-board-actions button,
 .looking-for-picker-footer button {
   border-color: var(--accent);
@@ -3709,21 +3707,57 @@ footer a:hover {
   font-size: 15px;
 }
 .looking-for-board-actions {
-  justify-content: flex-start;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0;
   margin-bottom: 18px;
-  padding: 16px;
   border: 1px solid var(--line-strong);
   background: var(--panel);
 }
-.looking-for-board-actions strong {
-  margin-right: auto;
-  color: var(--text);
+.looking-for-board-export {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-content: center;
+  gap: 12px;
+  padding: 18px;
 }
-.looking-for-board-actions span {
-  flex-basis: 100%;
+.looking-for-board-export strong {
+  grid-column: 1 / -1;
+  color: var(--text);
+  font:
+    800 26px/1 "Archivo Narrow",
+    sans-serif;
+}
+.looking-for-board-export span {
+  grid-column: 1 / -1;
   color: var(--muted);
   font-size: 13px;
+}
+.looking-for-board-export span:empty {
+  display: none;
+}
+.looking-for-board-actions button {
+  min-height: 56px;
+  padding: 13px 16px;
+  font-size: 18px;
+}
+.looking-for-board-add {
+  display: grid;
+  place-items: center;
+  padding: 18px;
+  border-left: 1px solid var(--line-strong);
+  background: var(--panel2);
+}
+#looking-for-add {
+  width: min(100%, 300px);
+  min-height: 72px;
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--accent-on);
+  font-size: 22px;
+}
+#looking-for-add:hover {
+  filter: brightness(1.1);
 }
 .looking-for-picker {
   width: min(760px, calc(100% - 24px));
@@ -3825,11 +3859,12 @@ footer a:hover {
     content: "↕";
     font-size: 26px;
   }
-  .looking-for-board-actions strong {
-    flex-basis: 100%;
+  .looking-for-board-actions {
+    grid-template-columns: 1fr;
   }
-  .looking-for-board-actions button {
-    flex: 1 0 100%;
+  .looking-for-board-add {
+    border-top: 1px solid var(--line-strong);
+    border-left: 0;
   }
   .looking-for-item {
     grid-template-columns: 68px minmax(0, 1fr);
