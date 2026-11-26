@@ -262,7 +262,6 @@ export function createLookingFor({
     const remove = node("button", "", "Delete trade");
     remove.type = "button";
     remove.onclick = () => {
-      if (!confirm("Delete this trade?")) return;
       listings.splice(listings.indexOf(listing), 1);
       save();
       render();
