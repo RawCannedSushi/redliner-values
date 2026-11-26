@@ -3462,7 +3462,6 @@ footer a:hover {
 }
 .looking-for-toolbar,
 .looking-for-listing-head,
-.looking-for-listing-actions,
 .looking-for-board-actions,
 .looking-for-side-head,
 .looking-for-picker-head,
@@ -3486,7 +3485,6 @@ footer a:hover {
 }
 .looking-for-toolbar button,
 .looking-for-side-head button,
-.looking-for-listing-actions button,
 .looking-for-board-actions button,
 .looking-for-picker-footer button {
   padding: 10px 15px;
@@ -3710,20 +3708,10 @@ footer a:hover {
   font: inherit;
   font-size: 15px;
 }
-.looking-for-listing-actions {
-  justify-content: flex-start;
-  flex-wrap: wrap;
-  padding: 10px 14px;
-  border-top: 1px solid var(--line);
-}
-.looking-for-listing-actions span {
-  color: var(--muted);
-  font-size: 13px;
-}
 .looking-for-board-actions {
   justify-content: flex-start;
   flex-wrap: wrap;
-  margin-top: 18px;
+  margin-bottom: 18px;
   padding: 16px;
   border: 1px solid var(--line-strong);
   background: var(--panel);
@@ -3840,8 +3828,7 @@ footer a:hover {
   .looking-for-board-actions strong {
     flex-basis: 100%;
   }
-  .looking-for-board-actions button,
-  .looking-for-listing-actions button {
+  .looking-for-board-actions button {
     flex: 1 0 100%;
   }
   .looking-for-item {
@@ -3866,8 +3853,7 @@ footer a:hover {
   gap: 6px;
 }
 :root[data-density="compressed"] .looking-for-side,
-:root[data-density="compressed"] .looking-for-listing-head,
-:root[data-density="compressed"] .looking-for-listing-actions {
+:root[data-density="compressed"] .looking-for-listing-head {
   padding: 10px 12px;
 }
 .inventory-backup summary {
