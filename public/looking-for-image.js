@@ -274,11 +274,14 @@ export async function createLookingForPng(
   ctx.fillStyle = "#ef302e";
   ctx.fillRect(MARGIN, 58, 11, 95);
   ctx.fillStyle = "#f2f0e9";
-  ctx.font = '800 78px "Archivo Narrow", Arial, sans-serif';
+  ctx.font = '800 64px "Archivo Narrow", Arial, sans-serif';
   ctx.fillText("TRADE MAKER", MARGIN + 31, 126);
   ctx.fillStyle = "#aeb6b8";
   ctx.font = "23px ui-monospace, Consolas, monospace";
   ctx.fillText("archives® / REDLINER VALUES", MARGIN + 33, 169);
+  ctx.textAlign = "right";
+  ctx.fillText("archivesvalues.com", WIDTH - MARGIN, 169);
+  ctx.textAlign = "left";
   ctx.strokeStyle = "#62696c";
   ctx.beginPath();
   ctx.moveTo(MARGIN, 216.5);
