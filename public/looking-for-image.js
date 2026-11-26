@@ -68,10 +68,16 @@ function drawCard(ctx, item, photo, x, y) {
   ctx.fillRect(x, y, CARD_WIDTH, 4);
   drawPhoto(ctx, photo, x + 9, y + 9, 82, 52, PHOTO_STYLE);
   ctx.fillStyle = "#f2f0e9";
-  fittedText(ctx, name, x + 102, y + 45, CARD_WIDTH - 190, 24);
-  ctx.font = '700 28px "Archivo Narrow", Arial, sans-serif';
+  const quantityText = `×${quantity}`;
+  const quantityX = x + CARD_WIDTH - 12;
+  const nameX = x + 102;
+  ctx.font = '700 36px "Archivo Narrow", Arial, sans-serif';
+  const nameWidth =
+    quantityX - ctx.measureText(quantityText).width - 14 - nameX;
+  fittedText(ctx, name, nameX, y + 49, nameWidth, 30);
+  ctx.font = '700 36px "Archivo Narrow", Arial, sans-serif';
   ctx.textAlign = "right";
-  ctx.fillText(`×${quantity}`, x + CARD_WIDTH - 12, y + 45);
+  ctx.fillText(quantityText, quantityX, y + 49);
   ctx.textAlign = "left";
 }
 
