@@ -38,6 +38,11 @@ const SKIN_SHOWCASES = {
     poster: "/skin-media/Monarch-Dragora-Showcase.jpg",
     description: "inspect, firing, and elimination effect audio",
   },
+  "Monarch\u001fArcane Requiem": {
+    src: "/skin-media/Monarch-ArcaneRequiem-Showcase.mp4",
+    poster: "/skin-media/Monarch-ArcaneRequiem-Showcase.jpg",
+    description: "inspect, firing, and kill effect audio",
+  },
   "Monarch\u001fRadiance": {
     src: "/skin-media/Monarch-Radiance-Showcase.mp4",
     poster: "/skin-media/Monarch-Radiance-Showcase.jpg",
@@ -62,6 +67,11 @@ const SKIN_SHOWCASES = {
     src: "/skin-media/Redliner-Inheritor-Showcase.mp4",
     poster: "/skin-media/Redliner-Inheritor-Showcase.jpg",
     description: "inspect, attack, and parry audio",
+    newModel: {
+      src: "/skin-media/Redliner-Inheritor-NewModel-Showcase.mp4",
+      poster: "/skin-media/Redliner-Inheritor-NewModel-Showcase.jpg",
+      description: "six slashes and inspect audio",
+    },
   },
   "Redliner\u001fKōmyō": {
     src: "/skin-media/Redliner-Komyo-Showcase.mp4",
@@ -857,7 +867,11 @@ export function createSkinGallery({
   function renderAnimations(skin) {
     const panel = $("gallery-animations");
     const key = skinKey(skin);
-    const showcase = SKIN_SHOWCASES[key];
+    const baseShowcase = SKIN_SHOWCASES[key];
+    const showcase =
+      baseShowcase?.newModel && modelVersions.get(key) !== "old"
+        ? baseShowcase.newModel
+        : baseShowcase;
     const clips = showcase ? [] : SKIN_ANIMATIONS[key] || [];
     pauseShowcase();
     panel.replaceChildren();
@@ -1088,6 +1102,7 @@ export function createSkinGallery({
     $("gallery-model-" + version).addEventListener("click", () => {
       const skin = groupSkins[index];
       if (!skin || !OLD_MODEL_PHOTOS.has(skinKey(skin))) return;
+      if ((modelVersions.get(skinKey(skin)) || "new") === version) return;
       modelVersions.set(skinKey(skin), version);
       const image = coverButtons[index]?.querySelector(
         ".gallery-cover-art img",
@@ -1101,6 +1116,7 @@ export function createSkinGallery({
         "aria-pressed",
         String(version === "old"),
       );
+      renderAnimations(skin);
     });
   }
   $("gallery-history-retry").addEventListener("click", () => {
