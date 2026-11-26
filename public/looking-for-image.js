@@ -168,7 +168,7 @@ export async function createLookingForPng(listing, photoUrl, fallbackPhotoUrl) {
   ctx.fillRect(MARGIN, 58, 11, 95);
   ctx.fillStyle = "#f2f0e9";
   ctx.font = '800 78px "Archivo Narrow", Arial, sans-serif';
-  ctx.fillText("LOOKING FOR", MARGIN + 31, 126);
+  ctx.fillText("TRADE MAKER", MARGIN + 31, 126);
   ctx.fillStyle = "#aeb6b8";
   ctx.font = "23px ui-monospace, Consolas, monospace";
   ctx.fillText("archives® / REDLINER VALUES", MARGIN + 33, 169);
@@ -214,7 +214,5 @@ export async function createLookingForPng(listing, photoUrl, fallbackPhotoUrl) {
   ctx.fillStyle = "#8f989c";
   ctx.font = "16px ui-monospace, Consolas, monospace";
   ctx.fillText("archivesvalues.com", MARGIN, height - 44);
-  ctx.textAlign = "right";
-  ctx.fillText("TRADE POST / SHARE IN DISCORD", WIDTH - MARGIN, height - 44);
   return pngBlob(canvas);
 }

@@ -369,13 +369,13 @@ export function createLookingFor({
     message.textContent = copy ? "Copying image…" : "Making image…";
     try {
       if (copy) await copyPngToClipboard(createPng);
-      else downloadPng(await createPng(), "looking-for");
+      else downloadPng(await createPng(), "trade-maker");
       message.textContent = copy ? "Copied to clipboard." : "PNG downloaded.";
     } catch (error) {
       message.textContent = copy
         ? "Could not copy image. Try Download PNG."
         : "Could not create PNG.";
-      console.error("Looking For PNG export failed", error);
+      console.error("Trade Maker PNG export failed", error);
     } finally {
       downloadButton.disabled = copyButton.disabled = !exportReady(listing);
     }
