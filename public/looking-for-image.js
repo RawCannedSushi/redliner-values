@@ -10,6 +10,8 @@ const BODY_TOP = 284;
 const CARD_GAP = 10;
 const CARD_WIDTH = (PANEL_WIDTH - 28 - CARD_GAP) / 2;
 const CARD_HEIGHT = 70;
+const NOTE_FONT_SIZE = 27;
+const NOTE_LINE_HEIGHT = 32;
 const PHOTO_STYLE = { border: "#42494e", inset: 8, size: "naturalWidth" };
 
 function fittedText(ctx, value, x, y, maxWidth, size, minSize = 15) {
@@ -201,9 +203,13 @@ function drawTrade(ctx, trade, index, layout, photos, photoUrl, y) {
     ctx.font = "18px ui-monospace, Consolas, monospace";
     ctx.fillText("NOTE", MARGIN + 36, noteY + 32);
     ctx.fillStyle = "#f2f0e9";
-    ctx.font = '23px "Archivo Narrow", Arial, sans-serif';
+    ctx.font = `${NOTE_FONT_SIZE}px "Archivo Narrow", Arial, sans-serif`;
     noteLines.forEach((line, lineIndex) =>
-      ctx.fillText(line, MARGIN + 114, noteY + 32 + lineIndex * 28),
+      ctx.fillText(
+        line,
+        MARGIN + 114,
+        noteY + 32 + lineIndex * NOTE_LINE_HEIGHT,
+      ),
     );
   }
 }
@@ -223,7 +229,7 @@ export async function createLookingForPng(
   const photos = await loadPhotos(urls, fallbackPhotoUrl);
   const canvas = document.createElement("canvas");
   const measure = canvas.getContext("2d");
-  measure.font = '23px "Archivo Narrow", Arial, sans-serif';
+  measure.font = `${NOTE_FONT_SIZE}px "Archivo Narrow", Arial, sans-serif`;
   const layouts = listings.map((listing) => {
     const rows = Math.max(
       1,
@@ -232,7 +238,9 @@ export async function createLookingForPng(
     );
     const panelHeight = 28 + rows * CARD_HEIGHT + (rows - 1) * CARD_GAP;
     const noteLines = wrapText(measure, listing.note, WIDTH - MARGIN * 2 - 162);
-    const noteHeight = noteLines.length ? 22 + noteLines.length * 28 : 0;
+    const noteHeight = noteLines.length
+      ? 22 + noteLines.length * NOTE_LINE_HEIGHT
+      : 0;
     return {
       panelHeight,
       noteLines,
