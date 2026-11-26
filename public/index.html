@@ -150,6 +150,13 @@
             My Inventory</button
           ><button
             type="button"
+            data-view="looking-for"
+            role="tab"
+            aria-selected="false"
+          >
+            Looking For</button
+          ><button
+            type="button"
             data-view="info"
             role="tab"
             aria-selected="false"
@@ -561,6 +568,74 @@
         </div>
         <p id="inventory-status" class="footnote" role="status"></p>
       </section>
+      <section
+        id="looking-for-view"
+        class="looking-for-view"
+        aria-labelledby="looking-for-title"
+        hidden
+      >
+        <div class="section-head">
+          <h2 id="looking-for-title">Looking For</h2>
+          <details class="context-help">
+            <summary aria-label="About Looking For" title="About Looking For">
+              ⓘ
+            </summary>
+            <div class="context-help-panel">
+              Make trade posts here, then copy or download a PNG to share in
+              Discord. Listings save in this browser; they are not posted
+              automatically or synced with your inventory.
+            </div>
+          </details>
+        </div>
+        <div class="looking-for-toolbar">
+          <p>
+            Show what you have and what you want, or leave a note for offers.
+          </p>
+          <button id="looking-for-add" type="button">+ New listing</button>
+        </div>
+        <div id="looking-for-list" class="looking-for-list"></div>
+        <p id="looking-for-status" class="footnote" role="status"></p>
+      </section>
+      <dialog
+        id="looking-for-picker"
+        class="looking-for-picker"
+        aria-labelledby="looking-for-picker-title"
+      >
+        <div class="looking-for-picker-head">
+          <h2 id="looking-for-picker-title">Add skins</h2>
+          <button
+            id="looking-for-picker-close"
+            type="button"
+            aria-label="Close"
+          >
+            ×
+          </button>
+        </div>
+        <div class="looking-for-picker-filters">
+          <input
+            id="looking-for-picker-search"
+            type="search"
+            placeholder="Search skins or weapons…"
+            aria-label="Search skins or weapons"
+            autocomplete="off"
+          />
+          <select id="looking-for-picker-sort" aria-label="Sort skins by">
+            <option value="value">Value: high to low</option>
+            <option value="rarity">Rarity</option>
+            <option value="weapon">Weapon type</option>
+          </select>
+        </div>
+        <div
+          id="looking-for-picker-options"
+          class="looking-for-picker-options"
+        ></div>
+        <div class="looking-for-picker-footer">
+          <span id="looking-for-picker-count">0 selected</span>
+          <button id="looking-for-picker-add" type="button" disabled>
+            Add selected
+          </button>
+        </div>
+      </dialog>
       <dialog
         id="inventory-dialog"
         class="inventory-dialog"

@@ -16,6 +16,7 @@ import { SKIN_PHOTO_FILES } from "./skin-photo-manifest.js";
 import { createInventoryPng } from "./inventory-image.js";
 import { createTradePng } from "./trade-image.js";
 import { createSkinGallery } from "./skin-gallery.js";
+import { createLookingFor } from "./looking-for.js";
 import { createScamList } from "./scam-list.js";
 import { createCredits } from "./credits.js";
 import {
@@ -287,6 +288,7 @@ const viewPanels = {
   history: "history-view",
   gallery: "gallery-view",
   inventory: "inventory-view",
+  "looking-for": "looking-for-view",
   trade: "trade",
   info: "info-view",
   scams: "scam-view",
@@ -378,6 +380,7 @@ function finishLoad() {
   updateInventoryFilters();
   renderInventory();
   gallery.refresh(skins);
+  lookingFor.refresh(skins);
   if (historyData || activeView === "history") loadHistory();
   valuesLoading = false;
   $("refresh").disabled = false;
@@ -541,6 +544,13 @@ const gallery = createSkinGallery({
   fmt,
   getInventoryCount: (key) => inventory[key] || 0,
   setInventoryCount,
+});
+const lookingFor = createLookingFor({
+  skinKey,
+  skinPhotoUrl,
+  fallbackPhotoUrl: PHOTO_FALLBACK,
+  downloadPng,
+  copyPngToClipboard,
 });
 function saveInventory({
   sync = true,
@@ -1693,6 +1703,7 @@ function switchView(view) {
     view === "trade" ||
     view === "gallery" ||
     view === "inventory" ||
+    view === "looking-for" ||
     view === "info" ||
     view === "scams" ||
     view === "credits";
@@ -1708,6 +1719,7 @@ function switchView(view) {
     else renderHistory();
   }
   if (view === "gallery") gallery.enter();
+  if (view === "looking-for") lookingFor.enter();
   if (view === "scams") scamList.enter();
   if (view === "credits") credits.enter();
   if (view === "inventory") {
