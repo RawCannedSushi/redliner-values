@@ -3743,21 +3743,14 @@ footer a:hover {
 }
 .looking-for-board-add {
   display: grid;
-  place-items: center;
+  place-items: center end;
   padding: 18px;
   border-left: 1px solid var(--line-strong);
-  background: var(--panel2);
 }
 #looking-for-add {
   width: min(100%, 300px);
   min-height: 72px;
-  border-color: var(--accent);
-  background: var(--accent);
-  color: var(--accent-on);
   font-size: 22px;
-}
-#looking-for-add:hover {
-  filter: brightness(1.1);
 }
 .looking-for-picker {
   width: min(760px, calc(100% - 24px));
