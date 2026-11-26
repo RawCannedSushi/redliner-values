@@ -30,6 +30,7 @@ export const SKIN_PHOTO_FILES = [
   "Dune-Revolt.png",
   "Entropy-Revolt.png",
   "Eroder-Castigate.png",
+  "FallenDynasty-Redliner.png",
   "Fractal-Castigate.png",
   "Funeralist-Castigate.png",
   "Geometric-Castigate.png",
