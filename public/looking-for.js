@@ -30,6 +30,7 @@ function savedListings() {
         id: listing.id,
         have: cleanItems(listing.have),
         want: cleanItems(listing.want),
+        include: listing.include !== false,
         note:
           typeof listing.note === "string" ? listing.note.slice(0, 180) : "",
       }));
@@ -71,6 +72,10 @@ export function createLookingFor({
   const pickerAdd = $("looking-for-picker-add");
   const list = $("looking-for-list");
   const status = $("looking-for-status");
+  const selectedSummary = $("looking-for-selected-summary");
+  const selectedDownload = $("looking-for-download-selected");
+  const selectedCopy = $("looking-for-copy-selected");
+  const exportStatus = $("looking-for-export-status");
   let pickerTarget = null;
   const selected = new Set();
 
@@ -201,14 +206,47 @@ export function createLookingFor({
     );
   }
 
+  function selectedTrades() {
+    return listings.filter((listing) => listing.include);
+  }
+
+  function updateCombinedControls(clearMessage = true) {
+    const selected = selectedTrades();
+    const unfinished = selected.find((listing) => !exportReady(listing));
+    selectedSummary.textContent = `${selected.length} of ${listings.length} ${listings.length === 1 ? "trade" : "trades"} selected`;
+    selectedDownload.disabled = selectedCopy.disabled =
+      selected.length === 0 || Boolean(unfinished);
+    if (unfinished) {
+      exportStatus.textContent = `Finish or uncheck Trade ${listings.indexOf(unfinished) + 1} to export.`;
+    } else if (selected.length === 0) {
+      exportStatus.textContent = "Select at least one trade to export.";
+    } else if (clearMessage) {
+      exportStatus.textContent = "";
+    }
+  }
+
   function createListing(listing, index) {
     const card = node("article", "looking-for-listing");
     const head = node("div", "looking-for-listing-head");
-    head.append(node("h3", "", `Trade post ${index + 1}`));
-    const remove = node("button", "", "Delete listing");
+    const heading = node("div", "looking-for-listing-heading");
+    heading.append(node("h3", "", `Trade ${index + 1}`));
+    const includeLabel = node("label", "looking-for-include");
+    const include = node("input");
+    include.type = "checkbox";
+    include.checked = listing.include;
+    include.setAttribute("aria-label", `Include Trade ${index + 1} in PNG`);
+    include.onchange = () => {
+      listing.include = include.checked;
+      save();
+      updateCombinedControls();
+    };
+    includeLabel.append(include, node("span", "", "Include in PNG"));
+    heading.append(includeLabel);
+    head.append(heading);
+    const remove = node("button", "", "Delete trade");
     remove.type = "button";
     remove.onclick = () => {
-      if (!confirm("Delete this trade post?")) return;
+      if (!confirm("Delete this trade?")) return;
       listings.splice(listings.indexOf(listing), 1);
       save();
       render();
@@ -216,7 +254,13 @@ export function createLookingFor({
     head.append(remove);
     card.append(head);
     const sides = node("div", "looking-for-sides");
-    sides.append(createSide(listing, "have"), createSide(listing, "want"));
+    const exchange = node("div", "looking-for-exchange", "⇄");
+    exchange.setAttribute("aria-hidden", "true");
+    sides.append(
+      createSide(listing, "have"),
+      exchange,
+      createSide(listing, "want"),
+    );
     card.append(sides);
     const noteLabel = node(
       "label",
@@ -235,12 +279,13 @@ export function createLookingFor({
       message.textContent = exportReady(listing)
         ? ""
         : "Add a skin you have and either a wanted skin or a note to export.";
+      updateCombinedControls();
     });
     noteLabel.append(note);
     card.append(noteLabel);
     const actions = node("div", "looking-for-listing-actions");
-    const download = node("button", "", "Download PNG");
-    const copy = node("button", "", "Copy PNG");
+    const download = node("button", "", "Download this trade");
+    const copy = node("button", "", "Copy this trade");
     download.type = copy.type = "button";
     download.disabled = copy.disabled = !exportReady(listing);
     const message = node(
@@ -252,8 +297,9 @@ export function createLookingFor({
     );
     message.setAttribute("role", "status");
     download.onclick = () =>
-      exportListing(listing, false, download, copy, message);
-    copy.onclick = () => exportListing(listing, true, download, copy, message);
+      exportTrades([listing], false, download, copy, message, false);
+    copy.onclick = () =>
+      exportTrades([listing], true, download, copy, message, false);
     actions.append(download, copy, message);
     card.append(actions);
     return card;
@@ -266,7 +312,7 @@ export function createLookingFor({
         node(
           "div",
           "looking-for-empty",
-          "No trade posts yet. Create one to show what you're trading.",
+          "No trades yet. Add one to show what you're trading.",
         ),
       );
     } else {
@@ -274,6 +320,7 @@ export function createLookingFor({
         list.append(createListing(listing, index)),
       );
     }
+    updateCombinedControls();
   }
 
   function updatePickerCount() {
@@ -344,32 +391,37 @@ export function createLookingFor({
     search.focus();
   }
 
-  async function exportListing(
-    listing,
+  async function exportTrades(
+    trades,
     copy,
     downloadButton,
     copyButton,
     message,
+    combined,
   ) {
-    if (!exportReady(listing)) return;
-    const snapshot = {
-      have: listing.have.map((item) => ({
+    if (!trades.length || trades.some((trade) => !exportReady(trade))) return;
+    const snapshot = trades.map((trade) => ({
+      have: trade.have.map((item) => ({
         skin: { ...lookup(item.key) },
         quantity: item.quantity,
       })),
-      want: listing.want.map((item) => ({
+      want: trade.want.map((item) => ({
         skin: { ...lookup(item.key) },
         quantity: item.quantity,
       })),
-      note: listing.note.trim(),
-    };
+      note: trade.note.trim(),
+    }));
     const createPng = () =>
       createLookingForPng(snapshot, skinPhotoUrl, fallbackPhotoUrl);
     downloadButton.disabled = copyButton.disabled = true;
     message.textContent = copy ? "Copying image…" : "Making image…";
     try {
       if (copy) await copyPngToClipboard(createPng);
-      else downloadPng(await createPng(), "trade-maker");
+      else
+        downloadPng(
+          await createPng(),
+          combined ? "trade-maker" : "trade-maker-single",
+        );
       message.textContent = copy ? "Copied to clipboard." : "PNG downloaded.";
     } catch (error) {
       message.textContent = copy
@@ -377,12 +429,20 @@ export function createLookingFor({
         : "Could not create PNG.";
       console.error("Trade Maker PNG export failed", error);
     } finally {
-      downloadButton.disabled = copyButton.disabled = !exportReady(listing);
+      if (combined) updateCombinedControls(false);
+      else
+        downloadButton.disabled = copyButton.disabled = !exportReady(trades[0]);
     }
   }
 
   $("looking-for-add").addEventListener("click", () => {
-    listings.push({ id: crypto.randomUUID(), have: [], want: [], note: "" });
+    listings.push({
+      id: crypto.randomUUID(),
+      have: [],
+      want: [],
+      include: true,
+      note: "",
+    });
     save();
     render();
     list.lastElementChild?.scrollIntoView({
@@ -391,6 +451,26 @@ export function createLookingFor({
     });
   });
   $("looking-for-picker-close").addEventListener("click", () => picker.close());
+  selectedDownload.addEventListener("click", () =>
+    exportTrades(
+      selectedTrades(),
+      false,
+      selectedDownload,
+      selectedCopy,
+      exportStatus,
+      true,
+    ),
+  );
+  selectedCopy.addEventListener("click", () =>
+    exportTrades(
+      selectedTrades(),
+      true,
+      selectedDownload,
+      selectedCopy,
+      exportStatus,
+      true,
+    ),
+  );
   picker.addEventListener("close", () => {
     pickerTarget = null;
     selected.clear();

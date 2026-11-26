@@ -581,19 +581,29 @@
               ⓘ
             </summary>
             <div class="context-help-panel">
-              Make trade posts here, then copy or download a PNG to share in
-              Discord. Listings save in this browser; they are not posted
-              automatically or synced with your inventory.
+              Make several trades, check the ones you want in the image, then
+              copy or download one PNG to share. Trades save in this browser;
+              they are not posted automatically or synced with your inventory.
             </div>
           </details>
         </div>
         <div class="looking-for-toolbar">
           <p>
-            Show what you have and what you want, or leave a note for offers.
+            Make several small trades, then choose which ones go in your PNG.
           </p>
-          <button id="looking-for-add" type="button">+ New listing</button>
+          <button id="looking-for-add" type="button">+ Add trade</button>
         </div>
         <div id="looking-for-list" class="looking-for-list"></div>
+        <div class="looking-for-board-actions">
+          <strong id="looking-for-selected-summary">0 trades selected</strong>
+          <button id="looking-for-download-selected" type="button" disabled>
+            Download selected PNG
+          </button>
+          <button id="looking-for-copy-selected" type="button" disabled>
+            Copy selected PNG
+          </button>
+          <span id="looking-for-export-status" role="status"></span>
+        </div>
         <p id="looking-for-status" class="footnote" role="status"></p>
       </section>
       <dialog
