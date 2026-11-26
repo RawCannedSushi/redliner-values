@@ -393,11 +393,7 @@ const EXCLUSIVE_SKINS = [
     value: null,
     exclusive: true,
     untradable: true,
-    unlockLabel: "Code unlock",
-    unlockTitle: "SUNDER",
-    unlockDescription:
-      "Conjurer is untradable. It was obtained during the Tag update.",
-    requirement: 'Redeem the code "SUNDER" during the Tag update.',
+    unlockLabel: "Unlocked with code: Sunder",
   }),
 ];
 const ACCENT_PROPERTIES = [
@@ -839,14 +835,23 @@ export function createSkinGallery({
     $("gallery-demand").hidden = !!skin.untradable;
     $("gallery-history-panel").hidden = !!skin.untradable;
     $("gallery-untradable-status").hidden = !skin.untradable;
+    $("gallery-exclusive-panel").classList.toggle(
+      "gallery-exclusive-panel--compact",
+      !!skin.exclusive && !skin.unlockTitle,
+    );
     $("gallery-exclusive-panel").hidden = !skin.exclusive;
     renderAnimations(skin);
     updateInventory();
     if (skin.exclusive) {
       $("gallery-exclusive-kicker").textContent = skin.unlockLabel;
-      $("gallery-exclusive-title").textContent = skin.unlockTitle;
-      $("gallery-exclusive-description").textContent = skin.unlockDescription;
-      $("gallery-exclusive-requirement").textContent = skin.requirement;
+      $("gallery-exclusive-title").textContent = skin.unlockTitle || "";
+      $("gallery-exclusive-title").hidden = !skin.unlockTitle;
+      $("gallery-exclusive-description").textContent =
+        skin.unlockDescription || "";
+      $("gallery-exclusive-description").hidden = !skin.unlockDescription;
+      $("gallery-exclusive-requirement").textContent = skin.requirement || "";
+      $("gallery-exclusive-requirement").parentElement.hidden =
+        !skin.requirement;
     }
     if (skin.untradable) return;
     $("gallery-banner").textContent =

@@ -2911,6 +2911,13 @@ footer a:hover {
   border-top: 2px solid var(--skin-ink);
   background: linear-gradient(145deg, var(--panel), var(--panel2));
 }
+.gallery-exclusive-panel--compact {
+  display: flex;
+  align-items: center;
+}
+.gallery-exclusive-panel--compact .gallery-exclusive-kicker {
+  text-transform: none;
+}
 .gallery-exclusive-kicker {
   letter-spacing: 0.07em;
 }
