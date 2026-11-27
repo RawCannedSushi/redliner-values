@@ -2811,6 +2811,12 @@ footer a:hover {
   transition-duration: 0.16s;
   will-change: transform;
 }
+.gallery-cover img[src$="/Arachnid-Castigate.png"] {
+  --image-parallax-scale: 1.45;
+}
+.gallery-cover.is-parallax img[src$="/Arachnid-Castigate.png"] {
+  --image-parallax-scale: 1.5;
+}
 .gallery-cover-label {
   display: block;
   overflow: hidden;
