@@ -63,6 +63,11 @@ const SKIN_SHOWCASES = {
     poster: "/skin-media/Redliner-Demise-Showcase.jpg",
     description: "gameplay footage and audio",
   },
+  "Redliner\u001fCursed Remnant": {
+    src: "/skin-media/Redliner-CursedRemnant-Showcase.mp4",
+    poster: "/skin-media/Redliner-CursedRemnant-Showcase.jpg",
+    description: "inspect, attack, and elimination effect audio",
+  },
   "Redliner\u001fInheritor": {
     src: "/skin-media/Redliner-Inheritor-Showcase.mp4",
     poster: "/skin-media/Redliner-Inheritor-Showcase.jpg",
@@ -339,6 +344,130 @@ const SKIN_ANIMATIONS = {
   "Siege\u001fRebecca": [
     { label: "Weapon inspect", src: "/skin-media/Siege-Rebecca-Inspect.webp" },
     { label: "Firing", src: "/skin-media/Siege-Rebecca-Firing.webp" },
+  ],
+  "Castigate\u001fConjurer": [
+    {
+      label: "Weapon inspect",
+      src: "/skin-media/Castigate-Conjurer-Inspect.webp",
+    },
+    { label: "Firing", src: "/skin-media/Castigate-Conjurer-Firing.webp" },
+  ],
+  "Castigate\u001fDraconite": [
+    {
+      label: "Weapon inspect",
+      src: "/skin-media/Castigate-Draconite-Inspect.webp",
+    },
+    { label: "Firing", src: "/skin-media/Castigate-Draconite-Firing.webp" },
+  ],
+  "Castigate\u001fNoble Legacy": [
+    {
+      label: "Weapon inspect",
+      src: "/skin-media/Castigate-NobleLegacy-Inspect.webp",
+    },
+    { label: "Firing", src: "/skin-media/Castigate-NobleLegacy-Firing.webp" },
+  ],
+  "Castigate\u001fArachnid": [
+    {
+      label: "Weapon inspect",
+      src: "/skin-media/Castigate-Arachnid-Inspect.webp",
+    },
+    { label: "Firing", src: "/skin-media/Castigate-Arachnid-Firing.webp" },
+  ],
+  "Liberator\u001fJade": [
+    { label: "Weapon inspect", src: "/skin-media/Liberator-Jade-Inspect.webp" },
+    { label: "Slashing", src: "/skin-media/Liberator-Jade-Slashing.webp" },
+  ],
+  "Liberator\u001fRavenous": [
+    {
+      label: "Weapon inspect",
+      src: "/skin-media/Liberator-Ravenous-Inspect.webp",
+    },
+    { label: "Slashing", src: "/skin-media/Liberator-Ravenous-Slashing.webp" },
+  ],
+  "Monarch\u001fMooncharm": [
+    {
+      label: "Weapon inspect",
+      src: "/skin-media/Monarch-Mooncharm-Inspect.webp",
+    },
+    { label: "Firing", src: "/skin-media/Monarch-Mooncharm-Firing.webp" },
+  ],
+  "Monarch\u001fUndead": [
+    { label: "Weapon inspect", src: "/skin-media/Monarch-Undead-Inspect.webp" },
+    { label: "Firing", src: "/skin-media/Monarch-Undead-Firing.webp" },
+  ],
+  "Phoenix\u001fPowder & Prayer": [
+    {
+      label: "Weapon inspect",
+      src: "/skin-media/Phoenix-PowderAndPrayer-Inspect.webp",
+    },
+    { label: "Firing", src: "/skin-media/Phoenix-PowderAndPrayer-Firing.webp" },
+  ],
+  "Phoenix\u001fSpectral Flare": [
+    {
+      label: "Weapon inspect",
+      src: "/skin-media/Phoenix-SpectralFlare-Inspect.webp",
+    },
+    { label: "Firing", src: "/skin-media/Phoenix-SpectralFlare-Firing.webp" },
+  ],
+  "Phoenix\u001fWitchfire": [
+    {
+      label: "Weapon inspect",
+      src: "/skin-media/Phoenix-Witchfire-Inspect.webp",
+    },
+    { label: "Firing", src: "/skin-media/Phoenix-Witchfire-Firing.webp" },
+  ],
+  "Redliner\u001fFallen Dynasty": [
+    {
+      label: "Weapon inspect",
+      src: "/skin-media/Redliner-FallenDynasty-Inspect.webp",
+    },
+    { label: "Attack", src: "/skin-media/Redliner-FallenDynasty-Attack.webp" },
+  ],
+  "Redliner\u001fIron Vow": [
+    {
+      label: "Weapon inspect",
+      src: "/skin-media/Redliner-IronVow-Inspect.webp",
+    },
+    { label: "Attack", src: "/skin-media/Redliner-IronVow-Attack.webp" },
+  ],
+  "Redliner\u001fCryptbound": [
+    {
+      label: "Weapon inspect",
+      src: "/skin-media/Redliner-Cryptbound-Inspect.webp",
+    },
+    { label: "Attack", src: "/skin-media/Redliner-Cryptbound-Attack.webp" },
+  ],
+  "Revolt\u001fHex": [
+    { label: "Weapon inspect", src: "/skin-media/Revolt-Hex-Inspect.webp" },
+    { label: "Firing", src: "/skin-media/Revolt-Hex-Firing.webp" },
+  ],
+  "Revolt\u001fNightwing": [
+    {
+      label: "Weapon inspect",
+      src: "/skin-media/Revolt-Nightwing-Inspect.webp",
+    },
+    { label: "Firing", src: "/skin-media/Revolt-Nightwing-Firing.webp" },
+  ],
+  "Siege\u001fHollow Form": [
+    {
+      label: "Weapon inspect",
+      src: "/skin-media/Siege-HollowForm-Inspect.webp",
+    },
+    { label: "Firing", src: "/skin-media/Siege-HollowForm-Firing.webp" },
+  ],
+  "Siege\u001fBloodhound": [
+    {
+      label: "Weapon inspect",
+      src: "/skin-media/Siege-Bloodhound-Inspect.webp",
+    },
+    { label: "Firing", src: "/skin-media/Siege-Bloodhound-Firing.webp" },
+  ],
+  "Siege\u001fGravekeeper": [
+    {
+      label: "Weapon inspect",
+      src: "/skin-media/Siege-Gravekeeper-Inspect.webp",
+    },
+    { label: "Firing", src: "/skin-media/Siege-Gravekeeper-Firing.webp" },
   ],
 };
 const DEFAULT_SKINS = [

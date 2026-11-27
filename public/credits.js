@@ -4,6 +4,7 @@ const SITE_CONTRIBUTORS = [
   "Lee (@liamgraves) - Weapon video help",
   "Gluin (@gluin_025) - Weapon video help",
   "Tareo- (@tokashiro._.) - Weapon video help",
+  "Saffors (@saffors) - Weapon video help",
 ];
 const LOWERCASE_NAMES = new Set(["vspec", "vsped", "spaccy", "sinzeri"]);
 const MEMBER_HANDLES = new Map([
