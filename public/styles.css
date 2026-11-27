@@ -354,6 +354,10 @@ main.shell {
   text-transform: inherit;
   letter-spacing: inherit;
   cursor: pointer;
+  transition:
+    color 0.22s ease,
+    opacity 0.22s ease,
+    border-color 0.22s ease;
 }
 .value-view-head button:hover {
   color: var(--text);
@@ -703,6 +707,7 @@ button:disabled {
   border-right: 2px solid currentColor;
   border-bottom: 2px solid currentColor;
   transform: translateY(-2px) rotate(45deg);
+  transition: transform 0.2s ease;
 }
 .trade-select-trigger[aria-expanded="true"] .trade-chevron {
   transform: translateY(2px) rotate(225deg);
@@ -737,6 +742,7 @@ button:disabled {
   border-right: 1px solid currentColor;
   border-bottom: 1px solid currentColor;
   transform: translateY(-2px) rotate(45deg);
+  transition: transform 0.2s ease;
 }
 .skin-picker-sort-toggle[aria-expanded="true"]::after {
   transform: translateY(2px) rotate(225deg);
@@ -1187,6 +1193,10 @@ footer a:hover {
 .multi-filter summary:after {
   content: "⌄";
   color: var(--muted);
+  transition: transform 0.2s ease;
+}
+.multi-filter[open] summary:after {
+  transform: rotate(180deg);
 }
 .multi-filter[open] summary {
   border-color: var(--accent);
@@ -1279,6 +1289,10 @@ footer a:hover {
 .site-settings > summary svg {
   width: 17px;
   height: 17px;
+  transition: transform 0.24s ease;
+}
+.site-settings[open] > summary svg {
+  transform: rotate(45deg);
 }
 .site-settings > summary:hover,
 .site-settings[open] > summary {
@@ -1357,6 +1371,7 @@ footer a:hover {
   background: var(--row-hover);
 }
 .view-tabs button {
+  position: relative;
   flex-shrink: 0;
   background: none;
   border: 0;
@@ -1368,6 +1383,28 @@ footer a:hover {
   text-transform: uppercase;
   letter-spacing: 0.04em;
   border-bottom: 3px solid transparent;
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease,
+    border-color 0.24s ease;
+}
+.view-tabs button::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 5px;
+  width: 5px;
+  height: 5px;
+  background: var(--accent);
+  opacity: 0;
+  transform: translate(-5px, -50%) rotate(45deg) scale(0.5);
+  transition:
+    opacity 0.22s ease,
+    transform 0.22s ease;
+}
+.view-tabs button.active::before {
+  opacity: 1;
+  transform: translate(0, -50%) rotate(45deg) scale(1);
 }
 .status,
 .count,
@@ -2670,6 +2707,18 @@ footer a:hover {
   width: 52px;
   height: 52px;
   font-size: 28px;
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+@media (hover: hover) {
+  #gallery-prev:hover:not(:disabled) {
+    transform: translateX(-3px);
+  }
+  #gallery-next:hover:not(:disabled) {
+    transform: translateX(3px);
+  }
 }
 .gallery-arrow:disabled {
   opacity: 0.38;
@@ -4226,6 +4275,57 @@ footer a:hover {
   line-height: 1.5;
 }
 
+@keyframes view-arrive {
+  from {
+    opacity: 0.78;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes menu-arrive {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+[role="tabpanel"]:not([hidden]) {
+  animation: view-arrive 0.26s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.site-settings[open] .settings-panel,
+.multi-filter[open] .filter-options,
+.context-help[open] > .context-help-panel,
+.trade-picker-panel:not([hidden]),
+dialog[open] {
+  animation: menu-arrive 0.18s ease-out;
+}
+@media (prefers-reduced-motion: reduce) {
+  [role="tabpanel"]:not([hidden]),
+  .site-settings[open] .settings-panel,
+  .multi-filter[open] .filter-options,
+  .context-help[open] > .context-help-panel,
+  .trade-picker-panel:not([hidden]),
+  dialog[open] {
+    animation: none;
+  }
+  .view-tabs button,
+  .view-tabs button::before,
+  .value-view-head button,
+  .trade-chevron,
+  .skin-picker-sort-toggle::after,
+  .multi-filter summary::after,
+  .site-settings > summary svg,
+  .gallery-arrow {
+    transition: none;
+  }
+}
+
 /* Keep translucent skin pixels from washing out against light panels. */
 :root[data-theme="light"] .trade-item-photo,
 :root[data-theme="light"] .inventory-art,
@@ -4652,10 +4752,18 @@ footer a:hover {
     sans-serif;
   letter-spacing: 0.02em;
   cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    transform 0.2s ease;
 }
 .quick-inventory-button:hover,
 .quick-inventory-button[aria-expanded="true"] {
   border-color: var(--accent);
+}
+@media (hover: hover) {
+  .quick-inventory-button:hover {
+    transform: translateY(-3px);
+  }
 }
 .quick-inventory-button svg {
   width: 19px;
