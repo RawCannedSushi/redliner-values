@@ -4765,6 +4765,16 @@ dialog[open] {
     transform: translateY(-3px);
   }
 }
+@media (prefers-reduced-motion: reduce) {
+  .quick-inventory-button {
+    transition: none;
+  }
+  .quick-inventory-button:hover,
+  #gallery-prev:hover:not(:disabled),
+  #gallery-next:hover:not(:disabled) {
+    transform: none;
+  }
+}
 .quick-inventory-button svg {
   width: 19px;
   height: 19px;
