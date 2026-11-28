@@ -98,6 +98,11 @@ const SKIN_SHOWCASES = {
     poster: "/skin-media/Redliner-Ossuary-Showcase.jpg",
     description: "gameplay footage and audio",
   },
+  "Redliner\u001fSanguine Pledge": {
+    src: "/skin-media/Redliner-SanguinePledge-Showcase.mp4",
+    poster: "/skin-media/Redliner-SanguinePledge-Showcase.jpg",
+    description: "weapon inspect with audio",
+  },
   "Redliner\u001fSub-Zero": {
     src: "/skin-media/Redliner-SubZero-Showcase.mp4",
     poster: "/skin-media/Redliner-SubZero-Showcase.jpg",
