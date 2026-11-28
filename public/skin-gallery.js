@@ -113,6 +113,11 @@ const SKIN_SHOWCASES = {
     poster: "/skin-media/Siege-Domini-Showcase.jpg",
     description: "inspect, firing, and kill effect audio",
   },
+  "Siege\u001fHunters Pride": {
+    src: "/skin-media/Siege-HuntersPride-Showcase.mp4",
+    poster: "/skin-media/Siege-HuntersPride-Showcase.jpg",
+    description: "inspect and firing audio",
+  },
   "Siege\u001fMechanist": {
     src: "/skin-media/Siege-Mechanist-Showcase.mp4",
     poster: "/skin-media/Siege-Mechanist-Showcase.jpg",
